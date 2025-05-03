@@ -13,12 +13,14 @@ Monetization: TBD (free, premium, donation-supported, etc.)
 
 2. High Concept
 ---------------
-XGanso is a turn-based tactical strategy game where players command a squad of quirky, goose-themed operatives on procedurally generated missions. Inspired by XCOM, XGanso features simultaneous turn execution, permanent character death, class-based roles, and hex-grid combat. Every choice is meaningful—and every fallen goose is gone for good.
+XGanso is a turn-based tactical strategy game where players command a squad of quirky, goose-themed operatives on procedurally generated missions.
+Inspired by XCOM, XGanso features plan and execute turns, permanent character death, class-based roles, and hex-grid combat.
+Every choice is meaningful—and every fallen goose is gone for good.
 
 3. Core Gameplay
 ----------------
 Key Features:
-- Simultaneous Turn Execution
+- Plan and Execute Turns
 - Permanent Death
 - Class-Based Units
 - Procedural Missions
@@ -30,28 +32,29 @@ Key Features:
 4.1. Units
 - Operatives (Geese): Unique, named characters with custom loadouts and progression.
 - Classes:
-  - Striker: Close-quarters expert; high damage, low health.
-  - Sniper: Long-range, high accuracy; weak up close.
-  - Engineer: Support role with gadgets and terrain manipulation.
-  - Medic: Healer with utility and light weaponry.
+  - Striker: Close-quarters expert; high damage, low health. (?)
+  - Sniper: Long-range, high accuracy; weak up close. (?)
+  - Engineer: Support role with gadgets and terrain manipulation. (?)
+  - Medic: Healer with utility and light weaponry. (?)
 
 4.2. Actions per Turn
 - Move
 - Attack
-- Use Ability / Item
-- Overwatch / Delay
-- Interact (Hack, Pickup, etc.)
+- Use Ability / Item (?)
+- Overwatch / Delay (?)
+- Interact (Hack, Pickup, etc.) (?)
 
 4.3. Enemy Types
-- Grunt: Basic foot soldier.
-- Elite: Tough, smarter enemy with abilities.
-- Drone: Fast, evasive unit.
-- Boss: Unique mission-based threat.
+- Grunt: Basic foot soldier. (?)
+- Elite: Tough, smarter enemy with abilities. (?)
+- Drone: Fast, evasive unit. (?)
+- Boss: Unique mission-based threat. (?)
 
 4.4. Terrain and Cover
-- Partial and full cover with bonuses.
-- Destructible terrain.
-- Elevation advantages.
+- Movement costs.
+- Partial and full cover with bonuses. (?)
+- Destructible terrain. (?)
+- Elevation advantages. (?)
 
 5. Mission Structure
 --------------------
@@ -105,11 +108,6 @@ AI: A* Pathfinding, Behavior Trees or FSMs, Turn Resolver
 - Comedic goose SFX
 - UI and movement audio feedback
 
-10. Timeline & Milestones
--------------------------
-| Milestone | Target Date | Description                    |
-|-----------|--------------|--------------------------------|
-| Prototype | May 2025     | Core mechanics and combat      |
-| Alpha     | July 2025    | Multiple missions, basic UI    |
-| Beta      | October 2025 | All features and polish        |
-| Launch    | Q1 2026      | Final release with content     |
+10. To Do
+- Restructure files after refactor
+- Battle view with the units
