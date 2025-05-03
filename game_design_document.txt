@@ -1,0 +1,115 @@
+XGanso – Game Design Document
+=============================
+
+1. Game Overview
+----------------
+Title: XGanso
+Genre: Turn-Based Tactical Strategy
+Platform: PC (Initial)
+Engine: Python with Pygame
+Art Style: Minimalist, clean visuals with stylized characters and maps
+Target Audience: Fans of XCOM-style games, strategy enthusiasts, indie game players
+Monetization: TBD (free, premium, donation-supported, etc.)
+
+2. High Concept
+---------------
+XGanso is a turn-based tactical strategy game where players command a squad of quirky, goose-themed operatives on procedurally generated missions. Inspired by XCOM, XGanso features simultaneous turn execution, permanent character death, class-based roles, and hex-grid combat. Every choice is meaningful—and every fallen goose is gone for good.
+
+3. Core Gameplay
+----------------
+Key Features:
+- Simultaneous Turn Execution
+- Permanent Death
+- Class-Based Units
+- Procedural Missions
+- Hex Grid Combat
+- Progression System
+
+4. Game Mechanics
+-----------------
+4.1. Units
+- Operatives (Geese): Unique, named characters with custom loadouts and progression.
+- Classes:
+  - Striker: Close-quarters expert; high damage, low health.
+  - Sniper: Long-range, high accuracy; weak up close.
+  - Engineer: Support role with gadgets and terrain manipulation.
+  - Medic: Healer with utility and light weaponry.
+
+4.2. Actions per Turn
+- Move
+- Attack
+- Use Ability / Item
+- Overwatch / Delay
+- Interact (Hack, Pickup, etc.)
+
+4.3. Enemy Types
+- Grunt: Basic foot soldier.
+- Elite: Tough, smarter enemy with abilities.
+- Drone: Fast, evasive unit.
+- Boss: Unique mission-based threat.
+
+4.4. Terrain and Cover
+- Partial and full cover with bonuses.
+- Destructible terrain.
+- Elevation advantages.
+
+5. Mission Structure
+--------------------
+5.1. Types of Missions
+- Elimination
+- Extraction
+- Sabotage
+- Rescue
+- Defense
+
+5.2. Difficulty Tiers
+- Missions scale based on progression.
+- Tiers unlock harder enemies and rare rewards.
+
+5.3. Procedural Generation
+- Modular tile maps.
+- Randomized objectives, enemies, loot.
+
+6. Meta-Game & Progression
+--------------------------
+6.1. Base Management (Optional)
+- Upgrade facilities.
+- Recruit and train operatives.
+- Research new weapons/gadgets.
+
+6.2. Squad Progression
+- XP from missions.
+- Promotions and abilities.
+- Gear upgrades.
+
+7. Visual Identity
+------------------
+Logo/Branding:
+- Matcha-green palette.
+- Goose imagery (tea-drinking, tactical gear).
+- Minimalist design.
+
+UI Style:
+- Functional, clean interface.
+- Color-coded tiles and overlays.
+
+8. Technical Details
+--------------------
+Engine: Python with Pygame
+Grid System: Hex-based
+AI: A* Pathfinding, Behavior Trees or FSMs, Turn Resolver
+
+9. Audio
+--------
+- Minimalist soundtrack
+- Comedic goose SFX
+- UI and movement audio feedback
+
+10. Timeline & Milestones
+-------------------------
+| Milestone | Target Date | Description                    |
+|-----------|--------------|--------------------------------|
+| Prototype | May 2025     | Core mechanics and combat      |
+| Alpha     | July 2025    | Multiple missions, basic UI    |
+| Beta      | October 2025 | All features and polish        |
+| Launch    | Q1 2026      | Final release with content     |
