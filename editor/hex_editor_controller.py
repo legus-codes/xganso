@@ -4,16 +4,15 @@ import pygame
 
 from editor.hex_camera import HexCamera
 from editor.hex_editor_ui import UIContext, UIManager
-from editor.hex_map_model import HexMapModel
+from model.hex_map_model import HexMapModel
 from editor.hex_map_view import HexMapView
-from editor.hex_state import HexEditorMode, HexEditorTool, HexMapEditorState, MapType
+from editor.hex_editor_state import HexEditorMode, HexEditorTool, HexMapEditorState, MapType
 from editor.tool_handler import AddSpawnHandler, EraseTileHandler, PaintTileHandler, RemoveSpawnHandler, ToolHandler
-from model.hex_coordinate import HexCoordinate
+from model.hex_coordinate import HexCoordinate, VecF2
 from model.hex_geometry import POINTY, HexLayout
 from model.hex_map import HexMap
 from model.hex_map_builder import HexMapBuilder
-from model.io import HexMapIO
-from model.vec2 import VecF2
+from hexio.hex_map_io import HexMapIO
 
 
 class MapManager:

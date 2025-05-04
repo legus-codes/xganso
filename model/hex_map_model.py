@@ -1,8 +1,8 @@
 from typing import List
 
-from editor.hex_map_commands import HexMapCommand
-from editor.observable import Observable
+from model.hex_map_commands import HexMapCommand
 from model.hex_map import HexMap
+from utils.observable import Observable
 
 
 class HexMapModel:

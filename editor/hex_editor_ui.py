@@ -2,11 +2,9 @@ from typing import Dict
 import functools
 import pygame
 
-from editor.hex_editor_canvas import HexEditorCanvas
-from editor.hex_map_view import HexMapView
-from editor.hex_state import HexEditorMode, HexEditorTool, HexTestTool, MapType, PopupType, UIContext
-from ui.panel import Panel
-from ui.widgets import Button, IntTextInput, OptionPicker, RadioButton, TextInput, Toggle
+from editor.hex_map_view import HexMapView, HexEditorCanvas
+from editor.hex_editor_state import HexEditorMode, HexEditorTool, HexTestTool, MapType, PopupType, UIContext
+from ui.elements import Button, IntTextInput, OptionPicker, RadioButton, TextInput, Toggle, Panel
 from model.spawn import SpawnLibrary
 from model.terrain import TerrainLibrary
 

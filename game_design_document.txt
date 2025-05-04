@@ -109,5 +109,8 @@ AI: A* Pathfinding, Behavior Trees or FSMs, Turn Resolver
 - UI and movement audio feedback
 
 10. To Do
-- Restructure files after refactor
+- Restructure files after refactor (done)
 - Battle view with the units
+- Single option picker based on the tool
+- Show information of terrain in the editor
+- Show information of the cell in the editor

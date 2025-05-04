@@ -5,7 +5,7 @@ import pygame
 from battle.battle import BattleManager, BattlePhase
 from editor.hex_map_view import HexCamera, HexDrawer, HexGridRenderer, HexLayout, PointyHexOrientation
 from editor.hex_editor_controller import HexGridView, UIComponent
-from ui.widgets import Button
+from ui.elements import Button
 from model.hex_coordinate import HexCoordinate
 
 

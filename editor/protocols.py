@@ -25,18 +25,3 @@ class HexMapEditorControllerProtocol(Protocol):
 
     def handle_key_down(self, character: str) -> None:
         ...
-
-
-class Option(Protocol):
-
-    @property
-    def name(self) -> str:
-        ...
-
-    @property
-    def color(self) -> str:
-        ...
-
-    @property
-    def text_color(self) -> str:
-        ...

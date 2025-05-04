@@ -3,8 +3,8 @@ from typing import Self
 
 from model.hex_coordinate import HexCoordinate
 from model.hex_map import HexMap
-from model.pathfinding import PathfindingHelper
 from model.terrain import TerrainLibrary
+from pathfinding.pathfinding import PathfindingHelper
 
 
 class HexMapTemplate:

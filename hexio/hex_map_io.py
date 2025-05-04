@@ -1,6 +1,6 @@
 import json
 
-from model.encoding import HexMapDecoder, HexMapEncoder
+from hexio.encoding import HexMapDecoder, HexMapEncoder
 from model.hex_map import HexMap
 
 

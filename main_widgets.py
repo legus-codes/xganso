@@ -1,9 +1,8 @@
 from dataclasses import dataclass
 import pygame
 
-from editor.observable import Observable
-from ui.panel import Panel
-from ui.widgets import Button, IntTextInput, OptionPicker, RadioButton, RadioStyle, TextInput, Toggle, Widget
+from utils.observable import Observable
+from ui.elements import Button, IntTextInput, RadioButton, TextInput, Toggle, Panel
 from model.terrain import Terrain, TerrainType
 
 
@@ -45,7 +44,6 @@ if __name__ == '__main__':
                 running = False
 
         delta_time = clock.get_time()
-        panel.update(delta_time)
 
         screen.fill((30, 30, 30))
 

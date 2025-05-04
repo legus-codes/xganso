@@ -3,7 +3,7 @@ import pygame
 from battle.battle import BattleManager
 from battle.battleUI import BattleController
 from battle.unit import Party, Unit
-from model.io import load_grid
+from hexio.hex_map_io import load_grid
 
 if __name__ == '__main__':
     screen_size = pygame.Vector2(1440, 775)

@@ -2,9 +2,7 @@ from dataclasses import dataclass
 from typing import List
 import math
 
-from editor.hex_camera import HexCamera
-from model.hex_coordinate import HexCoordinate
-from model.vec2 import VecF2, VecI2
+from model.hex_coordinate import HexCoordinate, VecF2, VecI2
 
 
 @dataclass(frozen=True)

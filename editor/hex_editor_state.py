@@ -4,13 +4,13 @@ from typing import Any, Dict, List, Optional
 
 import pygame
 
-from editor.observable import Observable
+from utils.observable import Observable
 from editor.protocols import HexMapEditorControllerProtocol
 from model.hex_coordinate import HexCoordinate
 from model.hex_map import HexCell, HexMap
-from model.pathfinding import PathfindingHelper
 from model.spawn import SpawnLibrary
 from model.terrain import TerrainLibrary
+from pathfinding.pathfinding import PathfindingHelper
 
 
 class PopupType(Enum):

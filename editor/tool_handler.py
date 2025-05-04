@@ -1,7 +1,7 @@
 from typing import Optional
 
-from editor.hex_map_commands import ChangeSpawnCommand, CreateTileCommand, EraseTileCommand, HexMapCommand, PaintTileCommand, RemoveSpawnCommand
-from editor.hex_state import HexMapEditorState
+from model.hex_map_commands import ChangeSpawnCommand, CreateTileCommand, EraseTileCommand, HexMapCommand, PaintTileCommand, RemoveSpawnCommand
+from editor.hex_editor_state import HexMapEditorState
 from model.hex_coordinate import HexCoordinate
 from model.hex_map import HexMap
 

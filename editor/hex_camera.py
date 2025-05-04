@@ -1,7 +1,7 @@
 from typing import Optional
 import pygame
 
-from model.vec2 import VecF2
+from model.hex_coordinate import VecF2
 
 
 class HexCamera:
