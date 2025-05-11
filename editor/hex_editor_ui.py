@@ -1,12 +1,49 @@
-from typing import Dict
+from typing import Dict, List
 import functools
 import pygame
 
 from editor.hex_map_view import HexMapView, HexEditorCanvas
 from editor.hex_editor_state import HexEditorMode, HexEditorTool, HexTestTool, MapType, PopupType, UIContext
-from ui.elements import Button, IntTextInput, OptionPicker, RadioButton, TextInput, Toggle, Panel
-from model.spawn import SpawnLibrary
-from model.terrain import TerrainLibrary
+from model.hex_coordinate import HexCoordinate
+from model.hex_map import HexCell
+from ui.elements import Button, IntTextInput, OptionPicker, RadioButton, Text, TextInput, Toggle, Panel, Widget
+from model.spawn import Spawn, SpawnLibrary
+from model.terrain import Terrain, TerrainLibrary
+
+
+class TextFormater:
+
+    @staticmethod
+    def format_cell(cell: HexCell) -> List[str]:
+        text = TextFormater.format_coordinate(cell.coordinate)
+        text.append('')
+        text.extend(TextFormater.format_terrain(cell.terrain))
+        text.append('')
+        text.extend(TextFormater.format_spawn(cell.spawn))
+        return text
+    
+    @staticmethod
+    def format_coordinate(coordinate: HexCoordinate) -> List[str]:
+        return [
+            'Cell',
+            f'  coordinate: ({coordinate.q}, {coordinate.r})'
+        ]
+    
+    @staticmethod
+    def format_terrain(terrain: Terrain) -> List[str]:
+        return [
+            'Terrain',
+            f'  type: {terrain.name}',
+            f'  walkable: {terrain.walkable}',
+            f'  move cost: {terrain.move_cost}'
+        ]
+
+    @staticmethod
+    def format_spawn(spawn: Spawn) -> List[str]:
+        return [
+            'Spawn',
+            f'  type: {spawn.name}'
+        ]
 
 
 class TopMenuBar(Panel):
@@ -54,14 +91,36 @@ class EditToolMenu(Panel):
         self.controller = ui_context.controller
         self.state = ui_context.state
         self.build_widgets()
+        self.state.edit_tool.bind(self.on_edit_tool_selected)
+        self.on_edit_tool_selected(self.state.edit_tool.get())
+        self.state.terrain.bind(self.on_terrain_selected)
+        self.on_terrain_selected(self.state.terrain.get())
 
     def build_widgets(self) -> None:
         self.add_widget(RadioButton(self.surface, 'Paint Tile', HexEditorTool.PAINT_TILE, self.state.edit_tool, pygame.Rect(5, 10, 140, 30)))
         self.add_widget(RadioButton(self.surface, 'Erase Tile', HexEditorTool.ERASE_TILE, self.state.edit_tool, pygame.Rect(5, 45, 140, 30)))
         self.add_widget(RadioButton(self.surface, 'Add Spawn', HexEditorTool.ADD_SPAWN, self.state.edit_tool, pygame.Rect(5, 80, 140, 30)))
         self.add_widget(RadioButton(self.surface, 'Remove Spawn', HexEditorTool.REMOVE_SPAWN, self.state.edit_tool, pygame.Rect(5, 115, 140, 30)))
-        self.add_widget(OptionPicker(self.surface, self.state.terrain, PopupType.TERRAIN, self.state.popup, pygame.Rect(5, 185, 140, 30)))
-        self.add_widget(OptionPicker(self.surface, self.state.spawn, PopupType.SPAWN, self.state.popup, pygame.Rect(5, 220, 140, 30)))
+        self.terrain_text = Text(self.surface, 8, 20, pygame.Rect(5, 220, 140, 30))
+        self.option_pickers: Dict[HexEditorTool, List[Widget]] = {
+            HexEditorTool.PAINT_TILE: [OptionPicker(self.surface, self.state.terrain, PopupType.TERRAIN, self.state.popup, pygame.Rect(5, 185, 140, 30)), self.terrain_text],
+            HexEditorTool.ADD_SPAWN: [OptionPicker(self.surface, self.state.spawn, PopupType.SPAWN, self.state.popup, pygame.Rect(5, 185, 140, 30))]
+        }
+        for option_picker in self.option_pickers.values():
+            for widget in option_picker:
+                self.add_widget(widget)
+
+    def on_edit_tool_selected(self, tool: HexEditorTool) -> None:
+        for widgets in self.option_pickers.values():
+            for widget in widgets:
+                widget.enabled = False
+        if tool in self.option_pickers:
+            for widget in self.option_pickers[tool]:
+                widget.enabled = True
+
+    def on_terrain_selected(self, terrain: Terrain) -> None:
+        self.terrain_text.reset()
+        self.terrain_text.set_text(TextFormater.format_terrain(terrain))
 
 
 class TestToolMenu(Panel):
@@ -122,6 +181,30 @@ class SpawnPalettePopUp(Panel):
         elif event.type == pygame.MOUSEBUTTONDOWN and not self.area.collidepoint(event.pos):
             self.state.popup.set(PopupType.NONE)
 
+class CellInformationPanel(Panel):
+
+    def __init__(self, ui_context: UIContext, area: pygame.Rect, background: pygame.Color, frame_color: pygame.Color):
+        super().__init__(ui_context.screen, area, background, frame_color)
+        self.state = ui_context.state
+        self.build_widgets()
+        self.state.hovered_cell.bind(self.on_hovered_cell_changed)
+        self.on_hovered_cell_changed(self.state.hovered_cell.get())
+
+    def build_widgets(self) -> None:
+        self.cell_text = Text(self.surface, 8, 20, pygame.Rect(5, 5, 140, 30))
+        self.add_widget(self.cell_text)
+
+    def on_hovered_cell_changed(self, coordinate: HexCoordinate) -> None:
+        if coordinate is None:
+            return
+
+        self.cell_text.reset()
+        if coordinate in self.state.hex_map:
+            text = TextFormater.format_cell(self.state.hex_map[coordinate])
+        else:
+            text = TextFormater.format_coordinate(coordinate)
+        self.cell_text.set_text(text)
+
 
 class UIManager:
 
@@ -139,6 +222,7 @@ class UIManager:
             PopupType.TERRAIN: TerrainPalettePopup(ui_context, pygame.Rect(150, 225, 100, terrain_height), pygame.Color(230, 100, 230), pygame.Color('turquoise')),
             PopupType.SPAWN: SpawnPalettePopUp(ui_context, pygame.Rect(150, 260, 150, spawn_height), pygame.Color(230, 230, 100), pygame.Color('gold'))
         }
+        self.cell_information_panel = CellInformationPanel(ui_context, pygame.Rect(1260, 40, 150, 210), pygame.Color(30, 30, 30), pygame.Color(225, 225, 225))
 
         self.active_tool_menu = None
         self.state.editor_mode.bind(self.update_tool_menu)
@@ -165,6 +249,7 @@ class UIManager:
         self.top_menu.draw()
         self.active_tool_menu.draw()
         self.editor_canvas.draw()
+        self.cell_information_panel.draw()
 
         if self.active_popup is not None:
             self.active_popup.draw()

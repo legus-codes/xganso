@@ -110,7 +110,7 @@ AI: A* Pathfinding, Behavior Trees or FSMs, Turn Resolver
 
 10. To Do
 - Restructure files after refactor (done)
+- Single option picker based on the tool (done)
+- Show information of terrain in the editor (done)
+- Show information of the cell in the editor (done)
 - Battle view with the units
-- Single option picker based on the tool
-- Show information of terrain in the editor
-- Show information of the cell in the editor

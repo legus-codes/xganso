@@ -64,12 +64,45 @@ class Widget(Protocol):
         return pygame.Vector2(x, y)
 
 
+class Text(Widget):
+
+    def __init__(self, screen: pygame.Surface, left_pad: int, row_size: int, area: pygame.Rect, color: pygame.Color = pygame.Color('beige'), background: pygame.Color = pygame.Color('black'), hover_color: pygame.Color = pygame.Color('red'), font: pygame.font.Font = None):
+        super().__init__(screen, '', area, color, background, hover_color, font)
+        self.left_pad = left_pad
+        self.row_size = row_size
+        self.text = []
+
+    def reset(self) -> None:
+        self.text = []
+
+    def add_line(self, line: str) -> None:
+        self.text.append(line)
+        self.update_height()
+
+    def set_text(self, text: List[str]) -> None:
+        self.text = text
+        self.update_height()
+
+    def update_height(self) -> None:
+        self.area.height = len(self.text) * self.row_size
+
+    def draw(self) -> None:
+        if not self.enabled:
+            return
+        
+        pygame.draw.rect(self.screen, self.background, self.area)
+
+        for index, line in enumerate(self.text):
+            line_position = self.area.topleft + pygame.Vector2(self.left_pad, self.row_size * index)
+            line_surface = self.render_text(line, self.color)
+            self.screen.blit(line_surface, line_position)
+
+
 class Button(Widget):
 
     def __init__(self, screen: pygame.Surface, label: str, area: pygame.Rect, command: Callable, color: pygame.Color = pygame.Color('beige'), background: pygame.Color = pygame.Color('black'), hover_color: pygame.Color = pygame.Color('red'), press_color: pygame.Color = pygame.Color('darkgray'), font: pygame.font.Font = None):
         super().__init__(screen, label, area, color, background, hover_color, font)
         self.command = command
-        self.hover_color = hover_color
         self.press_color = press_color
         self.pressed = False
 

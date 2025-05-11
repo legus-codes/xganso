@@ -2,12 +2,12 @@ from dataclasses import dataclass
 import pygame
 
 from utils.observable import Observable
-from ui.elements import Button, IntTextInput, RadioButton, TextInput, Toggle, Panel
+from ui.elements import Button, IntTextInput, RadioButton, Text, TextInput, Toggle, Panel
 from model.terrain import Terrain, TerrainType
 
 
 @dataclass
-class Text:
+class TextState:
     value: str
     radio: str
     terrain: Terrain
@@ -20,7 +20,7 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode(screen_size)
     clock = pygame.time.Clock()
 
-    text = Text('', '', Terrain(TerrainType.GRASS, 'green', 'black', True, 2), False)
+    text = TextState('', '', Terrain(TerrainType.GRASS, 'green', 'black', True, 2), False)
 
     panel = Panel(screen, pygame.Rect(100, 100, 1000, 600), pygame.Color((30, 30, 30)), pygame.Color('red'))
 
@@ -31,6 +31,11 @@ if __name__ == '__main__':
     panel.add_widget(RadioButton(panel.surface, 'Radio', 'value', radio, pygame.Rect(0, 200, 100, 30)))
     panel.add_widget(RadioButton(panel.surface, 'Radio', 'value2', radio, pygame.Rect(0, 300, 100, 30)))
     panel.add_widget(Toggle(panel.surface, 'Toggle', Observable(True), pygame.Rect(0, 500, 100, 30)))
+    text_widget = Text(panel.surface, 7, 20, pygame.Rect(200, 400, 100, 30))
+    panel.add_widget(text_widget)
+    text_widget.add_line('test')
+    text_widget.add_line('  line 2')
+    text_widget.add_line('  end')
 
     running = True
 
