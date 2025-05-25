@@ -56,8 +56,9 @@ class HexMapView:
 
     def draw_unit(self, hex_center: VecF2, unit: Unit) -> None:
         radius = 12 * self.camera.zoom
-        pygame.draw.circle(self.screen, unit.color, hex_center, radius)
-        self.draw_text(unit.name[0].capitalize(), pygame.Color('black'), hex_center)
+        screen_center = self.camera.world_to_screen(hex_center)
+        pygame.draw.circle(self.screen, unit.color, screen_center.as_tuple, radius)
+        self.draw_text(unit.name[0].capitalize(), pygame.Color('black'), screen_center)
 
     def draw_text(self, text: str, color: pygame.Color, hex_center: VecF2) -> None:
         text_surface = self.font.render(text, True, color)

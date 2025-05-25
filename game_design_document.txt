@@ -113,4 +113,6 @@ AI: A* Pathfinding, Behavior Trees or FSMs, Turn Resolver
 - Single option picker based on the tool (done)
 - Show information of terrain in the editor (done)
 - Show information of the cell in the editor (done)
-- Battle view with the units
+- Battle view with the units (done)
+- Game System Architecture: Component-Based Architecture x Entity-Component-System
+- Movement Mechanic

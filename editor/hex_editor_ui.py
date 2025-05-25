@@ -2,6 +2,7 @@ from typing import Dict, List
 import functools
 import pygame
 
+from battle.unit import Unit
 from editor.hex_map_view import HexMapView, HexEditorCanvas
 from editor.hex_editor_state import HexEditorMode, HexEditorTool, HexTestTool, MapType, PopupType, UIContext
 from model.hex_coordinate import HexCoordinate
@@ -20,6 +21,9 @@ class TextFormater:
         text.extend(TextFormater.format_terrain(cell.terrain))
         text.append('')
         text.extend(TextFormater.format_spawn(cell.spawn))
+        if cell.is_occupied:
+            text.append('')
+            text.extend(TextFormater.format_unit(cell.unit))
         return text
     
     @staticmethod
@@ -43,6 +47,18 @@ class TextFormater:
         return [
             'Spawn',
             f'  type: {spawn.name}'
+        ]
+
+    @staticmethod
+    def format_unit(unit: Unit) -> List[str]:
+        return [
+            'Unit',
+            f'  name: {unit.name}',
+            f'  party: {unit.party.name}',
+            f'  hp: {unit.hp} / {unit.max_hp}',
+            f'  attack: {unit.attack}',
+            f'  attack range: {unit.attack_range}',
+            f'  movement range: {unit.movement_range}',
         ]
 
 

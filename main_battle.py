@@ -1,9 +1,9 @@
 import pygame
 
 from battle.battle import BattleManager
-from battle.battleUI import BattleController
+from battle.battle_view_ui import BattleController
 from battle.unit import Party, Unit
-from hexio.hex_map_io import load_grid
+from hexio.hex_map_io import HexMapIO
 
 if __name__ == '__main__':
     screen_size = pygame.Vector2(1440, 775)
@@ -22,7 +22,7 @@ if __name__ == '__main__':
     enemy_party = Party('Enemy', 'red', [goblin, orc], False)
 
     parties = [player_party, enemy_party]
-    battle_map = load_grid('grid.json')
+    battle_map = HexMapIO.load('grid.json')
     manager = BattleManager(parties, battle_map)
     manager.setup()
     battle_ui = BattleController(screen, pygame.Rect(150, 40, 1110, 695), manager)

@@ -7,6 +7,7 @@ from command import AttackCommand, MoveCommand
 
 from model.hex_map import HexCell, HexMap
 from model.spawn import SpawnLibrary
+from utils.observable import Observable
 
 
 class BattlePhase(Enum):
@@ -21,16 +22,16 @@ class BattleManager:
 
     def __init__(self, parties: List[Party], battle_map: HexMap):
         self.parties = {party.name: party for party in parties}
-        self.battle_map = battle_map
         self.turn_manager = TurnManager()
-        self.state = BattlePhase.START_BATTLE
-        self.round = 0
+        self.battle_map = Observable(battle_map)
+        self.state = Observable(BattlePhase.START_BATTLE)
+        self.round = Observable(0)
         self.turn_order = []
 
     def setup(self) -> None:
         spawn_tuples = zip(self.parties.values(), random.sample(SpawnLibrary.values(), len(self.parties)))
         for party, spawn_kind in spawn_tuples:
-            positions = self.battle_map.get_spawn_cells(spawn_kind)
+            positions = self.battle_map.get().get_spawn_cells(spawn_kind)
             random.shuffle(positions)
             spawn_positions = zip(party.members.values(), positions)
             for unit, cell in spawn_positions:
@@ -41,11 +42,11 @@ class BattleManager:
         random.shuffle(self.turn_order)
 
     def next_turn(self) -> None:
-        self.state = BattlePhase.TURN_START
+        self.state.set(BattlePhase.TURN_START)
         self.turn_manager.plan(self.turn_order[0])
 
     def start_planning(self) -> None:
-        self.state = BattlePhase.PLANNING_PHASE
+        self.state.set(BattlePhase.PLANNING_PHASE)
 
 
 class TurnManager:
