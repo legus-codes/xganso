@@ -2,7 +2,7 @@
     "python.testing.unittestArgs": [
         "-v",
         "-s",
-        ".",
+        "./ecs_framework",
         "-p",
         "test_*.py"
     ],
