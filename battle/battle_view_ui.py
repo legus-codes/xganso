@@ -166,7 +166,7 @@ class BattleController:
         self.grid_area = grid_area
         self.state = state
         self.selected_cell = None
-        self.layout = HexLayout(POINTY, pygame.Vector2(20, 20))
+        self.layout = HexLayout(POINTY, pygame.Vector2(32, 32))
         self.camera = HexCamera()
         self.hex_map_view = HexMapView(self.screen, self.layout, self.camera)
         self.state.battle_map.bind(self.hex_map_view.set_hex_map)

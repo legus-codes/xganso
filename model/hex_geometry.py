@@ -42,6 +42,11 @@ class HexLayout:
         y = self.orientation.forward_y.dot(coordinate.vector) * self.size.y
         return VecF2(x, y)
 
+    def hex_to_topleft(self, coordinate: HexCoordinate) -> VecF2:
+        x = self.orientation.forward_x.dot(coordinate.vector) * self.size.x
+        y = self.orientation.forward_y.dot(coordinate.vector) * self.size.y
+        return VecF2(x, y) - self.size / math.sqrt(2)
+
     def point_to_hex(self, point: VecF2) -> HexCoordinate:
         x = point.x / self.size.x
         y = point.y / self.size.y

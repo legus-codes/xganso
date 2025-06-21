@@ -5,7 +5,7 @@ from model.hex_coordinate import VecF2
 
 
 class HexCamera:
-    MIN_ZOOM = 0.5
+    MIN_ZOOM = 0.3
     MAX_ZOOM = 3.0
     ZOOM_SPEED = 0.1
     MOVE_SPEED = 10

@@ -42,8 +42,6 @@ class HexMapView:
         for cell in hex_map.sorted_cells:
             hex_center = self.hex_to_world_point(cell.coordinate)
             self.draw_hex_cell(hex_center, cell.color, cell.frame_color)
-            if cell.is_occupied:
-                self.draw_unit(hex_center, cell.unit)
         self.screen.set_clip(None)
 
     def draw_hex_cell(self, hex_center: VecF2, color: pygame.Color = None, frame_color: pygame.Color = None) -> None:
@@ -53,12 +51,6 @@ class HexMapView:
             pygame.draw.polygon(self.screen, color, corners_tuples)
         if frame_color:
             pygame.draw.polygon(self.screen, frame_color, corners_tuples, 2)
-
-    def draw_unit(self, hex_center: VecF2, unit: Unit) -> None:
-        radius = 12 * self.camera.zoom
-        screen_center = self.camera.world_to_screen(hex_center)
-        pygame.draw.circle(self.screen, unit.color, screen_center.as_tuple, radius)
-        self.draw_text(unit.name[0].capitalize(), pygame.Color('black'), screen_center)
 
     def draw_text(self, text: str, color: pygame.Color, hex_center: VecF2) -> None:
         text_surface = self.font.render(text, True, color)
