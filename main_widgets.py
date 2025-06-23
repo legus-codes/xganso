@@ -1,6 +1,9 @@
 from dataclasses import dataclass
 import pygame
 
+from ecs_framework.ecs import ECS
+from ui.ecs_elements import create_button, create_int_text_input, create_radio_button, create_text, create_text_input, create_toggle
+from ui.ui_system import UIRendererSystem
 from utils.observable import Observable
 from ui.elements import Button, IntTextInput, RadioButton, Text, TextInput, Toggle, Panel
 from model.terrain import Terrain, TerrainType
@@ -22,7 +25,18 @@ if __name__ == '__main__':
 
     text = TextState('', '', Terrain(TerrainType.GRASS, 'green', 'black', True, 2), False)
 
-    panel = Panel(screen, pygame.Rect(100, 100, 1000, 600), pygame.Color((30, 30, 30)), pygame.Color('red'))
+    ecs = ECS()
+    create_button(ecs, 'Button', pygame.Rect(500, 100, 100, 30))
+    create_text_input(ecs, 'Text: ', pygame.Rect(500, 200, 100, 30))
+    create_int_text_input(ecs, 'Int: ', pygame.Rect(500, 250, 100, 30))
+    create_radio_button(ecs, 'Radio1', pygame.Rect(500, 300, 100, 30))
+    create_radio_button(ecs, 'Radio2', pygame.Rect(500, 400, 100, 30))
+    create_toggle(ecs, 'Toggle', pygame.Rect(500, 600, 100, 30))
+    create_text(ecs, 'Text', pygame.Rect(500, 500, 100, 30))
+
+    ecs.add_system(UIRendererSystem(ecs, screen))
+
+    panel = Panel(screen, pygame.Rect(100, 100, 300, 600), pygame.Color((30, 30, 30)), pygame.Color('red'))
 
     radio = Observable('value')
     panel.add_widget(Button(panel.surface, 'Button', pygame.Rect(0, 0, 100, 30), None))
@@ -53,6 +67,7 @@ if __name__ == '__main__':
         screen.fill((30, 30, 30))
 
         panel.draw()
+        ecs.execute()
 
         pygame.display.flip()
 
