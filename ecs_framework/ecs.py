@@ -1,5 +1,5 @@
 from itertools import count
-from typing import Any, Dict, List, Protocol, Set
+from typing import Any, Dict, Generator, List, Protocol, Set, Tuple
 
 
 class ComponentProtocol(Protocol):
@@ -8,7 +8,7 @@ class ComponentProtocol(Protocol):
 
 class SystemProtocol(Protocol):
 
-    def execute(self) -> None:
+    def execute(self, delta_time: float) -> None:
         ...
 
 
@@ -98,9 +98,17 @@ class ECS:
 
         return list(set.intersection(*eligible_entities.values()))
 
+    def get_entities_with_single_component(self, component_type) -> Generator[int, ComponentProtocol]:
+        for entity in self.get_entities_with(component_type):
+            yield entity, self.get_entity_component(entity, component_type)
+
+    def get_entities_with_components(self, *component_types) -> Generator[int, Tuple[ComponentProtocol]]:
+        for entity in self.get_entities_with(*component_types):
+            yield entity, (self.get_entity_component(entity, component) for component in component_types)
+
     def add_system(self, system: Any) -> None:
         self.systems.append(system)
 
-    def execute(self) -> None:
+    def execute(self, delta_time: float) -> None:
         for system in self.systems:
-            system.execute()
+            system.execute(delta_time)

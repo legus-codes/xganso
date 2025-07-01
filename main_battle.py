@@ -1,13 +1,17 @@
+import random
 import pygame
 
 from battle.battle import BattleManager
 from battle.battle_view_ui import BattleController
 from battle.unit import Party, Unit
-from ecs_architecture.component.grid_position import GridPosition
+from ecs_architecture.component.path import MoveCommand, TargetGridPosition
+from ecs_architecture.component.position import GridPosition, GridPositionChanged
 from ecs_architecture.component.sprite import Sprite
-from ecs_architecture.system.renderer_system import RendererSystem
+from ecs_architecture.system.movement import MovementSystem, PathCalculatorSystem, PathPreviewerSystem, PathStepperSystem, StartMovementSystem
+from ecs_architecture.system.renderer import RendererSystem, SpriteScalerSystem, SyncGridToWorldPositionSystem, WorldToScreenPositionSystem
 from ecs_framework.ecs import ECS
 from hexio.hex_map_io import HexMapIO
+from model.hex_coordinate import HexCoordinate
 
 if __name__ == '__main__':
     screen_size = pygame.Vector2(1440, 775)
@@ -48,22 +52,41 @@ if __name__ == '__main__':
     manager.setup()
     battle_ui = BattleController(screen, pygame.Rect(150, 40, 1110, 695), manager)
 
-    ecs.add_component(archer_entity, GridPosition(*archer.position.vector.as_tuple))
-    ecs.add_component(knight_entity, GridPosition(*knight.position.vector.as_tuple))
-    ecs.add_component(mage_entity, GridPosition(*mage.position.vector.as_tuple))
-    ecs.add_component(rogue_entity, GridPosition(*rogue.position.vector.as_tuple))
-    ecs.add_component(bard_entity, GridPosition(*bard.position.vector.as_tuple))
+    ecs.add_component(archer_entity, GridPosition(archer.position))
+    ecs.add_component(knight_entity, GridPosition(knight.position))
+    ecs.add_component(mage_entity, GridPosition(mage.position))
+    ecs.add_component(rogue_entity, GridPosition(rogue.position))
+    ecs.add_component(bard_entity, GridPosition(bard.position))
 
-    ecs.add_system(RendererSystem(ecs, screen, battle_ui.layout, battle_ui.camera))
+    ecs.add_component(archer_entity, GridPositionChanged())
+    ecs.add_component(knight_entity, GridPositionChanged())
+    ecs.add_component(mage_entity, GridPositionChanged())
+    ecs.add_component(rogue_entity, GridPositionChanged())
+    ecs.add_component(bard_entity, GridPositionChanged())
+
+    ecs.add_system(SyncGridToWorldPositionSystem(ecs, battle_ui.layout))
+    ecs.add_system(WorldToScreenPositionSystem(ecs, battle_ui.camera))
+    ecs.add_system(SpriteScalerSystem(ecs, battle_ui.camera))
+    ecs.add_system(RendererSystem(ecs, screen))
+
+    ecs.add_system(PathCalculatorSystem(ecs, battle_map))
+    ecs.add_system(PathPreviewerSystem(ecs, screen, battle_ui.layout, battle_ui.camera))
+    ecs.add_system(StartMovementSystem(ecs))
+    ecs.add_system(PathStepperSystem(ecs, battle_ui.layout))
+    ecs.add_system(MovementSystem(ecs, battle_ui.layout, 100.0))
+
+    party_entities = [archer_entity, knight_entity, mage_entity, rogue_entity, bard_entity]
 
     running = True
 
     while running:
 
+        delta_time = clock.tick(60) / 1000.0  
+
         screen.fill((30, 30, 30))
 
         battle_ui.draw()
-        ecs.execute()
+        ecs.execute(delta_time)
 
         # pygame.draw.rect(screen, line_color, (0, 735, 1440, 40), 2)
 
@@ -75,12 +98,23 @@ if __name__ == '__main__':
 
             battle_ui.handle_event(event)
 
+            if event.type == pygame.KEYDOWN:
+                if event.unicode == 'p':
+                    move_entity = random.choice(party_entities)
+                    destination_q = random.randint(-6, 6)
+                    destination_r = random.randint(-6, 6)
+                    ecs.add_component(move_entity, TargetGridPosition(HexCoordinate(destination_q, destination_r)))
+
+                if event.unicode == 'm':
+                    for move_entity in party_entities:
+                        ecs.add_component(move_entity, MoveCommand())
+
             if event.type == pygame.QUIT:
                 running = False
 
         keys = pygame.key.get_pressed()
         battle_ui.handle_key_pressed(keys)
 
-        clock.tick(60)
+        # clock.tick(60)
 
     pygame.quit()
