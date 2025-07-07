@@ -1,167 +1,249 @@
 import pygame
 from ecs_framework.ecs import ECS, SystemProtocol
-from ui.ui_components import UICallback, UIColor, UIElement, UIFont, UIInt, UILabel, UIPadding, UIRect, UIState, UIString, UIText
+from ui.mouse_input import MouseButton, MouseClicked, MousePosition, MousePressed, MouseReleased
+from ui.ui_components import Allignment, UICallback, UIColor, UIElement, UIEnabled, UIFocusable, UIFocused, UIFont, UIHoverable, UIHovered, UIInt, UILabel, UIPadding, UIPressable, UIPressed, UIRadioGroup, UIRect, UISelectable, UISelected, UIString, UIText, UIToggleable, UIToggled
 
 
-class UIRendererSystem(SystemProtocol):
+def _center_middle_position(rect: pygame.Rect, text_rect: pygame.Surface) -> pygame.Vector2:
+    x = rect.left + (rect.width - text_rect.get_width()) / 2
+    y = rect.top + (rect.height - text_rect.get_height()) / 2
+    return pygame.Vector2(x, y)
+
+
+def _left_middle_position(rect: pygame.Rect, text_rect: pygame.Surface) -> pygame.Vector2:
+    x = rect.left + 5
+    y = rect.top + (rect.height - text_rect.get_height()) / 2
+    return pygame.Vector2(x, y)
+
+
+class UIBackgroundRendererSystem(SystemProtocol):
 
     def __init__(self, ecs: ECS, screen: pygame.Surface):
         self.ecs = ecs
         self.screen = screen
 
     def execute(self):
-        for entity in self.ecs.get_entities_with(UIElement, UIText, UIState, UIColor, UIFont, UIRect):
-            self.draw_text(entity)
+        for entity in self.ecs.get_entities_with(UIElement, UIEnabled, UIColor, UIRect):
+            rect: UIRect = self.ecs.get_entity_component(entity, UIRect)
+            colors: UIColor = self.ecs.get_entity_component(entity, UIColor)
 
-        for entity in self.ecs.get_entities_with(UIElement, UICallback, UILabel, UIState, UIColor, UIFont, UIRect):
-            self.draw_button(entity)
+            background = colors.background
+            if self.ecs.entity_has_component(entity, UIToggled):
+                background = colors.select
+            if self.ecs.entity_has_component(entity, UISelected):
+                background = colors.select
+            if self.ecs.entity_has_component(entity, UIPressed):
+                background = colors.press
 
-        for entity in self.ecs.get_entities_with(UIElement, UILabel, UIString, UIState, UIColor, UIFont, UIRect):
-            self.draw_text_input(entity)
+            pygame.draw.rect(self.screen, background, rect.rectangle)
 
-        for entity in self.ecs.get_entities_with(UIElement, UILabel, UIInt, UIState, UIColor, UIFont, UIRect):
-            self.draw_int_text_input(entity)
 
-        for entity in self.ecs.get_entities_with(UIElement, UILabel, UIState, UIColor, UIFont, UIRect):
-            self.draw_radio(entity)        
+class UIHighlightRendererSystem(SystemProtocol):
 
-    
-    def draw_text(self, entity: int):
-        state: UIState = self.ecs.get_entity_component(entity, UIState)
-        if not state.enabled:
-            return
-        
-        rect: UIRect = self.ecs.get_entity_component(entity, UIRect)
-        colors: UIColor = self.ecs.get_entity_component(entity, UIColor)
-        
-        pygame.draw.rect(self.screen, colors.background, rect.rectangle)
+    def __init__(self, ecs: ECS, screen: pygame.Surface):
+        self.ecs = ecs
+        self.screen = screen
 
-        text: UIText = self.ecs.get_entity_component(entity, UIText)
-        font: UIFont = self.ecs.get_entity_component(entity, UIFont)
-        padding: UIPadding = self.ecs.get_entity_component(entity, UIPadding)
-        left_pad = padding.left if padding else 0
-        top_pad = padding.top if padding else 0
-
-        text_position = rect.rectangle.topleft + pygame.Vector2(left_pad, top_pad)
-        text_surface = font.font.render(text.text, True, colors.text)
-
-        self.screen.blit(text_surface, text_position)
-
-    def draw_button(self, entity: int):
-        state: UIState = self.ecs.get_entity_component(entity, UIState)
-        if not state.enabled:
-            return
-        
-        rect: UIRect = self.ecs.get_entity_component(entity, UIRect)
-        colors: UIColor = self.ecs.get_entity_component(entity, UIColor)
-
-        background_color = colors.background
-        if state.pressed and state.hovered:
-            background_color = colors.press
-
-        pygame.draw.rect(self.screen, background_color, rect.rectangle)
-        if state.hovered:
+    def execute(self):
+        for entity in self.ecs.get_entities_with(UIElement, UIEnabled, UIHovered, UIColor, UIRect):
+            rect: UIRect = self.ecs.get_entity_component(entity, UIRect)
+            colors: UIColor = self.ecs.get_entity_component(entity, UIColor)
             pygame.draw.rect(self.screen, colors.hover, rect.rectangle, 2)
 
-        label: UILabel = self.ecs.get_entity_component(entity, UILabel)
-        font: UIFont = self.ecs.get_entity_component(entity, UIFont)
+        for entity in self.ecs.get_entities_with(UIElement, UIEnabled, UIFocused, UIColor, UIRect):
+            rect: UIRect = self.ecs.get_entity_component(entity, UIRect)
+            colors: UIColor = self.ecs.get_entity_component(entity, UIColor)
+            pygame.draw.rect(self.screen, colors.focus, rect.rectangle, 2)
 
-        label_surface = font.font.render(label.label, True, colors.text)
-        label_position = self._center_middle_position(rect.rectangle, label_surface)
-        self.screen.blit(label_surface, label_position)
 
-    def draw_text_input(self, entity: int):
-        state: UIState = self.ecs.get_entity_component(entity, UIState)
-        if not state.enabled:
+class UITextRendererSystem(SystemProtocol):
+
+    def __init__(self, ecs: ECS, screen: pygame.Surface):
+        self.ecs = ecs
+        self.screen = screen
+
+    def execute(self):
+        for entity in self.ecs.get_entities_with(UIElement, UIEnabled, UIColor, UIRect, UIText, UIFont):
+            rect: UIRect = self.ecs.get_entity_component(entity, UIRect)
+            colors: UIColor = self.ecs.get_entity_component(entity, UIColor)
+            text: UIText = self.ecs.get_entity_component(entity, UIText)
+            font: UIFont = self.ecs.get_entity_component(entity, UIFont)
+            padding: UIPadding = self.ecs.get_entity_component(entity, UIPadding)
+            left_pad = padding.left if padding else 0
+            top_pad = padding.top if padding else 0
+
+            text_position = rect.rectangle.topleft + pygame.Vector2(left_pad, top_pad)
+            text_surface = font.font.render(text.text, True, colors.text)
+
+            self.screen.blit(text_surface, text_position)
+
+        for entity in self.ecs.get_entities_with(UIElement, UIEnabled, UIColor, UIRect, UILabel, UIFont):
+            rect: UIRect = self.ecs.get_entity_component(entity, UIRect)
+            colors: UIColor = self.ecs.get_entity_component(entity, UIColor)
+            text: UIText = self.ecs.get_entity_component(entity, UIText)
+            font: UIFont = self.ecs.get_entity_component(entity, UIFont)
+            padding: UIPadding = self.ecs.get_entity_component(entity, UIPadding)
+            left_pad = padding.left if padding else 0
+            top_pad = padding.top if padding else 0
+
+            label: UILabel = self.ecs.get_entity_component(entity, UILabel)
+            font: UIFont = self.ecs.get_entity_component(entity, UIFont)
+
+            label_surface = font.font.render(label.label, True, colors.text)
+            if label.allignment == Allignment.left:
+                label_position = _left_middle_position(rect.rectangle, label_surface)
+            else:
+                label_position = _center_middle_position(rect.rectangle, label_surface)
+            self.screen.blit(label_surface, label_position)
+
+        for entity in self.ecs.get_entities_with(UIElement, UIEnabled, UIColor, UIRect, UIString, UIFont):
+            rect: UIRect = self.ecs.get_entity_component(entity, UIRect)
+            colors: UIColor = self.ecs.get_entity_component(entity, UIColor)
+            text: UIText = self.ecs.get_entity_component(entity, UIText)
+            font: UIFont = self.ecs.get_entity_component(entity, UIFont)
+            padding: UIPadding = self.ecs.get_entity_component(entity, UIPadding)
+            left_pad = padding.left if padding else 0
+            top_pad = padding.top if padding else 0
+
+            variable: UIString = self.ecs.get_entity_component(entity, UIString)
+            font: UIFont = self.ecs.get_entity_component(entity, UIFont)
+
+            text_surface = font.font.render(variable.variable, True, colors.text)
+            text_position = _center_middle_position(rect.rectangle, text_surface)
+            self.screen.blit(text_surface, text_position)
+
+            if self.ecs.entity_has_component(entity, UIFocused):
+                cursor_position = text_position.xy + pygame.Vector2(text_surface.get_width() + 2, 0)
+                cursor_height = text_surface.get_height()
+                pygame.draw.line(self.screen, colors.text, cursor_position, cursor_position + pygame.Vector2(0, cursor_height))
+
+        for entity in self.ecs.get_entities_with(UIElement, UIEnabled, UIColor, UIRect, UIInt, UIFont):
+            rect: UIRect = self.ecs.get_entity_component(entity, UIRect)
+            colors: UIColor = self.ecs.get_entity_component(entity, UIColor)
+            text: UIText = self.ecs.get_entity_component(entity, UIText)
+            font: UIFont = self.ecs.get_entity_component(entity, UIFont)
+            padding: UIPadding = self.ecs.get_entity_component(entity, UIPadding)
+            left_pad = padding.left if padding else 0
+            top_pad = padding.top if padding else 0
+
+            variable: UIInt = self.ecs.get_entity_component(entity, UIInt)
+            font: UIFont = self.ecs.get_entity_component(entity, UIFont)
+
+            text_surface = font.font.render(str(variable.variable), True, colors.text)
+            text_position = _center_middle_position(rect.rectangle, text_surface)
+            self.screen.blit(text_surface, text_position)
+
+            if self.ecs.entity_has_component(entity, UIFocused):
+                cursor_position = text_position.xy + pygame.Vector2(text_surface.get_width() + 2, 0)
+                cursor_height = text_surface.get_height()
+                pygame.draw.line(self.screen, colors.text, cursor_position, cursor_position + pygame.Vector2(0, cursor_height))
+
+
+class UIEventConverterSystem(SystemProtocol):
+
+    def __init__(self, ecs: ECS, mouse: int):
+        self.ecs = ecs
+        self.mouse = mouse
+
+    def execute(self):
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEMOTION:
+                self.ecs.add_component(self.mouse, MousePosition(event.pos))
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    self.ecs.add_component(self.mouse, MouseClicked(MouseButton.left, event.pos))
+                    self.ecs.add_component(self.mouse, MousePressed(MouseButton.left))
+            elif event.type == pygame.MOUSEBUTTONUP:
+                if event.button == 1:
+                    self.ecs.add_component(self.mouse, MouseReleased(MouseButton.left, event.pos))
+                    self.ecs.remove_component(self.mouse, MousePressed)
+
+            if event.type == pygame.QUIT:
+                self.ecs.running = False
+
+class UIMousePositionSystem(SystemProtocol):
+
+    def __init__(self, ecs: ECS, mouse: int):
+        self.ecs = ecs
+        self.mouse = mouse
+
+    def execute(self):
+        position_component = self.ecs.get_entity_component(self.mouse, MousePosition)
+        mouse_position = position_component.position if position_component else None
+
+        for entity in self.ecs.get_entities_with(UIEnabled, UIHoverable, UIRect):
+            rect: UIRect = self.ecs.get_entity_component(entity, UIRect)
+            self.ecs.remove_component(entity, UIHovered)
+            if mouse_position and rect.rectangle.collidepoint(mouse_position):
+                self.ecs.add_component(entity, UIHovered())
+
+
+class UIMouseClickedSystem(SystemProtocol):
+
+    def __init__(self, ecs: ECS, mouse: int):
+        self.ecs = ecs
+        self.mouse = mouse
+
+    def execute(self):
+        mouse_clicked = self.ecs.get_entity_component(self.mouse, MouseClicked)
+        if mouse_clicked is None:
             return
-        
-        rect: UIRect = self.ecs.get_entity_component(entity, UIRect)
-        colors: UIColor = self.ecs.get_entity_component(entity, UIColor)
 
-        pygame.draw.rect(self.screen, colors.background, rect.rectangle)
-        if state.focused:
-            pygame.draw.rect(self.screen, colors.select, rect.rectangle, 2)
-        elif state.hovered:
-            pygame.draw.rect(self.screen, colors.hover, rect.rectangle, 2)
+        for entity in self.ecs.get_entities_with(UIEnabled, UIFocusable):
+            hovered = self.ecs.get_entity_component(entity, UIHovered)
+            if hovered:
+                self.ecs.add_component(entity, UIFocused())
+            else:
+                self.ecs.remove_component(entity, UIFocused)
 
-        label: UILabel = self.ecs.get_entity_component(entity, UILabel)
-        variable: UIString = self.ecs.get_entity_component(entity, UIString)
-        font: UIFont = self.ecs.get_entity_component(entity, UIFont)
+        for entity in self.ecs.get_entities_with(UIEnabled, UIToggleable, UIHovered):
+            if self.ecs.entity_has_component(entity, UIToggled):
+                self.ecs.remove_component(entity, UIToggled)
+            else:
+                self.ecs.add_component(entity, UIToggled())
 
-        label_surface = font.font.render(label.label, True, colors.text)
-        label_position = self._left_middle_position(rect.rectangle, label_surface)
-        self.screen.blit(label_surface, label_position)
+        for entity in self.ecs.get_entities_with(UIEnabled, UISelectable, UIHovered):
+            radio_group = self.ecs.get_entity_component(entity, UIRadioGroup)
+            if radio_group:
+                for other in self.ecs.get_entities_with(UIEnabled, UIRadioGroup):
+                    other_radio = self.ecs.get_entity_component(other, UIRadioGroup)
+                    if radio_group.name == other_radio.name:
+                        self.ecs.remove_component(other, UISelected)
+            self.ecs.add_component(entity, UISelected())
 
-        text_surface = font.font.render(variable.variable, True, colors.text)
-        text_position = self._left_middle_position(rect.rectangle, text_surface) + pygame.Vector2(label_surface.get_width(), 0)
-        self.screen.blit(text_surface, text_position)
-
-        if state.focused:
-            cursor_position = text_position.xy + pygame.Vector2(text_surface.get_width() + 2, 0)
-            cursor_height = text_surface.get_height()
-            pygame.draw.line(self.screen, colors.text, cursor_position, cursor_position + pygame.Vector2(0, cursor_height))
+        self.ecs.remove_component(self.mouse, MouseClicked)
 
 
-    def draw_int_text_input(self, entity: int):
-        state: UIState = self.ecs.get_entity_component(entity, UIState)
-        if not state.enabled:
+class UIMouseReleasedSystem(SystemProtocol):
+
+    def __init__(self, ecs: ECS, mouse: int):
+        self.ecs = ecs
+        self.mouse = mouse
+
+    def execute(self):
+        mouse_released = self.ecs.get_entity_component(self.mouse, MouseReleased)
+        if mouse_released is None:
             return
-        
-        rect: UIRect = self.ecs.get_entity_component(entity, UIRect)
-        colors: UIColor = self.ecs.get_entity_component(entity, UIColor)
 
-        pygame.draw.rect(self.screen, colors.background, rect.rectangle)
-        if state.focused:
-            pygame.draw.rect(self.screen, colors.select, rect.rectangle, 2)
-        elif state.hovered:
-            pygame.draw.rect(self.screen, colors.hover, rect.rectangle, 2)
+        for entity in self.ecs.get_entities_with(UIEnabled, UIHovered, UIPressed):
+            self.ecs.remove_component(entity, UIPressed)
+            callback = self.ecs.get_entity_component(entity, UICallback)
+            if callback:
+                callback.callback()            
 
-        label: UILabel = self.ecs.get_entity_component(entity, UILabel)
-        variable: UIInt = self.ecs.get_entity_component(entity, UIInt)
-        font: UIFont = self.ecs.get_entity_component(entity, UIFont)
-
-        label_surface = font.font.render(label.label, True, colors.text)
-        label_position = self._left_middle_position(rect.rectangle, label_surface)
-        self.screen.blit(label_surface, label_position)
-
-        text_surface = font.font.render(str(variable.variable), True, colors.text)
-        text_position = self._left_middle_position(rect.rectangle, text_surface) + pygame.Vector2(label_surface.get_width(), 0)
-        self.screen.blit(text_surface, text_position)
-
-        if state.focused:
-            cursor_position = text_position.xy + pygame.Vector2(text_surface.get_width() + 2, 0)
-            cursor_height = text_surface.get_height()
-            pygame.draw.line(self.screen, colors.text, cursor_position, cursor_position + pygame.Vector2(0, cursor_height))
+        self.ecs.remove_component(self.mouse, MouseReleased)
 
 
-    def draw_radio(self, entity: int):
-        state: UIState = self.ecs.get_entity_component(entity, UIState)
-        if not state.enabled:
+class UIMousePressedSystem(SystemProtocol):
+
+    def __init__(self, ecs: ECS, mouse: int):
+        self.ecs = ecs
+        self.mouse = mouse
+
+    def execute(self):
+        mouse_pressed = self.ecs.get_entity_component(self.mouse, MousePressed)
+        if mouse_pressed is None:
             return
-        
-        rect: UIRect = self.ecs.get_entity_component(entity, UIRect)
-        colors: UIColor = self.ecs.get_entity_component(entity, UIColor)
 
-        background_color = colors.select if state.selected else colors.background
-        pygame.draw.rect(self.screen, background_color, rect.rectangle)
-        if state.hovered:
-            pygame.draw.rect(self.screen, colors.hover, rect.rectangle, 2)
-
-        label: UILabel = self.ecs.get_entity_component(entity, UILabel)
-        font: UIFont = self.ecs.get_entity_component(entity, UIFont)
-
-        label_surface = font.font.render(label.label, True, colors.text)
-        label_position = self._center_middle_position(rect.rectangle, label_surface)
-        self.screen.blit(label_surface, label_position)
-
-
-    def _center_middle_position(self, rect: pygame.Rect, text_rect: pygame.Surface) -> pygame.Vector2:
-        x = rect.left + (rect.width - text_rect.get_width()) / 2
-        y = rect.top + (rect.height - text_rect.get_height()) / 2
-        return pygame.Vector2(x, y)
-    
-    def _left_middle_position(self, rect: pygame.Rect, text_rect: pygame.Surface) -> pygame.Vector2:
-        x = rect.left + 5
-        y = rect.top + (rect.height - text_rect.get_height()) / 2
-        return pygame.Vector2(x, y)
-
+        for entity in self.ecs.get_entities_with(UIEnabled, UIHovered, UIPressable):
+            self.ecs.add_component(entity, UIPressed())
