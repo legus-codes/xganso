@@ -4,9 +4,12 @@ import pygame
 from battle.battle import BattleManager
 from battle.battle_view_ui import BattleController
 from battle.unit import Party, Unit
+from ecs_architecture.component.combat import AttackCommand, AttackTarget, AttackTargetDirty
 from ecs_architecture.component.path import MoveCommand, TargetGridPosition
 from ecs_architecture.component.position import GridPosition, GridPositionChanged
 from ecs_architecture.component.sprite import Sprite
+from ecs_architecture.component.stats import Stats
+from ecs_architecture.system.combat import AttackResolutionSystem, AttackTriggerSystem, CombatPreviewerSystem, CombatSimulatorSystem, DamageApplicationSystem, DeathSystem
 from ecs_architecture.system.movement import MovementSystem, PathCalculatorSystem, PathPreviewerSystem, PathStepperSystem, StartMovementSystem
 from ecs_architecture.system.renderer import RendererSystem, SpriteScalerSystem, SyncGridToWorldPositionSystem, WorldToScreenPositionSystem
 from ecs_framework.ecs import ECS
@@ -64,6 +67,12 @@ if __name__ == '__main__':
     ecs.add_component(rogue_entity, GridPositionChanged())
     ecs.add_component(bard_entity, GridPositionChanged())
 
+    ecs.add_component(archer_entity, Stats(10, 5, 10, 10))
+    ecs.add_component(knight_entity, Stats(12, 7, 20, 20))
+    ecs.add_component(mage_entity, Stats(20, 2, 9, 8))
+    ecs.add_component(rogue_entity, Stats(10, 10, 10, 10))
+    ecs.add_component(bard_entity, Stats(10, 10, 10, 10))
+
     ecs.add_system(SyncGridToWorldPositionSystem(ecs, battle_ui.layout))
     ecs.add_system(WorldToScreenPositionSystem(ecs, battle_ui.camera))
     ecs.add_system(SpriteScalerSystem(ecs, battle_ui.camera))
@@ -74,6 +83,13 @@ if __name__ == '__main__':
     ecs.add_system(StartMovementSystem(ecs))
     ecs.add_system(PathStepperSystem(ecs, battle_ui.layout))
     ecs.add_system(MovementSystem(ecs, battle_ui.layout, 100.0))
+
+    ecs.add_system(CombatSimulatorSystem(ecs))
+    ecs.add_system(CombatPreviewerSystem(ecs))
+    ecs.add_system(AttackTriggerSystem(ecs))
+    ecs.add_system(AttackResolutionSystem(ecs))
+    ecs.add_system(DamageApplicationSystem(ecs))
+    ecs.add_system(DeathSystem(ecs))
 
     party_entities = [archer_entity, knight_entity, mage_entity, rogue_entity, bard_entity]
 
@@ -108,6 +124,18 @@ if __name__ == '__main__':
                 if event.unicode == 'm':
                     for move_entity in party_entities:
                         ecs.add_component(move_entity, MoveCommand())
+
+                if event.unicode == 'q':
+                    ecs.add_component(party_entities[0], AttackTarget(party_entities[1]))
+                    ecs.add_component(party_entities[0], AttackTargetDirty())
+
+                if event.unicode == 'w':
+                    ecs.add_component(party_entities[0], AttackTarget(party_entities[2]))
+                    ecs.add_component(party_entities[0], AttackTargetDirty())
+
+                if event.unicode == 'e':
+                    ecs.add_component(party_entities[0], AttackCommand())
+
 
             if event.type == pygame.QUIT:
                 running = False
