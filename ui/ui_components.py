@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Callable
+from typing import Callable, List
 
 import pygame
 
@@ -25,8 +25,23 @@ class UILabel(ComponentProtocol):
 
 
 @dataclass
+class UIParent(ComponentProtocol):
+    entity: int
+
+
+@dataclass
+class UIRelativeRect(ComponentProtocol):
+    rectangle: pygame.Rect
+
+
+@dataclass
 class UIRect(ComponentProtocol):
     rectangle: pygame.Rect
+
+
+@dataclass
+class UIRectDirty(ComponentProtocol):
+    pass
 
 
 @dataclass
@@ -37,6 +52,7 @@ class UIColor(ComponentProtocol):
     press: pygame.Color
     focus: pygame.Color
     select: pygame.Color
+    frame: pygame.Color
 
 
 @dataclass
@@ -68,13 +84,14 @@ class UICallback(ComponentProtocol):
 
 
 @dataclass
-class UIString(ComponentProtocol):
-    variable: str
+class UIVariable(ComponentProtocol):
+    value: str
+    variable_type: type
 
 
 @dataclass
-class UIInt(ComponentProtocol):
-    variable: int
+class UIRenderLayer(ComponentProtocol):
+    layer: int
 
 
 @dataclass
@@ -130,3 +147,40 @@ class UISelectable(ComponentProtocol):
 @dataclass
 class UISelected(ComponentProtocol):
     pass
+
+
+@dataclass
+class UITypeable(ComponentProtocol):
+    accepted_chars: List[str]
+
+
+@dataclass
+class UIFrameable(ComponentProtocol):
+    pass
+
+
+@dataclass
+class UIForceRedraw(ComponentProtocol):
+    pass
+
+
+@dataclass
+class UINeedRedraw(ComponentProtocol):
+    pass
+
+
+@dataclass
+class UIRenderable(ComponentProtocol):
+    pass
+
+
+@dataclass
+class UIHighlightable(ComponentProtocol):
+    pass
+
+
+@dataclass
+class UILabelable(ComponentProtocol):
+    pass
+
+
