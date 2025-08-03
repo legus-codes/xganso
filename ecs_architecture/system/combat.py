@@ -1,5 +1,5 @@
 from ecs_architecture.component.combat import AttackCommand, AttackInstance, AttackTarget, AttackTargetDirty, CombatPreview, CombatPreviewDirty, IncomingDamage, MarkedForDeath
-from ecs_architecture.component.stats import Stats
+from ecs_architecture.component.stats import HP, Attack, Defense
 from ecs_framework.ecs import ECS, SystemProtocol
 
 
@@ -13,8 +13,8 @@ class CombatSimulatorSystem(SystemProtocol):
             target = self.ecs.get_entity_component(entity, AttackTarget)
 
             if target:
-                attack = self.ecs.get_entity_component(entity, Stats).attack
-                defense = self.ecs.get_entity_component(target.entity, Stats).defense
+                attack = self.ecs.get_entity_component(entity, Attack).base
+                defense = self.ecs.get_entity_component(target.entity, Defense).base
                 damage = attack - defense
                 self.ecs.add_component(entity, CombatPreview(entity, attack, target.entity, defense, damage))
                 self.ecs.add_component(entity, CombatPreviewDirty())
@@ -51,7 +51,7 @@ class AttackTriggerSystem(SystemProtocol):
             target = self.ecs.get_entity_component(entity, AttackTarget)
 
             if target:
-                attack = self.ecs.get_entity_component(entity, Stats).attack
+                attack = self.ecs.get_entity_component(entity, Attack).base
                 self.ecs.add_component(target.entity, AttackInstance(attack))
                 print(f'{entity} attacked {target.entity} with power {attack}')
 
@@ -65,7 +65,7 @@ class AttackResolutionSystem(SystemProtocol):
 
     def execute(self, delta_time):
         for entity, attack_instance in self.ecs.get_entities_with_single_component(AttackInstance):
-            defense = self.ecs.get_entity_component(entity, Stats).defense
+            defense = self.ecs.get_entity_component(entity, Defense).base
 
             damage = attack_instance.attack - defense
             self.ecs.add_component(entity, IncomingDamage(damage))
@@ -81,11 +81,11 @@ class DamageApplicationSystem(SystemProtocol):
 
     def execute(self, delta_time):
         for entity, incoming_damage in self.ecs.get_entities_with_single_component(IncomingDamage):
-            stats = self.ecs.get_entity_component(entity, Stats)
+            hp = self.ecs.get_entity_component(entity, HP)
 
-            stats.hp -= incoming_damage.damage
-            print(f'{entity} took {incoming_damage.damage} damage. It is now with {stats.hp} hp')
-            if stats.hp <= 0:
+            hp.current -= incoming_damage.damage
+            print(f'{entity} took {incoming_damage.damage} damage. It is now with {hp.current} hp')
+            if hp.current <= 0:
                 self.ecs.add_component(entity, MarkedForDeath())
                 print(f'{entity} does not have hp')
 

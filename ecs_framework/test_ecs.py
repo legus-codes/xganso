@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import MagicMock
 
-from ecs import ECS, SystemProtocol
+from ecs_framework.ecs import ECS, SystemProtocol
 
 
 class TestECS(unittest.TestCase):
@@ -192,10 +192,11 @@ class TestECS(unittest.TestCase):
     def test_execute_systems(self):
         ecs = ECS()
         systems = [MagicMock(SystemProtocol), MagicMock(SystemProtocol), MagicMock(SystemProtocol)]
+        delta_time = 1.0
         for system in systems:
             ecs.add_system(system)
 
-        ecs.execute()
+        ecs.execute(delta_time)
 
         for system in systems:
             system.execute.assert_called_once()

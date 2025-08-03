@@ -8,7 +8,7 @@ from ecs_architecture.component.combat import AttackCommand, AttackTarget, Attac
 from ecs_architecture.component.path import MoveCommand, TargetGridPosition
 from ecs_architecture.component.position import GridPosition, GridPositionChanged
 from ecs_architecture.component.sprite import Sprite
-from ecs_architecture.component.stats import Stats
+from ecs_architecture.component.stats import HP, Attack, Defense
 from ecs_architecture.system.combat import AttackResolutionSystem, AttackTriggerSystem, CombatPreviewerSystem, CombatSimulatorSystem, DamageApplicationSystem, DeathSystem
 from ecs_architecture.system.movement import MovementSystem, PathCalculatorSystem, PathPreviewerSystem, PathStepperSystem, StartMovementSystem
 from ecs_architecture.system.renderer import RendererSystem, SpriteScalerSystem, SyncGridToWorldPositionSystem, WorldToScreenPositionSystem
@@ -67,11 +67,23 @@ if __name__ == '__main__':
     ecs.add_component(rogue_entity, GridPositionChanged())
     ecs.add_component(bard_entity, GridPositionChanged())
 
-    ecs.add_component(archer_entity, Stats(10, 5, 10, 10))
-    ecs.add_component(knight_entity, Stats(12, 7, 20, 20))
-    ecs.add_component(mage_entity, Stats(20, 2, 9, 8))
-    ecs.add_component(rogue_entity, Stats(10, 10, 10, 10))
-    ecs.add_component(bard_entity, Stats(10, 10, 10, 10))
+    ecs.add_component(archer_entity, Attack(10, 5))
+    ecs.add_component(knight_entity, Attack(12, 2))
+    ecs.add_component(mage_entity, Attack(20, 9))
+    ecs.add_component(rogue_entity, Attack(10, 7))
+    ecs.add_component(bard_entity, Attack(10, 1))
+
+    ecs.add_component(archer_entity, Defense(10, 2))
+    ecs.add_component(knight_entity, Defense(20, 9))
+    ecs.add_component(mage_entity, Defense(9, 2))
+    ecs.add_component(rogue_entity, Defense(10, 3))
+    ecs.add_component(bard_entity, Defense(10, 5))
+
+    ecs.add_component(archer_entity, HP(10, 10, 1, 4))
+    ecs.add_component(knight_entity, HP(30, 30, 3, 9))
+    ecs.add_component(mage_entity, HP(15, 15, 2, 3))
+    ecs.add_component(rogue_entity, HP(10, 10, 0, 4))
+    ecs.add_component(bard_entity, HP(10, 10, 5, 5))
 
     ecs.add_system(SyncGridToWorldPositionSystem(ecs, battle_ui.layout))
     ecs.add_system(WorldToScreenPositionSystem(ecs, battle_ui.camera))
