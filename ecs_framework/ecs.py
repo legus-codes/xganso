@@ -19,6 +19,7 @@ class ECS:
         self.entities: Set[int] = set()
         self.world: Dict[type, Dict[int, ComponentProtocol]] = {}
         self.systems: list = []
+        self.running = True
 
     def reset(self) -> None:
         self.entities.clear()
@@ -29,7 +30,7 @@ class ECS:
         return entity_id in self.entities
     
     def entity_has_component(self, entity_id: int, component_type: type) -> bool:
-        return entity_id in self.world[component_type]
+        return self.has_component(component_type) and entity_id in self.world[component_type]
 
     def has_component(self, component_type: type) -> bool:
         return component_type in self.world
