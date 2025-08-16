@@ -1,21 +1,21 @@
-from typing import List, Optional
+from typing import Callable, List, Optional
 import pygame
 from ecs_framework.ecs import ECS
-from ui.ui_components import Allignment, UICallback, UIColor, UIElement, UIEnabled, UIFocusable, UIFont, UIForceRedraw, UIFrameable, UIHighlightable, UIHoverable, UILabel, UILabelable, UINeedRedraw, UIPadding, UIParent, UIPressable, UIRadioGroup, UIRect, UIRelativeRect, UIRenderLayer, UIRenderable, UISelectable, UIText, UIToggleable, UITypeable, UIVariable
+from ui.ui_components import Allignment, UICallback, UIColor, UIElement, UIEnabled, UIFocusable, UIFont, UIForceRedraw, UIFrameable, UIHighlightable, UIHoverable, UILabel, UILabelable, UINeedRedraw, UIParent, UIPressable, UIRadioGroup, UIRect, UIRelativeRect, UIRenderLayer, UIRenderable, UISelectable, UIToggleable, UITypeable, UIVariable
 
 
-def _get_default_colors() -> UIColor:
-    return UIColor(text=pygame.Color('beige'),
-                   background=pygame.Color('black'),
-                   hover=pygame.Color('red'),
-                   press=pygame.Color('darkgray'),
-                   focus=pygame.Color('green'),
-                   select=pygame.Color('blue'),
-                   frame=pygame.Color('yellow'))
+def _get_default_colors(**kwargs) -> UIColor:
+    return UIColor(text=pygame.Color(kwargs.get('text', 'beige')),
+                   background=pygame.Color(kwargs.get('background', 'black')),
+                   hover=pygame.Color(kwargs.get('hover', 'red')),
+                   press=pygame.Color(kwargs.get('press', 'darkgray')),
+                   focus=pygame.Color(kwargs.get('focus', 'green')),
+                   select=pygame.Color(kwargs.get('select', 'blue')),
+                   frame=pygame.Color(kwargs.get('frame', 'yellow')))
 
 
 def _get_default_font() -> UIFont:
-    return UIFont(pygame.font.SysFont('Arial', 16))
+    return UIFont(pygame.font.SysFont('couriernew', 16))
 
 
 def _get_char_range(start_char: str, end_char: str) -> List[str]:
@@ -34,7 +34,7 @@ def _get_text_input() -> UITypeable:
     return text_input
 
 
-def _create_base_widget(ecs: ECS, layer: int, rect: pygame.Rect, parent: Optional[int]) -> int:
+def _create_base_widget(ecs: ECS, layer: int, rect: pygame.Rect, parent: Optional[int], **kwargs) -> int:
     entity = ecs.create_entity()
     ecs.add_component(entity, UIElement())
     if parent is None:
@@ -42,7 +42,7 @@ def _create_base_widget(ecs: ECS, layer: int, rect: pygame.Rect, parent: Optiona
     else:
         ecs.add_component(entity, UIParent(parent))
         ecs.add_component(entity, UIRelativeRect(rect))
-    ecs.add_component(entity, _get_default_colors())
+    ecs.add_component(entity, _get_default_colors(**kwargs))
     ecs.add_component(entity, _get_default_font())
     ecs.add_component(entity, UIEnabled())
     ecs.add_component(entity, UIRenderLayer(layer))
@@ -55,12 +55,11 @@ def create_text(ecs: ECS, text: str, rect: pygame.Rect, parent: Optional[int] = 
     entity = _create_base_widget(ecs, 10, rect, parent)
     ecs.add_component(entity, UILabelable())
 
-    ecs.add_component(entity, UIPadding(left=7))
-    ecs.add_component(entity, UIText(text))
+    ecs.add_component(entity, UILabel(text, Allignment.center))
     return entity
 
 
-def create_button(ecs: ECS, label: str, rect: pygame.Rect, parent: Optional[int] = None) -> int:
+def create_button(ecs: ECS, label: str, rect: pygame.Rect, callback: Callable, parent: Optional[int] = None) -> int:
     entity = _create_base_widget(ecs, 10, rect, parent)
 
     ecs.add_component(entity, UIHoverable())
@@ -68,7 +67,7 @@ def create_button(ecs: ECS, label: str, rect: pygame.Rect, parent: Optional[int]
     ecs.add_component(entity, UIHighlightable())
     ecs.add_component(entity, UILabelable())
 
-    ecs.add_component(entity, UICallback(lambda: print('ecs button')))
+    ecs.add_component(entity, UICallback(callback))
     ecs.add_component(entity, UILabel(label, Allignment.center))
     return entity
 
@@ -126,8 +125,8 @@ def create_toggle(ecs: ECS, label: str, rect: pygame.Rect, parent: Optional[int]
     return entity
 
 
-def create_panel(ecs: ECS, rect: pygame.Rect, parent: Optional[int] = None) -> int:
-    entity = _create_base_widget(ecs, 0, rect, parent)
+def create_panel(ecs: ECS, rect: pygame.Rect, frame_color: str = 'yellow', parent: Optional[int] = None) -> int:
+    entity = _create_base_widget(ecs, 0, rect, parent, **{'frame': frame_color})
     ecs.add_component(entity, UIFrameable())
     ecs.add_component(entity, UIHighlightable())
 

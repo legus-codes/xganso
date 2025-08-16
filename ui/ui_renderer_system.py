@@ -1,6 +1,6 @@
 import pygame
 from ecs_framework.ecs import ECS, SystemProtocol
-from ui.ui_components import Allignment, UIColor, UIElement, UIEnabled, UIFocused, UIFont, UIForceRedraw, UIFrameable, UIHighlightable, UIHovered, UILabel, UILabelable, UINeedRedraw, UIPadding, UIParent, UIPressed, UIRect, UIRelativeRect, UIRenderLayer, UIRenderable, UISelected, UIText, UIToggled, UIVariable
+from ui.ui_components import Allignment, UIColor, UIElement, UIEnabled, UIFocused, UIFont, UIForceRedraw, UIFrameable, UIHighlightable, UIHovered, UILabel, UILabelable, UINeedRedraw, UIParent, UIPressed, UIRect, UIRelativeRect, UIRenderLayer, UIRenderable, UISelected, UIToggled, UIVariable
 
 
 def _center_middle_position(rect: pygame.Rect, text_rect: pygame.Surface) -> pygame.Vector2:
@@ -20,7 +20,7 @@ class UIRelativeToRect(SystemProtocol):
     def __init__(self, ecs: ECS):
         self.ecs = ecs
 
-    def execute(self):
+    def execute(self, delta_time: float):
         for entity in self.ecs.get_entities_with(UIElement, UIEnabled, UIParent, UIRelativeRect):
             if self.ecs.entity_has_component(entity, UIRect):
                 continue
@@ -41,7 +41,7 @@ class UIRendererSystem(SystemProtocol):
         self.ecs = ecs
         self.screen = screen
 
-    def execute(self):
+    def execute(self, delta_time: float):
         all_entities = []
         for entity in self.ecs.get_entities_with(UIElement, UIEnabled, UIRenderable, UIColor, UIRect):
             render_layer: UIRenderLayer = self.ecs.get_entity_component(entity, UIRenderLayer)
@@ -94,20 +94,7 @@ class UIRendererSystem(SystemProtocol):
             return
 
         font: UIFont = self.ecs.get_entity_component(entity, UIFont)
-
-        padding: UIPadding = self.ecs.get_entity_component(entity, UIPadding)
-        left_pad = padding.left if padding else 0
-        top_pad = padding.top if padding else 0
-
         label_width: pygame.Vector2 = (0, 0)
-
-        if self.ecs.entity_has_component(entity, UIText):
-            text: UIText = self.ecs.get_entity_component(entity, UIText)
-
-            text_position = rect.rectangle.topleft + pygame.Vector2(left_pad, top_pad)
-            text_surface = font.font.render(text.text, True, colors.text)
-
-            self.screen.blit(text_surface, text_position)
 
         if self.ecs.entity_has_component(entity, UILabel):
             label: UILabel = self.ecs.get_entity_component(entity, UILabel)

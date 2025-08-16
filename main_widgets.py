@@ -78,7 +78,7 @@ if __name__ == '__main__':
         delta_time = clock.get_time()
 
         panel.draw()
-        ecs.execute()
+        ecs.execute(delta_time)
 
         pygame.display.flip()
 

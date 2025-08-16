@@ -12,7 +12,7 @@ class UIEventConverterSystem(SystemProtocol):
         self.mouse = mouse
         self.keyboard = keyboard
 
-    def execute(self):
+    def execute(self, delta_time: float):
         for event in pygame.event.get():
             if event.type == pygame.MOUSEMOTION:
                 self.ecs.add_component(self.mouse, MousePosition(event.pos))
@@ -36,7 +36,7 @@ class UIMousePositionSystem(SystemProtocol):
         self.ecs = ecs
         self.mouse = mouse
 
-    def execute(self):
+    def execute(self, delta_time: float):
         position_component = self.ecs.get_entity_component(self.mouse, MousePosition)
         mouse_position = position_component.position if position_component else None
 
@@ -56,7 +56,7 @@ class UIMouseClickedSystem(SystemProtocol):
         self.ecs = ecs
         self.mouse = mouse
 
-    def execute(self):
+    def execute(self, delta_time: float):
         mouse_clicked = self.ecs.get_entity_component(self.mouse, MouseClicked)
         if mouse_clicked is None:
             return
@@ -98,7 +98,7 @@ class UIMouseReleasedSystem(SystemProtocol):
         self.ecs = ecs
         self.mouse = mouse
 
-    def execute(self):
+    def execute(self, delta_time: float):
         mouse_released = self.ecs.get_entity_component(self.mouse, MouseReleased)
         if mouse_released is None:
             return
@@ -119,7 +119,7 @@ class UIMousePressedSystem(SystemProtocol):
         self.ecs = ecs
         self.mouse = mouse
 
-    def execute(self):
+    def execute(self, delta_time: float):
         mouse_pressed = self.ecs.get_entity_component(self.mouse, MousePressed)
         if mouse_pressed is None:
             return
@@ -139,7 +139,7 @@ class UIKeyDownSystem(SystemProtocol):
         self.ecs = ecs
         self.keyboard = keyboard
 
-    def execute(self):
+    def execute(self, delta_time: float):
         key_down: KeyDown = self.ecs.get_entity_component(self.keyboard, KeyDown)
         if key_down is None:
             return

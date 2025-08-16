@@ -74,11 +74,6 @@ class UIRadioGroup(ComponentProtocol):
 
 
 @dataclass
-class UIText(ComponentProtocol):
-    text: str
-
-
-@dataclass
 class UICallback(ComponentProtocol):
     callback: Callable
 
