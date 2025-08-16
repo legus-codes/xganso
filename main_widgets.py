@@ -31,7 +31,7 @@ if __name__ == '__main__':
     keyboard = ecs.create_entity()
 
     panel = create_panel(ecs, pygame.Rect(500, 100, 300, 600))
-    create_button(ecs, 'Button', pygame.Rect(10, 10, 100, 30), panel)
+    create_button(ecs, 'Button', pygame.Rect(10, 10, 100, 30), lambda: print('button'), panel)
     create_text_input(ecs, 'Text: ', 'text', pygame.Rect(10, 100, 100, 30), panel)
     create_int_text_input(ecs, 'Int: ', '42', pygame.Rect(10, 150, 100, 30), panel)
     create_radio_button(ecs, 'Radio1', 'group', pygame.Rect(10, 200, 100, 30), panel)
