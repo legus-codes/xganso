@@ -46,6 +46,10 @@ class HexMapBuilder:
     def __init__(self):
         self.hex_map = HexMap({})
 
+    def empty_map(self) -> Self:
+        self.hex_map = HexMap({})
+        return self
+
     def hexagon_map(self, radius: int) -> Self:
         self.hex_map = HexMapTemplate.hexagon_map(radius)
         return self
