@@ -1,0 +1,1 @@
+xganso is a turn-based tactical strategy game where matcha-powered geese battle it out in procedural combat missions. It blends tactical gameplay, quirky charm, and Python/Pygame code into something uniquely feathery.
