@@ -5,9 +5,20 @@ from typing import Tuple
 from ecs_framework.ecs import ComponentProtocol
 
 
+class Key(Enum):
+    DELETE = 8
+    ENTER = 13
+
+
 class MouseButton(Enum):
     left = 1
     right = 3
+
+
+@dataclass
+class KeyDown(ComponentProtocol):
+    char: str
+    key: int
 
 
 @dataclass

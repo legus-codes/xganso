@@ -1,13 +1,16 @@
 from pygame import Surface, Rect
 from ecs_framework.ecs import ECS
-from editor.map_editor_creator import CreateMapCommand, MapCreater, MapType
-from editor.map_editor_io import LoadMapCommand, MapLoader, MapSaver, SaveMapCommand
+from editor.map_editor_creator import CleanupCreateMap, CreateMapTrigger, MapConfiguration, MapCreator, MapType, RadiusInputReference
+from editor.map_editor_io import CleanupLoadMap, CleanupSaveMap, FilenameInputReference, LoadMapTrigger, MapInputReference, MapLoader, MapSaver, SaveMapTrigger
 from editor.map_editor_feedback import FeedbackBroadcastSystem, FeedbackDisplayer
 from editor.map_editor_viewer import Map, MapDisplaySource, MapRendererSystem
-from ui.ecs_elements import create_button, create_int_text_input, create_panel, create_radio_button, create_text, create_text_input, create_toggle
-from ui.ui_components import UIForceRedraw, UIVariable
-from ui.ui_event_system import UIEventConverterSystem, UIKeyDownSystem, UIMouseClickedSystem, UIMousePositionSystem, UIMousePressedSystem, UIMouseReleasedSystem
-from ui.ui_renderer_system import UIRelativeToRect, UIRendererSystem
+from ui.components.data import Variable
+from ui.components.rendering import ForceRedraw
+from ui.systems.event import EventConverterSystem
+from ui.systems.mouse_event import CleanupMouseClickedSystem, CleanupMouseReleasedSystem, MouseFocusSystem, MouseHoverSystem, MousePressedSystem, MouseReleasedSystem, MouseSelectSystem, MouseToggleSystem
+from ui.widgets import create_button, create_int_text_input, create_panel, create_radio_button, create_text, create_text_input, create_toggle
+from ui.systems.keyboard_event import CleanupKeyDownSystem, DeleteKeySystem, EnterKeySystem, TypingKeyDownSystem
+from ui.systems.renderer import CleanupRendererSystem, RelativeToRectConverter, RendererSystem
 
 
 class MapEditorController:
@@ -34,14 +37,32 @@ class MapEditorController:
 
     def create_top_bar(self) -> None:
         top_bar_panel = create_panel(self.world, Rect(0, 0, 1440, 50), 'red')
-        filename_text_input = create_text_input(self.world, 'Filename: ', 'hex.json', Rect(2, 25, 500, 20), top_bar_panel)
-        save_button = create_button(self.world, 'Save', Rect(10, 2, 100, 20), lambda: self.save_map(filename_text_input), top_bar_panel)
-        load_button = create_button(self.world, 'Load', Rect(150, 2, 100, 20), lambda: self.load_map(filename_text_input), top_bar_panel)
 
+        filename_text_input = create_text_input(self.world, 'Filename: ', 'hex.json', Rect(2, 25, 500, 20), top_bar_panel)
         radius_int_input = create_int_text_input(self.world, 'Radius: ', '5', Rect(800, 25, 350, 20), top_bar_panel)
-        empty_map_button = create_button(self.world, 'Empty Map', Rect(600, 2, 150, 20), lambda: self.create_map(MapType.Empty, radius_int_input), top_bar_panel)
-        hexagon_map_button = create_button(self.world, 'Hexagon Map', Rect(800, 2, 150, 20), lambda: self.create_map(MapType.Hexagon, radius_int_input), top_bar_panel)
-        random_map_button = create_button(self.world, 'Random Map', Rect(1000, 2, 150, 20), lambda: self.create_map(MapType.Random, radius_int_input), top_bar_panel)
+
+        save_button = create_button(self.world, 'Save', Rect(10, 2, 100, 20), SaveMapTrigger, top_bar_panel)
+        self.world.add_component(save_button, FilenameInputReference(filename_text_input, Variable, 'value'))
+        self.world.add_component(save_button, MapInputReference(self.editor, Map, 'hex_map'))
+
+        load_button = create_button(self.world, 'Load', Rect(150, 2, 100, 20), LoadMapTrigger, top_bar_panel)
+        self.world.add_component(load_button, FilenameInputReference(filename_text_input, Variable, 'value'))
+        self.world.add_component(load_button, MapInputReference(self.editor, Map, 'hex_map'))
+
+        empty_map_button = create_button(self.world, 'Empty Map', Rect(600, 2, 150, 20), CreateMapTrigger, top_bar_panel)
+        self.world.add_component(empty_map_button, MapConfiguration(MapType.Empty))
+        self.world.add_component(empty_map_button, RadiusInputReference(radius_int_input, Variable, 'value'))
+        self.world.add_component(empty_map_button, MapInputReference(self.editor, Map, 'hex_map'))
+
+        hexagon_map_button = create_button(self.world, 'Hexagon Map', Rect(800, 2, 150, 20), CreateMapTrigger, top_bar_panel)
+        self.world.add_component(hexagon_map_button, MapConfiguration(MapType.Hexagon))
+        self.world.add_component(hexagon_map_button, RadiusInputReference(radius_int_input, Variable, 'value'))
+        self.world.add_component(hexagon_map_button, MapInputReference(self.editor, Map, 'hex_map'))
+
+        random_map_button = create_button(self.world, 'Random Map', Rect(1000, 2, 150, 20), CreateMapTrigger, top_bar_panel)
+        self.world.add_component(random_map_button, MapConfiguration(MapType.Random))
+        self.world.add_component(random_map_button, RadiusInputReference(radius_int_input, Variable, 'value'))
+        self.world.add_component(random_map_button, MapInputReference(self.editor, Map, 'hex_map'))
 
     def create_side_bar(self) -> None:
         side_bar_panel = create_panel(self.world, Rect(0, 50, 150, 700), 'blue')
@@ -64,7 +85,7 @@ class MapEditorController:
     def create_map_view(self) -> None:
         map_view_panel = create_panel(self.world, Rect(150, 50, 1290, 700), 'yellow')
         self.world.add_component(map_view_panel, MapDisplaySource(self.editor))
-        self.world.add_component(map_view_panel, UIForceRedraw())
+        self.world.add_component(map_view_panel, ForceRedraw())
 
     def create_bottom_bar(self) -> None:
         bottom_bar_panel = create_panel(self.world, Rect(0, 750, 1440, 25), 'green')
@@ -72,33 +93,33 @@ class MapEditorController:
         self.world.add_component(notification_text, FeedbackDisplayer())
 
     def initialize_systems(self) -> None:
-        self.world.add_system(UIEventConverterSystem(self.world, self.mouse, self.keyboard))
-        self.world.add_system(UIMousePositionSystem(self.world, self.mouse))
-        self.world.add_system(UIMouseClickedSystem(self.world, self.mouse))
-        self.world.add_system(UIMousePressedSystem(self.world, self.mouse))
-        self.world.add_system(UIMouseReleasedSystem(self.world, self.mouse))
-        self.world.add_system(UIKeyDownSystem(self.world, self.keyboard))
+        self.world.add_system(EventConverterSystem(self.world, self.mouse, self.keyboard))
+        self.world.add_system(MouseHoverSystem(self.world, self.mouse))
+        self.world.add_system(MouseFocusSystem(self.world, self.mouse))
+        self.world.add_system(MouseToggleSystem(self.world, self.mouse))
+        self.world.add_system(MouseSelectSystem(self.world, self.mouse))
+        self.world.add_system(MousePressedSystem(self.world, self.mouse))
+        self.world.add_system(MouseReleasedSystem(self.world, self.mouse))
+        
+        self.world.add_system(EnterKeySystem(self.world, self.keyboard))
+        self.world.add_system(DeleteKeySystem(self.world, self.keyboard))
+        self.world.add_system(TypingKeyDownSystem(self.world, self.keyboard))
 
-        self.world.add_system(MapCreater(self.world))
+        self.world.add_system(MapCreator(self.world))
         self.world.add_system(MapLoader(self.world))
         self.world.add_system(MapSaver(self.world))
         self.world.add_system(FeedbackBroadcastSystem(self.world))
 
-        self.world.add_system(UIRelativeToRect(self.world))
-        self.world.add_system(UIRendererSystem(self.world, self.screen))
+        self.world.add_system(RelativeToRectConverter(self.world))
+        self.world.add_system(RendererSystem(self.world, self.screen))
         self.world.add_system(MapRendererSystem(self.world, self.screen))
 
-    def load_map(self, filename_entity: int):
-        filename = self.world.get_entity_component(filename_entity, UIVariable)
-        command = LoadMapCommand(filename.value)
-        self.world.add_component(self.editor, command)
+        self.world.add_system(CleanupMouseClickedSystem(self.world, self.mouse))
+        self.world.add_system(CleanupMouseReleasedSystem(self.world, self.mouse))
+        self.world.add_system(CleanupKeyDownSystem(self.world, self.keyboard))
+        
+        self.world.add_system(CleanupRendererSystem(self.world))
 
-    def save_map(self, filename_entity: int):
-        filename = self.world.get_entity_component(filename_entity, UIVariable)
-        command = SaveMapCommand(filename.value)
-        self.world.add_component(self.editor, command)
-
-    def create_map(self, map_type: MapType, radius_entity: int):
-        radius = self.world.get_entity_component(radius_entity, UIVariable)
-        command = CreateMapCommand(map_type, int(radius.value))
-        self.world.add_component(self.editor, command)
+        self.world.add_system(CleanupSaveMap(self.world))
+        self.world.add_system(CleanupLoadMap(self.world))
+        self.world.add_system(CleanupCreateMap(self.world))

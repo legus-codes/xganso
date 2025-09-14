@@ -1,7 +1,8 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 from ecs_framework.ecs import ECS, ComponentProtocol, SystemProtocol
-from ui.ui_components import UILabel, UINeedRedraw
+from ui.components.data import Label
+from ui.components.rendering import NeedRedraw
 
 
 @dataclass
@@ -11,6 +12,7 @@ class Feedback(ComponentProtocol):
 
     def __post_init__(self):
         self.timestamp = datetime.now()
+
 
 @dataclass
 class FeedbackDisplayer(ComponentProtocol):
@@ -34,6 +36,6 @@ class FeedbackBroadcastSystem(SystemProtocol):
         all_feedbacks.sort(key=lambda x: x.timestamp)
         feedback = all_feedbacks[0].message
 
-        for entity, (label, _) in self.world.get_entities_with_components(UILabel, FeedbackDisplayer):
+        for entity, (label, _) in self.world.get_entities_with_components(Label, FeedbackDisplayer):
             label.label = feedback
-            self.world.add_component(entity, UINeedRedraw())
+            self.world.add_component(entity, NeedRedraw())
