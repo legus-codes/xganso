@@ -58,7 +58,7 @@ def test_load_unit_data_correct():
     repository = MockRepository({'scout.yaml': scout_unit_data(), 'bard.yaml': bard_unit_data()})
     unit_data_manager = UnitDataManager(repository)
     errors = unit_data_manager.load()
-    assert errors == {}
+    assert errors == []
     assert len(unit_data_manager.data) == 2
     assert 'Scout' in unit_data_manager.data
     assert 'Bard' in unit_data_manager.data
@@ -70,8 +70,9 @@ def test_load_unit_data_incorrect():
     unit_data_manager = UnitDataManager(repository)
     errors = unit_data_manager.load()
     assert len(errors) == 1
-    assert 'scout.yaml' in errors
-    assert 'sprites' in errors['scout.yaml']
+    error = errors[0]
+    assert error.filename == 'scout.yaml'
+    assert 'sprites' in error.message
     assert unit_data_manager.data == {}
 
 def test_load_unit_data_duplicate():
@@ -79,8 +80,9 @@ def test_load_unit_data_duplicate():
     unit_data_manager = UnitDataManager(repository)
     errors = unit_data_manager.load()
     assert len(errors) == 1
-    assert 'bard.yaml' in errors
-    assert 'registered' in errors['bard.yaml']
+    error = errors[0]
+    assert error.filename == 'bard.yaml'
+    assert 'registered' in error.message
     assert unit_data_manager.data == {}
 
 def test_reload_unit_data_correct():
