@@ -1,0 +1,32 @@
+# ===========================
+# Unit Data Schema (Example)
+# ===========================
+
+id: "Scout"                    # Unique ID
+name: "Scout Goose"            # Display name
+class: "Recon"                 # Unit class
+
+sprites:                       # Sprite paths, relative to assets/
+  character: "units/scout_goose_char.png"   # Used in menus, UI, cutscenes
+  board: "units/scout_goose_board.png"      # Used on the tactical board
+
+stats:
+  hp:                          # Hit Points component
+    base: 80
+    growth: 5
+    regen: 2
+  attack:                      # Attack component
+    base: 15
+    growth: 2
+  defense:                     # Defense component
+    base: 10
+    growth: 1
+  speed:                       # Speed component (initiative)
+    base: 5
+    growth: 0.2
+  attack_range:                # Range for attacks component
+    base: 4
+  movement_range:              # Movement per turn component
+    base: 6
+
+passive: "evasion_instinct"    # (Optional) Passive ability identifier of leaders
