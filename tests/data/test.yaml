@@ -4,7 +4,7 @@
 
 id: "Scout"                    # Unique ID
 name: "Scout Goose"            # Display name
-class: "Recon"                 # Unit class
+unit_class: "Recon"                 # Unit class
 
 sprites:                       # Sprite paths, relative to assets/
   character: "units/scout_goose_char.png"   # Used in menus, UI, cutscenes

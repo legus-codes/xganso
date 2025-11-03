@@ -1,6 +1,7 @@
 import pytest
 from pydantic import ValidationError
-from services.data.data_description import UnitDataDescription
+
+from services.data.data_models import UnitDataDescription
 
 
 @pytest.fixture
@@ -85,4 +86,3 @@ def test_incorrect_unit_without_movement_range_fields(unit_data, field):
     unit_data['stats']['movement_range'].pop(field)
     with pytest.raises(ValidationError):
         UnitDataDescription(**unit_data)
-

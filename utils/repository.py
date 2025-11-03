@@ -1,12 +1,12 @@
 from pathlib import Path
-from typing import Any, List, Protocol
+from typing import Any, Dict, Protocol
 
 import yaml
 
 
 class RepositoryProtocol(Protocol):
 
-    def load(self) -> List[Any]:
+    def load(self) -> Dict[str, Any]:
         ...
 
 
@@ -16,10 +16,10 @@ class YamlRepository(RepositoryProtocol):
         self.path = path
         self.pattern = pattern
 
-    def load(self) -> List[Any]:
-        data = []
+    def load(self) -> Dict[str, Any]:
+        data = {}
         for yaml_file in self.path.glob(self.pattern):
-            data.append(self._load_file(yaml_file))
+            data[yaml_file.name] = self._load_file(yaml_file)
         return data
 
     def _load_file(self, filepath: Path) -> Any:
