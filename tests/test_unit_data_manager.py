@@ -1,7 +1,8 @@
 from pathlib import Path
 from typing import Any, Dict
 
-from services.data.data_manager import DataManager
+from services.data.core import DataManagerConfig, DataType
+from services.data.data_manager import DataManager, DataManagerFactory
 from services.data.data_models import UnitDataDescription
 from utils.repository import RepositoryProtocol
 
@@ -58,6 +59,19 @@ class MockRepository(RepositoryProtocol):
         return self.data
 
 
+def test_build_unit_data_manager():
+    data = {
+        'type': DataType.UNIT,
+        'model': 'services.data.data_models.UnitDataDescription',
+        'repository': 'utils.repository.YamlRepository',
+        'data_path': 'data/units'
+    }
+    data_manager_config = DataManagerConfig(**data)
+    data_manager = DataManagerFactory.build(data_manager_config)
+    assert isinstance(data_manager, DataManager)
+    assert data_manager.data_model == UnitDataDescription
+    assert data_manager.path == Path('data/units')
+ 
 def test_load_unit_data_correct():
     repository = MockRepository({'scout.yaml': scout_unit_data(), 'bard.yaml': bard_unit_data()})
     unit_data_manager = DataManager(UnitDataDescription, repository, 'path')
