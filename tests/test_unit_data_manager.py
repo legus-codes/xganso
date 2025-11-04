@@ -1,7 +1,8 @@
+from pathlib import Path
 from typing import Any, Dict
 
+from services.data.data_manager import DataManager
 from services.data.data_models import UnitDataDescription
-from services.data.managers.unit_data_manager import UnitDataManager
 from utils.repository import RepositoryProtocol
 
 
@@ -50,13 +51,16 @@ class MockRepository(RepositoryProtocol):
     def __init__(self, data: Dict[str, Any]):
         self.data = data
 
-    def load(self) -> Dict[str, Any]:
+    def load_file(self, filepath: Path = None) -> Any:
+        return {}
+
+    def load_all(self, path: Path = None) -> Dict[str, Any]:
         return self.data
 
 
 def test_load_unit_data_correct():
     repository = MockRepository({'scout.yaml': scout_unit_data(), 'bard.yaml': bard_unit_data()})
-    unit_data_manager = UnitDataManager(repository)
+    unit_data_manager = DataManager(UnitDataDescription, repository, 'path')
     errors = unit_data_manager.load()
     assert errors == []
     assert len(unit_data_manager.data) == 2
@@ -67,7 +71,7 @@ def test_load_unit_data_incorrect():
     scout_data = scout_unit_data()
     scout_data.pop('sprites')
     repository = MockRepository({'scout.yaml': scout_data, 'bard.yaml': bard_unit_data()})
-    unit_data_manager = UnitDataManager(repository)
+    unit_data_manager = DataManager(UnitDataDescription, repository, 'path')
     errors = unit_data_manager.load()
     assert len(errors) == 1
     error = errors[0]
@@ -77,7 +81,7 @@ def test_load_unit_data_incorrect():
 
 def test_load_unit_data_duplicate():
     repository = MockRepository({'scout.yaml': scout_unit_data(), 'bard.yaml': scout_unit_data()})
-    unit_data_manager = UnitDataManager(repository)
+    unit_data_manager = DataManager(UnitDataDescription, repository, 'path')
     errors = unit_data_manager.load()
     assert len(errors) == 1
     error = errors[0]
@@ -87,7 +91,7 @@ def test_load_unit_data_duplicate():
 
 def test_reload_unit_data_correct():
     repository_scout = MockRepository({'scout.yaml': scout_unit_data()})
-    unit_data_manager = UnitDataManager(repository_scout)
+    unit_data_manager = DataManager(UnitDataDescription, repository_scout, 'path')
     unit_data_manager.load()
     assert len(unit_data_manager.data) == 1
     assert 'Scout' in unit_data_manager.data
@@ -100,14 +104,14 @@ def test_reload_unit_data_correct():
 
 def test_get_existing_unit():
     repository = MockRepository({'scout.yaml': scout_unit_data(), 'bard.yaml': bard_unit_data()})
-    unit_data_manager = UnitDataManager(repository)
+    unit_data_manager = DataManager(UnitDataDescription, repository, 'path')
     unit_data_manager.load()
     unit = unit_data_manager.get('Scout')
     assert isinstance(unit, UnitDataDescription)
 
 def test_get_non_existing_unit():
     repository = MockRepository({'scout.yaml': scout_unit_data(), 'bard.yaml': bard_unit_data()})
-    unit_data_manager = UnitDataManager(repository)
+    unit_data_manager = DataManager(UnitDataDescription, repository, 'path')
     unit_data_manager.load()
     unit = unit_data_manager.get('Warrior')
     assert unit is None

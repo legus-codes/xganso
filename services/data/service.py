@@ -1,20 +1,17 @@
 from typing import Dict
 
+
 from services.data.core import DataManagerProtocol, DataType
 from services.data.data_models import DataDescription
-from services.data.registry import get_registered_data_managers
-from utils.repository import RepositoryProtocol
 
 
 class DataService:
 
-    def __init__(self, repositories: Dict[DataType, RepositoryProtocol]):
+    def __init__(self):
         self.data_managers: Dict[DataType, DataManagerProtocol] = {}
-        for data_type, type_class in get_registered_data_managers().items():
-            repository = repositories.get(data_type, None)
-            if repository is None:
-                raise ValueError(f'Repository for data type {data_type} not found')
-            self.data_managers[data_type] = type_class(repository)
+    
+    def register(self, data_type: DataType, data_manager: DataManagerProtocol):
+        self.data_managers[data_type] = data_manager
 
     def load_all(self) -> None:
         for data_manager in self.data_managers.values():

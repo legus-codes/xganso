@@ -1,6 +1,6 @@
 import pytest
 from services.data.core import DataType
-from services.data.registry import clear_registry, get_registered_data_managers, register_data_manager
+from utils.registry import clear_registry, get_registered_data_managers, register_data_manager
 
 
 @pytest.fixture(autouse=True)
