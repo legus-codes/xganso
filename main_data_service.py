@@ -1,7 +1,5 @@
-import yaml
-
 from services.data.core import DataServiceConfig
-from services.data.data_manager import DataManagerFactory
+from services.data.manager import DataManagerFactory
 from services.data.service import DataService
 from utils.config_loader import ConfigLoader
 from utils.repository import YamlRepository

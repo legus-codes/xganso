@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from services.data.data_models import UnitDataDescription
+from services.data.models import UnitDataDescription
 
 
 @pytest.fixture

@@ -2,7 +2,7 @@ from typing import Dict
 
 
 from services.data.core import DataManagerProtocol, DataType
-from services.data.data_models import DataDescription
+from services.data.models import DataDescription
 
 
 class DataService:

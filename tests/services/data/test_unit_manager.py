@@ -2,8 +2,8 @@ from pathlib import Path
 from typing import Any, Dict
 
 from services.data.core import DataManagerConfig, DataType
-from services.data.data_manager import DataManager, DataManagerFactory
-from services.data.data_models import UnitDataDescription
+from services.data.manager import DataManager, DataManagerFactory
+from services.data.models import UnitDataDescription
 from utils.repository import RepositoryProtocol
 
 
@@ -62,7 +62,7 @@ class MockRepository(RepositoryProtocol):
 def test_build_unit_data_manager():
     data = {
         'type': DataType.UNIT,
-        'model': 'services.data.data_models.UnitDataDescription',
+        'model': 'services.data.models.UnitDataDescription',
         'repository': 'utils.repository.YamlRepository',
         'data_path': 'data/units'
     }

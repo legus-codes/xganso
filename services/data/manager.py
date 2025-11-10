@@ -3,7 +3,7 @@ from typing import Dict, List, Type
 from pydantic import ValidationError
 
 from services.data.core import DataManagerConfig, DataManagerError, DataManagerProtocol
-from services.data.data_models import DataDescription
+from services.data.models import DataDescription
 from utils.reflection import import_class
 from utils.repository import RepositoryProtocol
 

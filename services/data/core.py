@@ -5,7 +5,7 @@ from typing import List, Protocol
 
 from pydantic import BaseModel
 
-from services.data.data_models import DataDescription
+from services.data.models import DataDescription
 
 
 class DataType(Enum):
