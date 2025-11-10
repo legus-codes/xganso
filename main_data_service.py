@@ -9,7 +9,7 @@ from utils.repository import YamlRepository
 
 if __name__ == '__main__':
     config_loader = ConfigLoader(YamlRepository())
-    data_service_config = config_loader.load_config(r'services\data\data_manager.yaml', DataServiceConfig)
+    data_service_config = config_loader.load_config(r'configuration\data_service.yaml', DataServiceConfig)
 
     data_service = DataService()
     for manager_config in data_service_config.data_managers:
