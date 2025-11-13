@@ -2,11 +2,11 @@ from services.data.core import DataServiceConfig
 from services.data.manager import DataManagerFactory
 from services.data.service import DataService
 from utils.config_loader import ConfigLoader
-from utils.repository import YamlRepository
+from utils.loader import YamlLoader
 
 
 if __name__ == '__main__':
-    config_loader = ConfigLoader(YamlRepository())
+    config_loader = ConfigLoader(YamlLoader)
     data_service_config = config_loader.load_config(r'configuration\data_service.yaml', DataServiceConfig)
 
     data_service = DataService()

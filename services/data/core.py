@@ -20,9 +20,10 @@ class DataManagerError:
 
 class DataManagerConfig(BaseModel):
     type: DataType
-    model: str
-    repository: str
-    data_path: Path
+    data_model: str
+    data_loader: str
+    file_provider: str
+    search_path: Path
 
 
 class DataServiceConfig(BaseModel):

@@ -1,10 +1,11 @@
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from services.data.core import DataManagerConfig, DataType
 from services.data.manager import DataManager, DataManagerFactory
 from services.data.models import UnitDataDescription
-from utils.repository import RepositoryProtocol
+from utils.filesystem import FilesystemProviderProtocol, LocalFilesystemProvider
+from utils.loader import LoaderProtocol, YamlLoader
 
 
 def scout_unit_data():
@@ -47,34 +48,50 @@ def bard_unit_data():
         'passive': 'happy_melody'
     }
 
-class MockRepository(RepositoryProtocol):
+class MockLoader(LoaderProtocol):
 
     def __init__(self, data: Dict[str, Any]):
         self.data = data
 
-    def load_file(self, filepath: Path = None) -> Any:
-        return {}
+    def load_file(self, filepath: str) -> Any:
+        return self.data.get(filepath, {})
 
-    def load_all(self, path: Path = None) -> Dict[str, Any]:
+
+class MockFilesystemProvider(FilesystemProviderProtocol):
+    
+    def __init__(self, data: List[str]):
+        self.data = data
+    
+    def glob(self, base_path: Path, pattern: str) -> List[Path]:
         return self.data
+        
+
+def create_unit_data_manager(loader: LoaderProtocol = None, file_provider: FilesystemProviderProtocol = None) -> DataManager:
+    if loader is None:
+        loader = MockLoader({'scout': scout_unit_data(), 'bard': bard_unit_data()})
+    if file_provider is None:
+        file_provider = MockFilesystemProvider(['scout', 'bard'])
+    return DataManager(UnitDataDescription, loader, file_provider, 'search_path')
 
 
 def test_build_unit_data_manager():
     data = {
         'type': DataType.UNIT,
-        'model': 'services.data.models.UnitDataDescription',
-        'repository': 'utils.repository.YamlRepository',
-        'data_path': 'data/units'
+        'data_model': 'services.data.models.UnitDataDescription',
+        'data_loader': 'utils.loader.YamlLoader',
+        'file_provider': 'utils.filesystem.LocalFilesystemProvider',
+        'search_path': 'data/units'
     }
     data_manager_config = DataManagerConfig(**data)
     data_manager = DataManagerFactory.build(data_manager_config)
     assert isinstance(data_manager, DataManager)
     assert data_manager.data_model == UnitDataDescription
-    assert data_manager.path == Path('data/units')
+    assert data_manager.data_loader == YamlLoader
+    assert data_manager.file_provider == LocalFilesystemProvider
+    assert data_manager.search_path == Path('data/units')
  
 def test_load_unit_data_correct():
-    repository = MockRepository({'scout.yaml': scout_unit_data(), 'bard.yaml': bard_unit_data()})
-    unit_data_manager = DataManager(UnitDataDescription, repository, 'path')
+    unit_data_manager = create_unit_data_manager()
     errors = unit_data_manager.load()
     assert errors == []
     assert len(unit_data_manager.data) == 2
@@ -84,48 +101,49 @@ def test_load_unit_data_correct():
 def test_load_unit_data_incorrect():
     scout_data = scout_unit_data()
     scout_data.pop('sprites')
-    repository = MockRepository({'scout.yaml': scout_data, 'bard.yaml': bard_unit_data()})
-    unit_data_manager = DataManager(UnitDataDescription, repository, 'path')
+    loader = MockLoader({'scout': scout_data, 'bard': bard_unit_data()})
+    unit_data_manager = create_unit_data_manager(loader=loader)
     errors = unit_data_manager.load()
     assert len(errors) == 1
     error = errors[0]
-    assert error.filename == 'scout.yaml'
+    assert error.filename == 'scout'
     assert 'sprites' in error.message
     assert unit_data_manager.data == {}
 
 def test_load_unit_data_duplicate():
-    repository = MockRepository({'scout.yaml': scout_unit_data(), 'bard.yaml': scout_unit_data()})
-    unit_data_manager = DataManager(UnitDataDescription, repository, 'path')
+    loader = MockLoader({'scout': scout_unit_data(), 'bard': scout_unit_data()})
+    unit_data_manager = create_unit_data_manager(loader=loader)
     errors = unit_data_manager.load()
     assert len(errors) == 1
     error = errors[0]
-    assert error.filename == 'bard.yaml'
+    assert error.filename == 'bard'
     assert 'registered' in error.message
     assert unit_data_manager.data == {}
 
 def test_reload_unit_data_correct():
-    repository_scout = MockRepository({'scout.yaml': scout_unit_data()})
-    unit_data_manager = DataManager(UnitDataDescription, repository_scout, 'path')
+    loader_scout = MockLoader({'scout': scout_unit_data()})
+    scout_file_provider = MockFilesystemProvider(['scout'])
+    unit_data_manager = create_unit_data_manager(loader=loader_scout, file_provider=scout_file_provider)
     unit_data_manager.load()
     assert len(unit_data_manager.data) == 1
     assert 'Scout' in unit_data_manager.data
 
-    repository_bard = MockRepository({'bard.yaml': bard_unit_data()})
-    unit_data_manager.repository = repository_bard
+    loader_bard = MockLoader({'bard': bard_unit_data()})
+    bard_file_provider = MockFilesystemProvider(['bard'])
+    unit_data_manager.data_loader = loader_bard
+    unit_data_manager.file_provider = bard_file_provider
     unit_data_manager.reload()
     assert len(unit_data_manager.data) == 1
     assert 'Bard' in unit_data_manager.data
 
 def test_get_existing_unit():
-    repository = MockRepository({'scout.yaml': scout_unit_data(), 'bard.yaml': bard_unit_data()})
-    unit_data_manager = DataManager(UnitDataDescription, repository, 'path')
+    unit_data_manager = create_unit_data_manager()
     unit_data_manager.load()
     unit = unit_data_manager.get('Scout')
     assert isinstance(unit, UnitDataDescription)
 
 def test_get_non_existing_unit():
-    repository = MockRepository({'scout.yaml': scout_unit_data(), 'bard.yaml': bard_unit_data()})
-    unit_data_manager = DataManager(UnitDataDescription, repository, 'path')
+    unit_data_manager = create_unit_data_manager()
     unit_data_manager.load()
     unit = unit_data_manager.get('Warrior')
     assert unit is None
