@@ -2,6 +2,6 @@ data_managers:
   - type: 'Unit'
     data_model: services.data.models.UnitDataDescription
     data_loader: utils.loader.YamlLoader
-    file_provider: utils.filesystem.LocalFilesystemProvider
+    file_provider: utils.file_system.LocalFileSystem
     search_path: data/units
   

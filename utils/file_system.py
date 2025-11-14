@@ -2,14 +2,14 @@ from pathlib import Path
 from typing import List, Protocol
 
 
-class FilesystemProviderProtocol(Protocol):
+class FileSystemProtocol(Protocol):
     
     @staticmethod
     def glob(base_path: Path, pattern: str) -> List[Path]:
         ...
 
 
-class LocalFilesystemProvider:
+class LocalFileSystem:
 
     @staticmethod
     def glob(base_path: Path, pattern: str) -> List[Path]:

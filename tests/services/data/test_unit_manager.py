@@ -4,7 +4,7 @@ from typing import Any, Dict, List
 from services.data.core import DataManagerConfig, DataType
 from services.data.manager import DataManager, DataManagerFactory
 from services.data.models import UnitDataDescription
-from utils.filesystem import FilesystemProviderProtocol, LocalFilesystemProvider
+from utils.file_system import FileSystemProtocol, LocalFileSystem
 from utils.loader import LoaderProtocol, YamlLoader
 
 
@@ -57,7 +57,7 @@ class MockLoader(LoaderProtocol):
         return self.data.get(filepath, {})
 
 
-class MockFilesystemProvider(FilesystemProviderProtocol):
+class MockFileSystem(FileSystemProtocol):
     
     def __init__(self, data: List[str]):
         self.data = data
@@ -66,11 +66,11 @@ class MockFilesystemProvider(FilesystemProviderProtocol):
         return self.data
         
 
-def create_unit_data_manager(loader: LoaderProtocol = None, file_provider: FilesystemProviderProtocol = None) -> DataManager:
+def create_unit_data_manager(loader: LoaderProtocol = None, file_provider: FileSystemProtocol = None) -> DataManager:
     if loader is None:
         loader = MockLoader({'scout': scout_unit_data(), 'bard': bard_unit_data()})
     if file_provider is None:
-        file_provider = MockFilesystemProvider(['scout', 'bard'])
+        file_provider = MockFileSystem(['scout', 'bard'])
     return DataManager(UnitDataDescription, loader, file_provider, 'search_path')
 
 
@@ -79,7 +79,7 @@ def test_build_unit_data_manager():
         'type': DataType.UNIT,
         'data_model': 'services.data.models.UnitDataDescription',
         'data_loader': 'utils.loader.YamlLoader',
-        'file_provider': 'utils.filesystem.LocalFilesystemProvider',
+        'file_provider': 'utils.file_system.LocalFileSystem',
         'search_path': 'data/units'
     }
     data_manager_config = DataManagerConfig(**data)
@@ -87,7 +87,7 @@ def test_build_unit_data_manager():
     assert isinstance(data_manager, DataManager)
     assert data_manager.data_model == UnitDataDescription
     assert data_manager.data_loader == YamlLoader
-    assert data_manager.file_provider == LocalFilesystemProvider
+    assert data_manager.file_provider == LocalFileSystem
     assert data_manager.search_path == Path('data/units')
  
 def test_load_unit_data_correct():
@@ -122,14 +122,14 @@ def test_load_unit_data_duplicate():
 
 def test_reload_unit_data_correct():
     loader_scout = MockLoader({'scout': scout_unit_data()})
-    scout_file_provider = MockFilesystemProvider(['scout'])
+    scout_file_provider = MockFileSystem(['scout'])
     unit_data_manager = create_unit_data_manager(loader=loader_scout, file_provider=scout_file_provider)
     unit_data_manager.load()
     assert len(unit_data_manager.data) == 1
     assert 'Scout' in unit_data_manager.data
 
     loader_bard = MockLoader({'bard': bard_unit_data()})
-    bard_file_provider = MockFilesystemProvider(['bard'])
+    bard_file_provider = MockFileSystem(['bard'])
     unit_data_manager.data_loader = loader_bard
     unit_data_manager.file_provider = bard_file_provider
     unit_data_manager.reload()

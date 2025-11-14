@@ -4,14 +4,14 @@ from pydantic import ValidationError
 
 from services.data.core import DataManagerConfig, DataManagerError, DataManagerProtocol
 from services.data.models import DataDescription
-from utils.filesystem import FilesystemProviderProtocol
+from utils.file_system import FileSystemProtocol
 from utils.reflection import import_class
 from utils.loader import LoaderProtocol
 
 
 class DataManager(DataManagerProtocol):
 
-    def __init__(self, data_model: Type[DataDescription], data_loader: Type[LoaderProtocol], file_provider: Type[FilesystemProviderProtocol], search_path: str | Path):
+    def __init__(self, data_model: Type[DataDescription], data_loader: Type[LoaderProtocol], file_provider: Type[FileSystemProtocol], search_path: str | Path):
         self.data: Dict[str, DataDescription] = {}
         self.data_model = data_model
         self.data_loader = data_loader
