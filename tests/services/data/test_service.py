@@ -2,7 +2,8 @@ from enum import Enum
 from typing import List
 
 import pytest
-from services.data.core import DataManagerError, DataManagerProtocol
+from services.core import LoadingError
+from services.data.core import DataManagerProtocol
 from services.data.models import DataDescription
 from services.data.service import DataService
 
@@ -10,6 +11,7 @@ from services.data.service import DataService
 class TestDataType(Enum):
     UNIT = 0
     ITEM = 1
+    NONE = 2
 
 
 class MockDataManager(DataManagerProtocol):
@@ -19,11 +21,11 @@ class MockDataManager(DataManagerProtocol):
         self.reloaded = False
         self.called = False
     
-    def load(self) -> List[DataManagerError]:
+    def load(self) -> List[LoadingError]:
         self.loaded = True
         return []
 
-    def reload(self) -> List[DataManagerError]:
+    def reload(self) -> List[LoadingError]:
         self.reloaded = True
         return []
 
@@ -75,8 +77,17 @@ def test_reload_data_managers(data_service: DataService):
     assert_data_manager(item_data_manager, False, True, False)
 
 def test_get_from_data_managers(data_service: DataService):
-    data_service.get(TestDataType.UNIT, 'id')
+    data = data_service.get(TestDataType.UNIT, 'id')
+    assert isinstance(data, DataDescription)
     unit_data_manager = data_service.data_managers[TestDataType.UNIT]
     assert_data_manager(unit_data_manager, False, False, True)
+    item_data_manager = data_service.data_managers[TestDataType.ITEM]
+    assert_data_manager(item_data_manager, False, False, False)
+
+def test_get_from_non_existing_data_manager(data_service: DataService):
+    data = data_service.get(TestDataType.NONE, 'id')
+    assert data is None
+    unit_data_manager = data_service.data_managers[TestDataType.UNIT]
+    assert_data_manager(unit_data_manager, False, False, False)
     item_data_manager = data_service.data_managers[TestDataType.ITEM]
     assert_data_manager(item_data_manager, False, False, False)

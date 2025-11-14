@@ -1,3 +1,5 @@
+from services.assets.core import AssetServiceConfig
+from services.assets.service import AssetServiceFactory
 from services.data.core import DataServiceConfig
 from services.data.manager import DataManagerFactory
 from services.data.service import DataService
@@ -8,9 +10,13 @@ from utils.loader import YamlLoader
 if __name__ == '__main__':
     config_loader = ConfigLoader(YamlLoader)
     data_service_config = config_loader.load_config(r'configuration\data_service.yaml', DataServiceConfig)
+    asset_service_config = config_loader.load_config(r'configuration\asset_service.yaml', AssetServiceConfig)
 
     data_service = DataService()
     for manager_config in data_service_config.data_managers:
         manager = DataManagerFactory.build(manager_config)
         data_service.register(manager_config.type, manager)
     data_service.load_all()
+
+    asset_service = AssetServiceFactory.build(asset_service_config)
+    asset_service.scan()

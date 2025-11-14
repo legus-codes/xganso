@@ -2,7 +2,8 @@ from pathlib import Path
 from typing import Dict, List, Type
 from pydantic import ValidationError
 
-from services.data.core import DataManagerConfig, DataManagerError, DataManagerProtocol
+from services.core import LoadingError
+from services.data.core import DataManagerConfig, DataManagerProtocol
 from services.data.models import DataDescription
 from utils.file_system import FileSystemProtocol
 from utils.reflection import import_class
@@ -18,24 +19,24 @@ class DataManager(DataManagerProtocol):
         self.file_provider = file_provider
         self.search_path = Path(search_path)
 
-    def load(self) -> List[DataManagerError]:
+    def load(self) -> List[LoadingError]:
         errors = []
         for filepath in self.file_provider.glob(self.search_path, '*.yaml'):
             unit_data = self.data_loader.load_file(filepath)
             try:
                 unit = self.data_model(**unit_data)
                 if unit.id in self.data:
-                    errors.append(DataManagerError(filepath, f'Unit with {unit.id} already registered'))
+                    errors.append(LoadingError(filename=filepath, message=f'Unit with {unit.id} already registered'))
                     continue
                 self.data[unit.id] = unit
             except ValidationError as ve:
-                errors.append(DataManagerError(filepath, str(ve)))
+                errors.append(LoadingError(filename=filepath, message=str(ve)))
 
         if errors:
             self._clear()
         return errors
 
-    def reload(self) -> List[DataManagerError]:
+    def reload(self) -> List[LoadingError]:
         self._clear()
         return self.load()
 
