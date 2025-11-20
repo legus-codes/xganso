@@ -1,14 +1,21 @@
-from dataclasses import dataclass
-import pygame
+from pygame import Surface
 
+from ecs_architecture.component.registry import register_component
 from ecs_framework.ecs import ComponentProtocol
 
 
-@dataclass
 class Sprite(ComponentProtocol):
-    sprite: pygame.Surface
+    sprite: Surface
 
 
-@dataclass
+class UnitSprite(ComponentProtocol):
+    character: str 
+    board: str
+
+@register_component('sprite')
+def build_unit_sprite(character: str, board: str) -> UnitSprite:
+    return UnitSprite(character=character, board=board)
+
+
 class ScreenSprite(ComponentProtocol):
-    sprite: pygame.Surface
+    sprite: Surface

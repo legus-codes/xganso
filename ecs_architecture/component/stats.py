@@ -31,3 +31,28 @@ class HP(ComponentProtocol):
 @register_component('hp')
 def build_hp(base: float, regen: float, growth: float) -> HP:
     return HP(current=base, max_value=base, regeneration=regen, growth=growth)
+
+
+class Speed(ComponentProtocol):
+    base: float = Field(ge=0)
+    growth: float = Field(ge=0)
+
+@register_component('speed')
+def build_speed(base: float, growth: float) -> Speed:
+    return Speed(base=base, growth=growth)
+
+
+class AttackRange(ComponentProtocol):
+    base: float = Field(ge=0)
+
+@register_component('attack_range')
+def build_attack_range(base: float) -> AttackRange:
+    return AttackRange(base=base)
+
+
+class MovementRange(ComponentProtocol):
+    base: float = Field(ge=0)
+
+@register_component('movement_range')
+def build_movement_range(base: float) -> MovementRange:
+    return MovementRange(base=base)
