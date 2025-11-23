@@ -101,4 +101,15 @@ def test_build_component_mock_attack(registry: MockComponentRegistry):
     component = builder._build_component('stats', 'mock_attack', {'attack': 5.5})
     assert isinstance(component, MockComponentAttack)
     assert component.attack == 5.5
+
+def test_build_component_mock_hp(registry: MockComponentRegistry):
+    builder = ComponentBuilder(registry)
+    component = builder._build_component('stats', 'mock_hp', {'hp': 53.52})
+    assert isinstance(component, MockComponentHp)
+    assert component.hp == 53.52
+
+def test_build_component_mock_defense(registry: MockComponentRegistry):
+    builder = ComponentBuilder(registry)
+    with pytest.raises(KeyError):
+        builder._build_component('stats', 'mock_defense', {'defense': 4.7})
     
