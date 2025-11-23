@@ -2,9 +2,10 @@
 # Unit Data Schema (Example)
 # ===========================
 
-id: "Scout"                    # Unique ID
-name: "Scout Goose"            # Display name
-unit_class: "Recon"            # Unit class
+identification:
+  id: "Scout"                    # Unique ID
+  name: "Scout Goose"            # Display name
+  unit_class: "Recon"            # Unit class
 
 sprites:                       # Sprite paths, relative to assets/
   character: "units/scout_goose_char.png"   # Used in menus, UI, cutscenes
@@ -29,4 +30,5 @@ stats:
   movement_range:              # Movement per turn component
     base: 6
 
-passive: "evasion_instinct"    # (Optional) Passive ability identifier of leaders
+skills:
+  passive: "evasion_instinct"    # (Optional) Passive ability identifier of leaders

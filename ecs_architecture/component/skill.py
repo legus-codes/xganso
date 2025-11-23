@@ -1,10 +1,10 @@
-from ecs_architecture.component.registry import register_component
+from ecs_architecture.component.registry import GlobalComponentRegistry
 from ecs_framework.ecs import ComponentProtocol
 
 
 class PassiveSkill(ComponentProtocol):
     name: str
 
-@register_component('passive')
+@GlobalComponentRegistry.register_component('skills.passive')
 def build_passive_skill(name: str) -> PassiveSkill:
     return PassiveSkill(name=name)
