@@ -4,7 +4,7 @@ from typing import List
 import pytest
 from services.core import LoadingError
 from services.data.core import DataManagerProtocol
-from services.data.models import DataDescription
+from services.data.models import DataDescription, IdentityDataDescription
 from services.data.service import DataService
 
 
@@ -31,7 +31,7 @@ class MockDataManager(DataManagerProtocol):
 
     def get(self, identifier: str) -> DataDescription | None:
         self.called = True
-        return DataDescription(id='id')
+        return DataDescription(identity=IdentityDataDescription(id=identifier))
 
 
 @pytest.fixture

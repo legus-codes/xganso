@@ -8,3 +8,11 @@ class PassiveSkill(ComponentProtocol):
 @GlobalComponentRegistry.register_component('skills.passive')
 def build_passive_skill(name: str) -> PassiveSkill:
     return PassiveSkill(name=name)
+
+test_config = {
+    'cls': PassiveSkill,
+    'builder': build_passive_skill,
+    'parameters': {'name': 'passive'},
+    'fields': {'name': 'passive'},
+    'invalid_cases': [],
+}

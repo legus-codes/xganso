@@ -2,7 +2,7 @@
 # Unit Data Schema (Example)
 # ===========================
 
-identification:
+identity:
   id: "Scout"                    # Unique ID
   name: "Scout Goose"            # Display name
   unit_class: "Recon"            # Unit class

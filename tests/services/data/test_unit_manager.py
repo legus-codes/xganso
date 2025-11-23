@@ -10,9 +10,11 @@ from utils.loader import LoaderProtocol, YamlLoader
 
 def scout_unit_data():
     return {
-        'id': 'Scout',
-        'name': 'Scout Goose',
-        'unit_class': 'Recon',
+        'identity': {
+            'id': 'Scout',
+            'name': 'Scout Goose',
+            'unit_class': 'Recon'
+        },
         'sprites': {
             'character': 'units/scout_goose_char.png',
             'board': 'units/scout_goose_board.png'
@@ -25,14 +27,18 @@ def scout_unit_data():
             'attack_range': {'base': 4},
             'movement_range': {'base': 6}
         },
-        'passive': 'evasion_instinct'
+        'skills': {
+            'passive': 'evasion_instinct'
+        }
     }
 
 def bard_unit_data():
     return {
-        'id': 'Bard',
-        'name': 'Bard Goose',
-        'unit_class': 'Support',
+        'identity': {
+            'id': 'Bard',
+            'name': 'Bard Goose',
+            'unit_class': 'Support'
+        },
         'sprites': {
             'character': 'units/bard_goose_char.png',
             'board': 'units/bard_goose_board.png'
@@ -45,7 +51,9 @@ def bard_unit_data():
             'attack_range': {'base': 5},
             'movement_range': {'base': 3}
         },
-        'passive': 'happy_melody'
+        'skills': {
+            'passive': 'happy_melody'
+        }
     }
 
 class MockLoader(LoaderProtocol):

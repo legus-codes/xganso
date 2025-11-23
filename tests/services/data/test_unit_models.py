@@ -7,9 +7,11 @@ from services.data.models import UnitDataDescription
 @pytest.fixture
 def unit_data() -> dict:
     return {
-        'id': 'Scout',
-        'name': 'Scout Goose',
-        'unit_class': 'Recon',
+        'identity': {
+            'id': 'Scout',
+            'name': 'Scout Goose',
+            'unit_class': 'Recon'
+        },
         'sprites': {
             'character': 'units/scout_goose_char.png',
             'board': 'units/scout_goose_board.png'
@@ -22,7 +24,9 @@ def unit_data() -> dict:
             'attack_range': {'base': 4},
             'movement_range': {'base': 6}
         },
-        'passive': 'evasion_instinct'
+        'skills': {
+            'passive': 'evasion_instinct'
+        }
     }
 
 
@@ -30,12 +34,18 @@ def test_correct_unit(unit_data: dict):
     UnitDataDescription(**unit_data)
 
 def test_correct_unit_without_passive(unit_data: dict):
-    unit_data.pop('passive')
+    unit_data['skills'].pop('passive')
     UnitDataDescription(**unit_data)
 
-@pytest.mark.parametrize('field', ['id', 'name', 'unit_class', 'sprites', 'stats'])
+@pytest.mark.parametrize('field', ['identity', 'sprites', 'stats', 'skills'])
 def test_incorrect_unit_without_fields(unit_data: dict, field: str):
     unit_data.pop(field)
+    with pytest.raises(ValidationError):
+        UnitDataDescription(**unit_data)
+
+@pytest.mark.parametrize('field', ['id', 'name', 'unit_class'])
+def test_incorrect_unit_without_identity_fields(unit_data: dict, field: str):
+    unit_data['identity'].pop(field)
     with pytest.raises(ValidationError):
         UnitDataDescription(**unit_data)
 

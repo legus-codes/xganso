@@ -25,12 +25,12 @@ class DataManager(DataManagerProtocol):
             unit_data = self.data_loader.load_file(filepath)
             try:
                 unit = self.data_model(**unit_data)
-                if unit.id in self.data:
-                    errors.append(LoadingError(filename=filepath, message=f'Unit with {unit.id} already registered'))
+                if unit.identity.id in self.data:
+                    errors.append(LoadingError(filename=str(filepath), message=f'Unit with {unit.identity.id} already registered'))
                     continue
-                self.data[unit.id] = unit
+                self.data[unit.identity.id] = unit
             except ValidationError as ve:
-                errors.append(LoadingError(filename=filepath, message=str(ve)))
+                errors.append(LoadingError(filename=str(filepath), message=str(ve)))
 
         if errors:
             self._clear()
