@@ -5,7 +5,7 @@ from ecs_framework.ecs import ComponentProtocol
 class UnitClass(ComponentProtocol):
     unit_class: str
 
-@GlobalComponentRegistry.register_component('identity.unit_class')
+@GlobalComponentRegistry.register_component('identity', 'unit_class')
 def build_unit_class(unit_class: str) -> UnitClass:
     return UnitClass(unit_class=unit_class)
 

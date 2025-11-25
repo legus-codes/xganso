@@ -8,7 +8,7 @@ class Defense(ComponentProtocol):
     base: float = Field(ge=0)
     growth: float = Field(ge=0)
 
-@GlobalComponentRegistry.register_component('stats.defense')
+@GlobalComponentRegistry.register_component('stats', 'defense')
 def build_defense(base: float, growth: float) -> Defense:
     return Defense(base=base, growth=growth)
 

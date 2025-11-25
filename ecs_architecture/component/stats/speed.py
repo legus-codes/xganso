@@ -8,7 +8,7 @@ class Speed(ComponentProtocol):
     base: float = Field(ge=0)
     growth: float = Field(ge=0)
 
-@GlobalComponentRegistry.register_component('stats.speed')
+@GlobalComponentRegistry.register_component('stats', 'speed')
 def build_speed(base: float, growth: float) -> Speed:
     return Speed(base=base, growth=growth)
 

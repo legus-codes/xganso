@@ -10,7 +10,7 @@ class HP(ComponentProtocol):
     regeneration: float = Field(ge=0)
     growth: float = Field(ge=0)
 
-@GlobalComponentRegistry.register_component('stats.hp')
+@GlobalComponentRegistry.register_component('stats', 'hp')
 def build_hp(base: float, regen: float, growth: float) -> HP:
     return HP(current=base, max_value=base, regeneration=regen, growth=growth)
 

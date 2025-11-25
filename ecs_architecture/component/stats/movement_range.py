@@ -7,7 +7,7 @@ from ecs_framework.ecs import ComponentProtocol
 class MovementRange(ComponentProtocol):
     base: float = Field(ge=0)
 
-@GlobalComponentRegistry.register_component('stats.movement_range')
+@GlobalComponentRegistry.register_component('stats', 'movement_range')
 def build_movement_range(base: float) -> MovementRange:
     return MovementRange(base=base)
 

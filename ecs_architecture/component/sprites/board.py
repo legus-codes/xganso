@@ -5,7 +5,7 @@ from ecs_framework.ecs import ComponentProtocol
 class UnitBoardSprite(ComponentProtocol):
     path: str
 
-@GlobalComponentRegistry.register_component('sprites.board')
+@GlobalComponentRegistry.register_component('sprites', 'board')
 def build_unit_sprite(path: str) -> UnitBoardSprite:
     return UnitBoardSprite(path=path)
 

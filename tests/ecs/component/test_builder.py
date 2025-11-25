@@ -8,14 +8,14 @@ from ecs_framework.ecs import ComponentProtocol
 class MockComponentAttack(ComponentProtocol):
     attack: float
     
-@GlobalComponentRegistry.register_component('stats.mock_attack')
+@GlobalComponentRegistry.register_component('stats', 'mock_attack')
 def build_mock_attack(attack: float) -> MockComponentAttack:
     return MockComponentAttack(attack=attack)
 
 class MockComponentHp(ComponentProtocol):
     hp: float
     
-@GlobalComponentRegistry.register_component('stats.mock_hp')
+@GlobalComponentRegistry.register_component('stats', 'mock_hp')
 def build_mock_hp(hp: float) -> MockComponentHp:
     return MockComponentHp(hp=hp)
 

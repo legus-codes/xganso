@@ -7,7 +7,7 @@ from ecs_framework.ecs import ComponentProtocol
 class AttackRange(ComponentProtocol):
     base: float = Field(ge=0)
 
-@GlobalComponentRegistry.register_component('stats.attack_range')
+@GlobalComponentRegistry.register_component('stats', 'attack_range')
 def build_attack_range(base: float) -> AttackRange:
     return AttackRange(base=base)
 

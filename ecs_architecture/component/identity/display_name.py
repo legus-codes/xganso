@@ -5,7 +5,7 @@ from ecs_framework.ecs import ComponentProtocol
 class DisplayName(ComponentProtocol):
     name: str
 
-@GlobalComponentRegistry.register_component('identity.name')
+@GlobalComponentRegistry.register_component('identity', 'name')
 def build_display_name(name: str) -> DisplayName:
     return DisplayName(name=name)
 

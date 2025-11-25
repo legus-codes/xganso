@@ -5,7 +5,7 @@ from ecs_framework.ecs import ComponentProtocol
 class Identifier(ComponentProtocol):
     identity: str
 
-@GlobalComponentRegistry.register_component('identity.id')
+@GlobalComponentRegistry.register_component('identity', 'id')
 def build_identifier(identity: str) -> Identifier:
     return Identifier(identity=identity)
 
