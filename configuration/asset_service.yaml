@@ -1,3 +1,2 @@
 data_loader: utils.loader.PngLoader
-file_provider: utils.file_system.LocalFileSystem
 search_path: 'assets'

@@ -16,7 +16,6 @@ class DataManagerConfig(BaseModel):
     type: DataType
     data_model: str
     data_loader: str
-    file_provider: str
     search_path: Path
 
 

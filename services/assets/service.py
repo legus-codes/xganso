@@ -5,7 +5,7 @@ from pygame import Surface
 
 from services.assets.core import AssetServiceConfig
 from services.core import LoadingError
-from utils.file_system import FileSystemProtocol
+from utils.file_system import FileSystemProtocol, LocalFileSystem
 from utils.loader import LoaderProtocol
 from utils.reflection import import_class
 
@@ -62,5 +62,4 @@ class AssetServiceFactory:
     @staticmethod
     def build(asset_service_config: AssetServiceConfig) -> AssetService:
         loader_cls = import_class(asset_service_config.data_loader)
-        file_cls = import_class(asset_service_config.file_provider)
-        return AssetService(loader_cls, file_cls, asset_service_config.search_path)
+        return AssetService(loader_cls, LocalFileSystem, asset_service_config.search_path)

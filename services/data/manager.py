@@ -5,7 +5,7 @@ from pydantic import ValidationError
 from services.core import LoadingError
 from services.data.core import DataManagerConfig, DataManagerProtocol
 from services.data.models import DataDescription
-from utils.file_system import FileSystemProtocol
+from utils.file_system import FileSystemProtocol, LocalFileSystem
 from utils.reflection import import_class
 from utils.loader import LoaderProtocol
 
@@ -53,5 +53,4 @@ class DataManagerFactory:
     def build(data_manager_config: DataManagerConfig) -> DataManager:
         model_cls = import_class(data_manager_config.data_model)
         loader_cls = import_class(data_manager_config.data_loader)
-        file_cls = import_class(data_manager_config.file_provider)
-        return DataManager(model_cls, loader_cls, file_cls, data_manager_config.search_path)
+        return DataManager(model_cls, loader_cls, LocalFileSystem, data_manager_config.search_path)
