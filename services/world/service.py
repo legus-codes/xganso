@@ -12,18 +12,18 @@ class WorldService:
         self.builder = builder
         self.worlds: Dict[str, ECS] = {}
 
-    def has_world(self, name: str) -> bool:
-        return name in self.worlds
-
-    def get_world(self, name: str) -> ECS | None:
-        return self.worlds.get(name, None)
-
     def build_world(self, name: str) -> None:
         if not self.has_world(name):
             self.worlds[name] = ECS()
 
     def destroy_world(self, name: str) -> None:
         self.worlds.pop(name, None)
+
+    def has_world(self, name: str) -> bool:
+        return name in self.worlds
+
+    def get_world(self, name: str) -> ECS | None:
+        return self.worlds.get(name, None)
 
     def build_entity(self, world_name: str, data: DataDescription) -> int | None:
         world = self.get_world(world_name)
@@ -40,7 +40,7 @@ class WorldService:
     def destroy_entity(self, world_name: str, entity_id: int) -> None:
         world = self.get_world(world_name)
         if world is None:
-            return None
+            return
 
         world.delete_entity(entity_id)
 
