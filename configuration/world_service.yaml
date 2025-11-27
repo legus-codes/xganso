@@ -1,0 +1,18 @@
+components:
+  identity:
+    - id
+    - name
+    - unit_class
+  sprites:
+    - board
+    - character
+  stats:
+    - attack
+    - defense
+    - hp
+    - speed
+    - attack_range
+    - movement_range
+  skills:
+    - passive
+  

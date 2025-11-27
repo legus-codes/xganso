@@ -1,4 +1,4 @@
-from typing import Dict, Protocol, Tuple
+from typing import Dict, List, Protocol
 
 
 class GlobalComponentRegistry:
@@ -24,6 +24,9 @@ class GlobalComponentRegistry:
 
 class ComponentRegistryProtocol(Protocol):
 
+    def load_all(self, data: Dict[str, List[str]]) -> None:
+        ...
+
     def load(self, section: str, component: str) -> None:
         ...
 
@@ -35,6 +38,11 @@ class ComponentRegistry(ComponentRegistryProtocol):
 
     def __init__(self):
         self.builders: Dict[str, Dict[str, callable]] = {}
+
+    def load_all(self, data: Dict[str, List[str]]) -> None:
+        for section, components in data.items():
+            for component in components:
+                self.load(section, component)
 
     def load(self, section: str, component: str) -> None:
         section_builders = GlobalComponentRegistry.get_section(section)

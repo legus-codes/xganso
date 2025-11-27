@@ -1,10 +1,16 @@
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Protocol
 
-from ecs_architecture.component.registry import ComponentRegistryProtocol, GlobalComponentRegistry
+from ecs_architecture.component.registry import ComponentRegistryProtocol
 from ecs_framework.ecs import ComponentProtocol
 
 
-class ComponentBuilder:
+class ComponentBuilderProtocol(Protocol):
+
+    def build(self, data: Dict[str, Dict[str, Any]]) -> List[ComponentProtocol]:
+        ...
+
+
+class ComponentBuilder(ComponentBuilderProtocol):
     
     def __init__(self, registry: ComponentRegistryProtocol):
         self.registry = registry
@@ -19,6 +25,6 @@ class ComponentBuilder:
     def _build_component(self, section: str, component: str, kwargs: Any) -> ComponentProtocol:
         builder_fn = self.registry.get_builder(section, component)
         if builder_fn is None:
-            raise KeyError(f'No builder registered for {GlobalComponentRegistry.get_full_name(section, component)}')
+            raise KeyError(f'No builder registered for {section} {component}')
 
         return builder_fn(**kwargs)

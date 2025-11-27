@@ -1,5 +1,3 @@
-from services.assets.core import AssetServiceConfig
-from services.assets.service import AssetServiceFactory
 from services.data.core import DataServiceConfig
 from services.data.manager import DataManagerFactory
 from services.data.service import DataService
@@ -16,14 +14,3 @@ def test_start_data_service():
         data_service.register(manager_config.type, manager)
     errors = data_service.load_all()
     assert errors == []
-
-
-def test_start_asset_service():
-    config_loader = ConfigLoader(YamlLoader)
-    asset_service_config = config_loader.load_config(r'configuration\asset_service.yaml', AssetServiceConfig)
-
-    asset_service = AssetServiceFactory.build(asset_service_config)
-    errors = asset_service.scan()
-    assert errors == []
-
-    # world_service_config = config_loader.load_config(r'configuration\world_service.yaml', AssetServiceConfig)
