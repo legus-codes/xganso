@@ -16,8 +16,8 @@ def scout_unit_data():
             'unit_class': 'Recon'
         },
         'sprites': {
-            'character': 'units/scout_goose_char.png',
-            'board': 'units/scout_goose_board.png'
+            'character': 'units/scout_goose_char',
+            'board': 'units/scout_goose_board'
         },
         'stats': {
             'hp': {'base': 80, 'growth': 5, 'regen': 2},
@@ -40,8 +40,8 @@ def bard_unit_data():
             'unit_class': 'Support'
         },
         'sprites': {
-            'character': 'units/bard_goose_char.png',
-            'board': 'units/bard_goose_board.png'
+            'character': 'units/bard_goose_char',
+            'board': 'units/bard_goose_board'
         },
         'stats': {
             'hp': {'base': 90, 'growth': 6, 'regen': 3},

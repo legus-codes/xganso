@@ -13,8 +13,8 @@ def unit_data() -> dict:
             'unit_class': 'Recon'
         },
         'sprites': {
-            'character': 'units/scout_goose_char.png',
-            'board': 'units/scout_goose_board.png'
+            'character': 'units/scout_goose_char',
+            'board': 'units/scout_goose_board'
         },
         'stats': {
             'hp': {'base': 80, 'growth': 5, 'regen': 2},

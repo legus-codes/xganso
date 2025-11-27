@@ -26,5 +26,7 @@ class ComponentBuilder(ComponentBuilderProtocol):
         builder_fn = self.registry.get_builder(section, component)
         if builder_fn is None:
             raise KeyError(f'No builder registered for {section} {component}')
-
-        return builder_fn(**kwargs)
+        
+        if isinstance(kwargs, dict):
+            return builder_fn(**kwargs)
+        return builder_fn(kwargs)

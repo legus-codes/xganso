@@ -51,6 +51,13 @@ def test_build_mock_attack(registry: MockComponentRegistry):
     assert isinstance(components[0], MockComponentAttack)
     assert components[0].attack == 5.5
 
+def test_build_mock_attack_without_dict(registry: MockComponentRegistry):
+    builder = ComponentBuilder(registry)
+    components = builder.build({'stats': {'mock_attack': 5.5}})
+    assert len(components) == 1
+    assert isinstance(components[0], MockComponentAttack)
+    assert components[0].attack == 5.5
+
 def test_build_mock_attack_wrong_parameter(registry: MockComponentRegistry):
     builder = ComponentBuilder(registry)
     with pytest.raises(TypeError):
