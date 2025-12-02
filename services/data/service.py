@@ -1,8 +1,8 @@
-from typing import Dict
+from typing import Dict, List
 
-
+from services.core import LoadingError
 from services.data.core import DataManagerProtocol, DataType
-from services.data.data_models import DataDescription
+from services.data.models import DataDescription
 
 
 class DataService:
@@ -13,13 +13,17 @@ class DataService:
     def register(self, data_type: DataType, data_manager: DataManagerProtocol):
         self.data_managers[data_type] = data_manager
 
-    def load_all(self) -> None:
+    def load_all(self) -> List[LoadingError]:
+        errors = []
         for data_manager in self.data_managers.values():
-            data_manager.load()
+            errors.extend(data_manager.load())
+        return errors
     
-    def reload_all(self) -> None:
+    def reload_all(self) -> List[LoadingError]:
+        errors = []
         for data_manager in self.data_managers.values():
-            data_manager.reload()
+            errors.extend(data_manager.reload())
+        return errors
 
     def get(self, data_type: DataType, identifier: str) -> DataDescription:
         if data_type in self.data_managers:

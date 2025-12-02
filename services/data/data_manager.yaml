@@ -1,6 +1,0 @@
-data_managers:
-  - type: 'Unit'
-    model: services.data.data_models.UnitDataDescription
-    repository: utils.repository.YamlRepository
-    data_path: data/units
-  

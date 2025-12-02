@@ -1,8 +1,10 @@
 from itertools import count
 from typing import Any, Dict, Generator, List, Protocol, Set, Tuple
 
+from pydantic import BaseModel
 
-class ComponentProtocol(Protocol):
+
+class ComponentProtocol(BaseModel):
     ...
 
 

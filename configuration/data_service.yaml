@@ -1,0 +1,6 @@
+data_managers:
+  - type: 'Unit'
+    data_model: services.data.models.UnitDataDescription
+    data_loader: utils.loader.YamlLoader
+    search_path: data/units
+  

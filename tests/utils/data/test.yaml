@@ -4,11 +4,11 @@
 
 id: "Scout"                    # Unique ID
 name: "Scout Goose"            # Display name
-unit_class: "Recon"                 # Unit class
+unit_class: "Recon"            # Unit class
 
 sprites:                       # Sprite paths, relative to assets/
-  character: "units/scout_goose_char.png"   # Used in menus, UI, cutscenes
-  board: "units/scout_goose_board.png"      # Used on the tactical board
+  character: "units/scout_goose_char"   # Used in menus, UI, cutscenes
+  board: "units/scout_goose_board"      # Used on the tactical board
 
 stats:
   hp:                          # Hit Points component

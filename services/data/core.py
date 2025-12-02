@@ -1,28 +1,22 @@
-from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 from typing import List, Protocol
 
 from pydantic import BaseModel
 
-from services.data.data_models import DataDescription
+from services.core import LoadingError
+from services.data.models import DataDescription
 
 
 class DataType(Enum):
     UNIT = 'Unit'
-    
-
-@dataclass
-class DataManagerError:
-    filename: str
-    message: str
 
 
 class DataManagerConfig(BaseModel):
     type: DataType
-    model: str
-    repository: str
-    data_path: Path
+    data_model: str
+    data_loader: str
+    search_path: Path
 
 
 class DataServiceConfig(BaseModel):
@@ -31,10 +25,10 @@ class DataServiceConfig(BaseModel):
 
 class DataManagerProtocol(Protocol):
 
-    def load(self) -> List[DataManagerError]:
+    def load(self) -> List[LoadingError]:
         ...
 
-    def reload(self) -> List[DataManagerError]:
+    def reload(self) -> List[LoadingError]:
         ...
 
     def get(self, identifier: str) -> DataDescription | None:

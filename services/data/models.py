@@ -1,6 +1,19 @@
 from pydantic import BaseModel
 
 
+class IdentityDataDescription(BaseModel):
+    id: str
+
+
+class DataDescription(BaseModel):
+    identity: IdentityDataDescription
+
+
+class UnitIdentityDataDescription(IdentityDataDescription):
+    name: str
+    unit_class: str
+
+
 class SpriteDataDescription(BaseModel):
     character: str
     board: str
@@ -27,13 +40,12 @@ class StatsDataDescription(BaseModel):
     movement_range: BaseStatDataDescription
 
 
-class DataDescription(BaseModel):
-    id: str
+class SkillsDataDescription(BaseModel):
+    passive: str | None = None
 
 
 class UnitDataDescription(DataDescription):
-    name: str
-    unit_class: str
+    identity: UnitIdentityDataDescription
     sprites: SpriteDataDescription
     stats: StatsDataDescription
-    passive: str | None = None
+    skills: SkillsDataDescription
