@@ -1,10 +1,10 @@
+from dataclasses import dataclass
 from itertools import count
 from typing import Any, Dict, Generator, List, Protocol, Set, Tuple
 
-from pydantic import BaseModel
 
-
-class ComponentProtocol(BaseModel):
+@dataclass(slots=True)
+class ComponentProtocol(Protocol):
     ...
 
 
@@ -70,6 +70,7 @@ class ECS:
         
         self.world[component_type].pop(entity_id)
 
+    # TODO: upgrade API
     def get_entity_component(self, entity_id: int, component_type: type) -> ComponentProtocol:
         if not self.has_component(component_type):
             return None

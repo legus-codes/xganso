@@ -1,8 +1,7 @@
-from dataclasses import dataclass
 from enum import Enum
-from typing import Tuple
 
 from ecs_framework.ecs import ComponentProtocol
+from ui.primitives import IVec2
 
 
 class Key(Enum):
@@ -15,29 +14,25 @@ class MouseButton(Enum):
     right = 3
 
 
-@dataclass
 class KeyDown(ComponentProtocol):
     char: str
     key: int
 
 
-@dataclass
-class MousePosition(ComponentProtocol):
-    position: Tuple[int, int]
+class MouseMove(ComponentProtocol):
+    position: IVec2
 
 
-@dataclass
-class MouseClicked(ComponentProtocol):
+class MouseClick(ComponentProtocol):
     button: MouseButton
-    position: Tuple[int, int]
+    position: IVec2
 
 
-@dataclass
-class MouseReleased(ComponentProtocol):
+class MouseRelease(ComponentProtocol):
     button: MouseButton
-    position: Tuple[int, int]
+    position: IVec2
 
 
-@dataclass
-class MousePressed(ComponentProtocol):
+class MousePress(ComponentProtocol):
     button: MouseButton
+    position: IVec2

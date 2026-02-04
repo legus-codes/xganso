@@ -1,30 +1,43 @@
-from dataclasses import dataclass
-
-import pygame
+from enum import Enum
 
 from ecs_framework.ecs import ComponentProtocol
+from ui.primitives import Vec2
 
 
-@dataclass
-class Widget(ComponentProtocol):
-    pass
-
-
-@dataclass
 class Parent(ComponentProtocol):
     entity: int
 
 
-@dataclass
-class RelativeRect(ComponentProtocol):
-    rectangle: pygame.Rect
+class Transform(ComponentProtocol):
+    position: Vec2
+    size: Vec2
 
 
-@dataclass
-class Rect(ComponentProtocol):
-    rectangle: pygame.Rect
+class WorldTransform(ComponentProtocol):
+    position: Vec2
+    size: Vec2
 
 
-@dataclass
-class RectDirty(ComponentProtocol):
-    pass
+class RenderLayer(ComponentProtocol):
+    layer: int
+
+
+class Padding(ComponentProtocol):
+    left: int = 0
+    right: int = 0
+    top: int = 0
+    bottom: int = 0
+
+
+class Anchor(ComponentProtocol):
+    value: Vec2
+
+
+class AlignmentEnum(Enum):
+    left = 0
+    center = 1
+    right = 2
+
+
+class TextAlignment(ComponentProtocol):
+    alignment: AlignmentEnum
