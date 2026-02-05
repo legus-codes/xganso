@@ -1,5 +1,5 @@
 from itertools import count
-from typing import Any, Dict, Generator, List, Protocol, Set, Tuple
+from typing import Any, Dict, Generator, Iterable, List, Protocol, Set, Tuple
 
 
 class ComponentProtocol(Protocol):
@@ -10,6 +10,12 @@ class SystemProtocol(Protocol):
 
     def execute(self, delta_time: float) -> None:
         ...
+
+
+class Bundle:
+
+    def components(self) -> Iterable[ComponentProtocol]:
+        raise NotImplementedError
 
 
 class ECS:
@@ -37,6 +43,12 @@ class ECS:
 
     def has_system(self, system: Any) -> bool:
         return system in self.systems
+
+    def spawn(self, bundle: Bundle) -> int:
+        entity_id = self.create_entity()
+        for component in bundle.components():
+            self.add_component(entity_id, component)
+        return entity_id
 
     def create_entity(self) -> int:
         entity_id = next(self._next_entity_id)

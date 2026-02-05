@@ -3,7 +3,7 @@ import pygame
 from dataclasses import dataclass, field
 from typing import Iterable, Optional, Set
 
-from ecs_framework.ecs import ECS, ComponentProtocol
+from ecs_framework.ecs import ECS, Bundle, ComponentProtocol
 from ui.components.content import Text
 from ui.components.style import Background, Frame
 from ui.components.layout import GridLayout, HorizontalLayout, RenderLayer, Transform, Parent, VerticalLayout
@@ -11,13 +11,6 @@ from ui.components.rendering import Dirty
 from ui.components.behavior import Enabled, Focusable, Hoverable, Pressable, Selectable, Toggleable, Typeable
 from ui.primitives import Color, FrameDescription, GridLayoutDescription, HorizontalLayoutDescription, InteractionColors, LayoutDescription, Vec2, VerticalLayoutDescription
 
-
-
-@dataclass
-class Bundle:
-
-    def components(self) -> Iterable[ComponentProtocol]:
-        raise NotImplementedError
 
 
 @dataclass
