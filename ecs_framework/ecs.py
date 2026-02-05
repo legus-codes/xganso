@@ -1,9 +1,7 @@
-from dataclasses import dataclass
 from itertools import count
 from typing import Any, Dict, Generator, List, Protocol, Set, Tuple
 
 
-@dataclass(slots=True)
 class ComponentProtocol(Protocol):
     ...
 
