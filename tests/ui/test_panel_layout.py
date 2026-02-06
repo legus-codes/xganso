@@ -1,0 +1,37 @@
+import pytest
+from ui.components.layout import GridLayout, HorizontalLayout, Layout, VerticalLayout
+from ui.primitives import GridLayoutDescription, HorizontalLayoutDescription, LayoutDescription, VerticalLayoutDescription
+from ui.widgets import PanelLayoutBundle
+
+
+def test_default_panel_layout():
+    panel_layout = PanelLayoutBundle()
+    panel_layout_components = list(panel_layout.components())
+
+    expected_components = []
+    assert len(panel_layout_components) == len(expected_components)
+    for component in expected_components:
+        assert any(isinstance(obj, component) for obj in panel_layout_components)
+
+    non_existing_components = [Layout, HorizontalLayout, VerticalLayout, GridLayout]
+    for component in non_existing_components:
+        assert not any(isinstance(obj, component) for obj in panel_layout_components)
+
+@pytest.mark.parametrize("layout_description", [HorizontalLayoutDescription(10), VerticalLayoutDescription(10), GridLayoutDescription(2, 2, 10, 10)])
+def test_panel_layout_variants(layout_description: LayoutDescription):
+    panel_layout = PanelLayoutBundle(layout_description)
+    panel_layout_components = list(panel_layout.components())
+
+    if isinstance(layout_description, HorizontalLayoutDescription):
+        expected_component = HorizontalLayout
+        non_existing_components = [VerticalLayout, GridLayout]
+    elif isinstance(layout_description, VerticalLayoutDescription):
+        expected_component = VerticalLayout
+        non_existing_components = [HorizontalLayout, GridLayout]
+    elif isinstance(layout_description, GridLayoutDescription):
+        expected_component = GridLayout
+        non_existing_components = [HorizontalLayout, VerticalLayout]
+
+    assert any(isinstance(obj, expected_component) for obj in panel_layout_components)
+    for component in non_existing_components:
+        assert not any(isinstance(obj, component) for obj in panel_layout_components)
