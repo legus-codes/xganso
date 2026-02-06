@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
+from typing import Set
 
 from ecs_framework.ecs import ComponentProtocol
 from ui.primitives import Vec2
@@ -8,6 +9,11 @@ from ui.primitives import Vec2
 @dataclass(slots=True)
 class Parent(ComponentProtocol):
     entity: int
+
+
+@dataclass(slots=True)
+class Children(ComponentProtocol):
+    entities: Set[int]
 
 
 @dataclass(slots=True)
@@ -62,7 +68,7 @@ class Anchor(ComponentProtocol):
     value: Vec2
 
 
-class AlignmentEnum(Enum):
+class TextAlignmentEnum(Enum):
     left = 0
     center = 1
     right = 2
@@ -70,4 +76,4 @@ class AlignmentEnum(Enum):
 
 @dataclass(slots=True)
 class TextAlignment(ComponentProtocol):
-    alignment: AlignmentEnum
+    alignment: TextAlignmentEnum

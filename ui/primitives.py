@@ -57,3 +57,11 @@ class GridLayoutDescription(LayoutDescription):
     cols: int
     h_spacing: int
     v_spacing: int
+
+
+@dataclass
+class TextStyleDescription:
+    font: str
+    size: int
+    color: InteractionColors | None
+

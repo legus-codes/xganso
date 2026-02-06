@@ -1,15 +1,15 @@
 import pygame
 
 from dataclasses import dataclass, field
-from typing import Iterable, Optional, Set
+from typing import Callable, Iterable, Optional, Set
 
 from ecs_framework.ecs import ECS, Bundle, ComponentProtocol
 from ui.components.content import Text
-from ui.components.style import Background, Frame
-from ui.components.layout import GridLayout, HorizontalLayout, RenderLayer, Transform, Parent, VerticalLayout
+from ui.components.style import Background, Frame, TextStyle
+from ui.components.layout import TextAlignmentEnum, GridLayout, HorizontalLayout, RenderLayer, TextAlignment, Transform, Parent, VerticalLayout
 from ui.components.rendering import Dirty
-from ui.components.behavior import Enabled, Focusable, Hoverable, Pressable, Selectable, Toggleable, Typeable
-from ui.primitives import Color, FrameDescription, GridLayoutDescription, HorizontalLayoutDescription, InteractionColors, LayoutDescription, Vec2, VerticalLayoutDescription
+from ui.components.behavior import Action, Enabled, Focusable, Hoverable, Pressable, Selectable, Toggleable, Typeable
+from ui.primitives import Color, FrameDescription, GridLayoutDescription, HorizontalLayoutDescription, InteractionColors, LayoutDescription, TextStyleDescription, Vec2, VerticalLayoutDescription
 
 
 
@@ -19,7 +19,7 @@ class PanelBundle(Bundle):
     position: Vec2 = field(default_factory=Vec2)
     parent: int | None = None
     layer: int = 0
-    background: InteractionColors | None = None
+    background_colors: InteractionColors | None = None
     frame: FrameDescription | None = None
     layout: LayoutDescription | None = None
 
@@ -30,9 +30,9 @@ class PanelBundle(Bundle):
         yield Dirty()
         if self.parent is not None:
             yield Parent(self.parent)
-        if self.background:
-            yield Background(self.background)
-        if self.frame and self.frame.width > 0:
+        if self.background_colors is not None:
+            yield Background(self.background_colors)
+        if self.frame is not None and self.frame.width > 0:
             yield Frame(self.frame.width, self.frame.colors)
         if isinstance(self.layout, HorizontalLayoutDescription):
             yield HorizontalLayout(self.layout.spacing)
@@ -42,6 +42,88 @@ class PanelBundle(Bundle):
             yield GridLayout(self.layout.rows, self.layout.rows, self.layout.h_spacing, self.layout.v_spacing)
 
 
+@dataclass
+class TextBundle(Bundle):
+    text: str
+    text_style: TextStyleDescription
+    size: Vec2
+    position: Vec2 = field(default_factory=Vec2)
+    parent: int | None = None
+    layer: int = 0
+    background_colors: InteractionColors | None = None
+    frame: FrameDescription | None = None
+    text_alignment: TextAlignmentEnum = TextAlignmentEnum.left
+
+    def components(self) -> Iterable[ComponentProtocol]:
+        yield Text(self.text)
+        yield TextStyle(self.text_style.font, self.text_style.size, self.text_style.color)
+        yield TextAlignment(self.text_alignment)
+        yield Transform(self.size, self.position)
+        yield RenderLayer(self.layer)
+        yield Enabled()
+        yield Dirty()
+        if self.parent is not None:
+            yield Parent(self.parent)
+        if self.background_colors is not None:
+            yield Background(self.background_colors)
+        if self.frame is not None and self.frame.width > 0:
+            yield Frame(self.frame.width, self.frame.colors)
+
+
+@dataclass
+class ButtonBundle(Bundle):
+    text: str
+    callback: Callable[[], None]
+    text_style: TextStyleDescription
+    size: Vec2
+    position: Vec2 = field(default_factory=Vec2)
+    parent: int | None = None
+    layer: int = 0
+    background_colors: InteractionColors | None = None
+    frame: FrameDescription | None = None
+    text_alignment: TextAlignmentEnum = TextAlignmentEnum.left
+
+    def components(self) -> Iterable[ComponentProtocol]:
+        yield Action(self.callback)
+        yield Text(self.text)
+        yield TextStyle(self.text_style.font, self.text_style.size, self.text_style.color)
+        yield TextAlignment(self.text_alignment)
+        yield Transform(self.size, self.position)
+        yield RenderLayer(self.layer)
+        yield Enabled()
+        yield Dirty()
+        yield Hoverable()
+        yield Pressable()
+        if self.parent is not None:
+            yield Parent(self.parent)
+        if self.background_colors is not None:
+            yield Background(self.background_colors)
+        if self.frame is not None and self.frame.width > 0:
+            yield Frame(self.frame.width, self.frame.colors)
+
+
+# Content
+# Style
+# Layout
+# Interaction
+# Lifecycle
+
+# yield Text(...)
+# yield TextStyle(...)
+# yield TextAlignment(...)
+
+# yield Transform(...)
+# yield RenderLayer(...)
+
+# yield Background(...)
+# yield Frame(...)
+
+# yield Hoverable()
+# yield Pressable()
+# yield Action(...)
+
+# yield Enabled()
+# yield Dirty()
 
 # def _get_default_colors() -> StateColor:
 #     return StateColor(background=Color(0, 0, 0, 255),

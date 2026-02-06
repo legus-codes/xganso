@@ -16,6 +16,6 @@ class Frame(ComponentProtocol):
 
 @dataclass(slots=True)
 class TextStyle(ComponentProtocol):
-    color: InteractionColors
-    size: int
     font: str
+    size: int
+    color: InteractionColors

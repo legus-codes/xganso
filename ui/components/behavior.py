@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Set
+from typing import Callable, Set
 
 from ecs_framework.ecs import ComponentProtocol
 
@@ -55,7 +55,7 @@ class SelectionGroup(ComponentProtocol):
 
 @dataclass(slots=True)
 class Action(ComponentProtocol):
-    name: str
+    callback: Callable[[], None]
 
 
 @dataclass(slots=True)

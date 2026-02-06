@@ -27,10 +27,10 @@ def test_full_panel():
     position = Vec2(x=50, y=50)
     parent = 1
     layer = 1
-    background = InteractionColors(normal=Color(20, 20, 20))
+    background_colors = InteractionColors(normal=Color(20, 20, 20))
     frame = FrameDescription(3, InteractionColors(normal=Color(20, 20, 200)))
     layout = HorizontalLayoutDescription(10)
-    panel = PanelBundle(size, position, parent, layer, background, frame, layout)
+    panel = PanelBundle(size, position, parent, layer, background_colors, frame, layout)
     panel_components = list(panel.components())
 
     expected_components = [Transform, RenderLayer, Enabled, Dirty, Parent, Background, Frame, Layout]
