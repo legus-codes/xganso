@@ -4,14 +4,19 @@ from ui.components.layout import Parent, RenderLayer, TextAlignment, TextAlignme
 from ui.components.rendering import Dirty
 from ui.components.style import Background, Frame, TextStyle
 from ui.primitives import Color, FrameDescription, InteractionColors, TextStyleDescription, Vec2
-from ui.widgets import TextBundle
+from ui.widgets import RectTransformBundle, SurfaceBundle, TextBundle, TextVisualBundle, WidgetCoreBundle
 
 
 def test_default_text():
-    text = TextBundle('text', TextStyleDescription('couriernew', 16, InteractionColors(normal=Color(20, 20, 20))), Vec2(x=50, y=50))
+    core = WidgetCoreBundle()
+    text = TextVisualBundle('text', TextStyleDescription('couriernew', 16, InteractionColors(normal=Color(20, 20, 20))))
+    transform = RectTransformBundle(Vec2(x=50, y=50))
+    decoration = SurfaceBundle()
+
+    text = TextBundle(core, text, transform, decoration)
     text_components = list(text.components())
 
-    expected_components = [Text, TextStyle, TextAlignment, Transform, RenderLayer, Enabled, Dirty]
+    expected_components = [Enabled, Dirty, Text, TextStyle, TextAlignment, Transform, RenderLayer]
     assert len(text_components) == len(expected_components)
     for component in expected_components:
         assert any(isinstance(obj, component) for obj in text_components)
@@ -21,20 +26,16 @@ def test_default_text():
         assert not any(isinstance(obj, component) for obj in text_components)
 
 
-def test_full_panel():
-    text = 'text'
-    text_style = TextStyleDescription('couriernew', 16, InteractionColors(normal=Color(20, 20, 20)))
-    size = Vec2(x=50, y=50)
-    position = Vec2(x=50, y=50)
-    parent = 1
-    layer = 1
-    background_colors = InteractionColors(normal=Color(20, 20, 20))
-    frame = FrameDescription(3, InteractionColors(normal=Color(20, 20, 200)))
-    text_alignment = TextAlignmentEnum.center
-    panel = TextBundle(text, text_style, size, position, parent, layer, background_colors, frame, text_alignment)
-    panel_components = list(panel.components())
+def test_full_text():
+    core = WidgetCoreBundle()
+    text = TextVisualBundle('text', TextStyleDescription('couriernew', 16, InteractionColors(normal=Color(20, 20, 20))), TextAlignmentEnum.center)
+    transform = RectTransformBundle(Vec2(x=50, y=50), Vec2(x=50, y=50), 1, 1)
+    decoration = SurfaceBundle(InteractionColors(normal=Color(20, 20, 20)), FrameDescription(3, InteractionColors(normal=Color(20, 20, 200))))
 
-    expected_components = [Text, TextStyle, TextAlignment, Transform, RenderLayer, Enabled, Dirty, Parent, Background, Frame]
-    assert len(panel_components) == len(expected_components)
+    text = TextBundle(core, text, transform, decoration)
+    text_components = list(text.components())
+
+    expected_components = [Enabled, Dirty, Text, TextStyle, TextAlignment, Transform, RenderLayer, Parent, Background, Frame]
+    assert len(text_components) == len(expected_components)
     for component in expected_components:
-        assert any(isinstance(obj, component) for obj in panel_components)
+        assert any(isinstance(obj, component) for obj in text_components)
