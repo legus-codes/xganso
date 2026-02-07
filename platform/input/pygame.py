@@ -3,7 +3,7 @@ import pygame
 
 from core.primitives import IVec2
 from ecs_framework.ecs import EventProtocol
-from ui.events.input import KeyDown, MouseButton, MouseButtonDown, MouseMove, MouseButtonUp, QuitRequested
+from platform.input.events import KeyDown, MouseButton, MouseButtonDown, MouseMove, MouseButtonUp, QuitRequested
 
 
 class PygameEventConverter:

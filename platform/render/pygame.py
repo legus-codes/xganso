@@ -1,7 +1,7 @@
 from typing import List
 import pygame
-from ecs_framework.ecs import ECS, DrawCommand
-from ui.renderer import DrawRect, DrawText
+from ecs_framework.ecs import DrawCommand
+from platform.render.commands import DrawRect, DrawText
 
 
 class PygameRenderer:
