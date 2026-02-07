@@ -7,7 +7,7 @@ from ui.components.content import Text, InputValue
 from ui.components.style import Background, Frame, TextStyle
 from ui.components.layout import TextAlignmentEnum, GridLayout, HorizontalLayout, RenderLayer, TextAlignment, Transform, Parent, VerticalLayout
 from ui.components.rendering import Dirty
-from ui.components.behavior import Enabled, Focusable, Hoverable, Pressable, Toggleable, Toggled, Trigger, InputFilter
+from ui.components.behavior import Enabled, Focusable, Hoverable, Pressable, Selectable, Selected, SelectionGroup, Toggleable, Toggled, Trigger, InputFilter
 from ui.types import FrameDescription, GridLayoutDescription, HorizontalLayoutDescription, InteractionColors, LayoutDescription, TextStyleDescription, VerticalLayoutDescription
 
 
@@ -107,3 +107,15 @@ class InputBundle(Bundle):
         yield Focusable()
         yield InputValue(self.input_value)
         yield InputFilter(self.input_filter)
+
+
+@dataclass
+class SelectableBundle(Bundle):
+    radio_group: str
+    active: bool = False
+
+    def components(self) -> Iterable[ComponentProtocol]:
+        yield SelectionGroup(self.radio_group)
+        yield Selectable()
+        if self.active:
+            yield Selected()

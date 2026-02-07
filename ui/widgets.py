@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Iterable
 
 from ecs_framework.ecs import Bundle, ComponentProtocol
-from ui.bundles import ActivatableBundle, InputBundle, PanelLayoutBundle, PointerBundle, RectTransformBundle, SurfaceBundle, TextVisualBundle, ToggleableBundle, WidgetCoreBundle
+from ui.bundles import ActivatableBundle, InputBundle, PanelLayoutBundle, PointerBundle, RectTransformBundle, SelectableBundle, SurfaceBundle, TextVisualBundle, ToggleableBundle, WidgetCoreBundle
 
 
 @dataclass
@@ -90,6 +90,22 @@ class TextInputBundle(Bundle):
         yield from self.inputable.components()
     
 
+@dataclass
+class RadioButtonBundle(Bundle):
+    core: WidgetCoreBundle
+    text: TextVisualBundle
+    transform: RectTransformBundle
+    surface: SurfaceBundle
+    pointer: PointerBundle
+    selectable: SelectableBundle
+    
+    def components(self) -> Iterable[ComponentProtocol]:
+        yield from self.core.components()
+        yield from self.text.components()
+        yield from self.transform.components()
+        yield from self.surface.components()
+        yield from self.pointer.components()
+        yield from self.selectable.components()
 
 
 
