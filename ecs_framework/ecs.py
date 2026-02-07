@@ -2,8 +2,10 @@ from itertools import count
 from typing import Any, Dict, Generator, Iterable, List, Protocol, Set, Tuple
 
 
-class ComponentProtocol(Protocol):
-    ...
+class ComponentProtocol(Protocol): ...
+
+
+class EventProtocol(Protocol): ...
 
 
 class SystemProtocol(Protocol):
@@ -18,13 +20,22 @@ class Bundle:
         raise NotImplementedError
 
 
+class DrawCommand(Protocol):
+
+    @property
+    def z(self) -> int: ...
+
+
 class ECS:
 
     def __init__(self) -> None:
         self._next_entity_id = count()
         self.entities: Set[int] = set()
         self.world: Dict[type, Dict[int, ComponentProtocol]] = {}
-        self.systems: list = []
+        self.systems: List[SystemProtocol] = []
+        self.events: List[EventProtocol] = []
+        self.render_queue: List[DrawCommand] = []
+
         self.running = True
 
     def reset(self) -> None:
@@ -122,6 +133,21 @@ class ECS:
 
     def add_system(self, system: Any) -> None:
         self.systems.append(system)
+
+    def add_events(self, events: List[EventProtocol]) -> None:
+        self.events.extend(events)
+
+    def clear_events(self) -> None:
+        self.events.clear()
+
+    def add_draw_command(self, draw_command: DrawCommand) -> None:
+        self.render_queue.append(draw_command)
+
+    def get_draw_commands(self ) -> List[DrawCommand]:
+        return self.render_queue
+
+    def clear_render_queue(self) -> None:
+        self.render_queue.clear()
 
     def execute(self, delta_time: float) -> None:
         for system in self.systems:
