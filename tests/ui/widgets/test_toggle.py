@@ -1,21 +1,24 @@
+from core.primitives import Color, Vec2
+from ui.bundles import ActivatableBundle, PointerBundle, RectTransformBundle, SurfaceBundle, TextVisualBundle, ToggleableBundle, WidgetCoreBundle
 from ui.components.behavior import Enabled, Hoverable, Pressable, Toggleable, Toggled, Trigger
 from ui.components.content import Text
 from ui.components.layout import Parent, RenderLayer, TextAlignment, TextAlignmentEnum, Transform
 from ui.components.rendering import Dirty
 from ui.components.style import Background, Frame, TextStyle
-from ui.primitives import Color, FrameDescription, InteractionColors, TextStyleDescription, Vec2
-from ui.widgets import InteractableBundle, RectTransformBundle, SurfaceBundle, TextVisualBundle, ToggleBundle, ToggleableBundle, WidgetCoreBundle
+from ui.types import FrameDescription, InteractionColors, TextStyleDescription
+from ui.widgets import ToggleBundle
 
 
 def test_default_toggle():
     core = WidgetCoreBundle()
     text = TextVisualBundle('text', TextStyleDescription('couriernew', 16, InteractionColors(normal=Color(20, 20, 20))))
     transform = RectTransformBundle(Vec2(x=50, y=50))
-    decoration = SurfaceBundle()
-    interactable = InteractableBundle(None)
+    surface = SurfaceBundle()
+    pointer = PointerBundle()
+    activatable = ActivatableBundle(None)
     toggleable = ToggleableBundle()
 
-    toggle = ToggleBundle(core, text, transform, decoration, interactable, toggleable)
+    toggle = ToggleBundle(core, text, transform, surface, pointer, activatable, toggleable)
     toggle_components = list(toggle.components())
 
     expected_components = [Enabled, Dirty, Text, TextStyle, TextAlignment, Transform, RenderLayer, Hoverable, Pressable, Trigger, Toggleable]
@@ -33,10 +36,11 @@ def test_full_toggle():
     text = TextVisualBundle('text', TextStyleDescription('couriernew', 16, InteractionColors(normal=Color(20, 20, 20))), TextAlignmentEnum.center)
     transform = RectTransformBundle(Vec2(x=50, y=50), Vec2(x=50, y=50), 1, 1)
     decoration = SurfaceBundle(InteractionColors(normal=Color(20, 20, 20)), FrameDescription(3, InteractionColors(normal=Color(20, 20, 200))))
-    interactable = InteractableBundle(None)
+    pointer = PointerBundle()
+    activatable = ActivatableBundle(None)
     toggleable = ToggleableBundle(True)
 
-    toggle = ToggleBundle(core, text, transform, decoration, interactable, toggleable)
+    toggle = ToggleBundle(core, text, transform, decoration, pointer, activatable, toggleable)
     toggle_components = list(toggle.components())
 
     expected_components = [Enabled, Dirty, Text, TextStyle, TextAlignment, Transform, RenderLayer, Parent, Background, Frame, Hoverable, Pressable, Trigger, Toggleable, Toggled]

@@ -1,6 +1,6 @@
+from core.primitives import Vec2
+from ui.bundles import RectTransformBundle
 from ui.components.layout import Parent, RenderLayer, Transform
-from ui.primitives import Vec2
-from ui.widgets import RectTransformBundle
 
 
 def test_default_transform():

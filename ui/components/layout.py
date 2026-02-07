@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Set
 
 from ecs_framework.ecs import ComponentProtocol
-from ui.primitives import Vec2
+from core.primitives import Vec2
 
 
 @dataclass(slots=True)

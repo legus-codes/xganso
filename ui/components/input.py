@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 
 from ecs_framework.ecs import ComponentProtocol
-from ui.primitives import IVec2
+from core.primitives import IVec2
 
 
 class Key(Enum):

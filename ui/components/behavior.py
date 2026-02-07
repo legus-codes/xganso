@@ -59,5 +59,5 @@ class Trigger(ComponentProtocol):
 
 
 @dataclass(slots=True)
-class Typeable(ComponentProtocol):
-    accepted_chars: Set[str]
+class InputFilter(ComponentProtocol):
+    allowed_chars: Set[str]

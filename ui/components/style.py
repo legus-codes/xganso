@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from ecs_framework.ecs import ComponentProtocol
-from ui.primitives import InteractionColors
+from ui.types import InteractionColors
 
 
 @dataclass(slots=True)

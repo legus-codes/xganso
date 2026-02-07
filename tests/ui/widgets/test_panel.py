@@ -1,18 +1,20 @@
+from core.primitives import Color, Vec2
+from ui.bundles import PanelLayoutBundle, RectTransformBundle, SurfaceBundle, WidgetCoreBundle
 from ui.components.behavior import Enabled
 from ui.components.layout import Layout, Parent, RenderLayer, Transform
 from ui.components.rendering import Dirty
 from ui.components.style import Background, Frame
-from ui.primitives import Color, FrameDescription, HorizontalLayoutDescription, InteractionColors, Vec2
-from ui.widgets import PanelBundle, PanelLayoutBundle, RectTransformBundle, SurfaceBundle, WidgetCoreBundle
+from ui.types import FrameDescription, HorizontalLayoutDescription, InteractionColors
+from ui.widgets import PanelBundle
 
 
 def test_default_panel():
     core = WidgetCoreBundle()
     transform = RectTransformBundle(Vec2(x=50, y=50))
     layout = PanelLayoutBundle()
-    decoration = SurfaceBundle()
+    surface = SurfaceBundle()
 
-    panel = PanelBundle(core, transform, layout, decoration)
+    panel = PanelBundle(core, transform, layout, surface)
     panel_components = list(panel.components())
 
     expected_components = [Enabled, Dirty, Transform, RenderLayer]
@@ -29,9 +31,9 @@ def test_full_panel():
     core = WidgetCoreBundle()
     transform = RectTransformBundle(Vec2(x=50, y=50), Vec2(x=50, y=50), 1, 1)
     layout = PanelLayoutBundle(HorizontalLayoutDescription(10))
-    decoration = SurfaceBundle(InteractionColors(normal=Color(20, 20, 20)), FrameDescription(3, InteractionColors(normal=Color(20, 20, 200))))
+    surface = SurfaceBundle(InteractionColors(normal=Color(20, 20, 20)), FrameDescription(3, InteractionColors(normal=Color(20, 20, 200))))
 
-    panel = PanelBundle(core, transform, layout, decoration)
+    panel = PanelBundle(core, transform, layout, surface)
     panel_components = list(panel.components())
 
     expected_components = [Enabled, Dirty, Transform, RenderLayer, Parent, Layout, Background, Frame]

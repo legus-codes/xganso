@@ -1,5 +1,5 @@
+from ui.bundles import ToggleableBundle
 from ui.components.behavior import Toggleable, Toggled
-from ui.widgets import ToggleableBundle
 
 
 def test_default_toggleable():

@@ -8,5 +8,5 @@ class Text(ComponentProtocol):
 
 
 @dataclass(slots=True)
-class Value(ComponentProtocol):
+class InputValue(ComponentProtocol):
     value: str
