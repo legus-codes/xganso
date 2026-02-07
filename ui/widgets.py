@@ -73,7 +73,7 @@ class ToggleBundle(Bundle):
 
 
 @dataclass
-class TextInput(Bundle):
+class TextInputBundle(Bundle):
     core: WidgetCoreBundle
     text: TextVisualBundle
     transform: RectTransformBundle

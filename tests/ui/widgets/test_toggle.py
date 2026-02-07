@@ -35,12 +35,12 @@ def test_full_toggle():
     core = WidgetCoreBundle()
     text = TextVisualBundle('text', TextStyleDescription('couriernew', 16, InteractionColors(normal=Color(20, 20, 20))), TextAlignmentEnum.center)
     transform = RectTransformBundle(Vec2(x=50, y=50), Vec2(x=50, y=50), 1, 1)
-    decoration = SurfaceBundle(InteractionColors(normal=Color(20, 20, 20)), FrameDescription(3, InteractionColors(normal=Color(20, 20, 200))))
+    surface = SurfaceBundle(InteractionColors(normal=Color(20, 20, 20)), FrameDescription(3, InteractionColors(normal=Color(20, 20, 200))))
     pointer = PointerBundle()
     activatable = ActivatableBundle(None)
     toggleable = ToggleableBundle(True)
 
-    toggle = ToggleBundle(core, text, transform, decoration, pointer, activatable, toggleable)
+    toggle = ToggleBundle(core, text, transform, surface, pointer, activatable, toggleable)
     toggle_components = list(toggle.components())
 
     expected_components = [Enabled, Dirty, Text, TextStyle, TextAlignment, Transform, RenderLayer, Parent, Background, Frame, Hoverable, Pressable, Trigger, Toggleable, Toggled]
