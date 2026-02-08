@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from core.primitives import IVec2
 from ecs_framework.ecs import ComponentProtocol
-from ui.events.input import MouseButton
+from adapters.input.events import MouseButton
 
 
 @dataclass(slots=True)
