@@ -27,3 +27,11 @@ def test_destroy_non_existing_entity():
     entity = entity_manager.create()
     entity_manager.destroy(EntityId(12))
     assert entity_manager.exists(entity)
+
+
+def test_clear_entities():
+    entity_manager = EntityManager()
+    entity_manager.create()
+    entity_manager.create()
+    entity_manager.clear()
+    assert len(entity_manager._entities) == 0
