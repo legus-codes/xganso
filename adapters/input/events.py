@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from ecs_framework.ecs import EventProtocol
+from ecs_framework.event_manager import Event
 from core.primitives import IVec2
 
 
@@ -16,27 +16,27 @@ class MouseButton(Enum):
 
 
 @dataclass(slots=True)
-class KeyDown(EventProtocol):
+class KeyDown(Event):
     char: str
     key: int
 
 
 @dataclass(slots=True)
-class MouseMove(EventProtocol):
+class MouseMove(Event):
     position: IVec2
 
 
 @dataclass(slots=True)
-class MouseButtonDown(EventProtocol):
-    position: IVec2
-    button: MouseButton
-
-
-@dataclass(slots=True)
-class MouseButtonUp(EventProtocol):
+class MouseButtonDown(Event):
     position: IVec2
     button: MouseButton
 
 
 @dataclass(slots=True)
-class QuitRequested(EventProtocol): ...
+class MouseButtonUp(Event):
+    position: IVec2
+    button: MouseButton
+
+
+@dataclass(slots=True)
+class QuitRequested(Event): ...
