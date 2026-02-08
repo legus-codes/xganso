@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from ecs_framework.event_manager import Event
+from ecs_framework.managers.event_manager import Event
 from core.primitives import IVec2
 
 

@@ -2,7 +2,7 @@ from typing import Iterable
 import pygame
 
 from core.primitives import IVec2
-from ecs_framework.event_manager import Event
+from ecs_framework.managers.event_manager import Event
 from adapters.input.events import KeyDown, MouseButton, MouseButtonDown, MouseMove, MouseButtonUp, QuitRequested
 
 
