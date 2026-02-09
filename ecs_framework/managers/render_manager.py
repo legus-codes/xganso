@@ -1,21 +1,15 @@
-from typing import List, Protocol
-
-
-class DrawCommand(Protocol):
-
-    @property
-    def layer(self) -> int: ...
+from ecs_framework.primitives import DrawCommand
 
 
 class RenderManager:
 
     def __init__(self):
-        self._queue: List[DrawCommand] = []
+        self._queue: list[DrawCommand] = []
 
     def push(self, command: DrawCommand) -> None:
         self._queue.append(command)
 
-    def drain(self) -> List[DrawCommand]:
+    def drain(self) -> list[DrawCommand]:
         commands = self._queue
         self._queue = []
         commands.sort(key=lambda c: c.layer)

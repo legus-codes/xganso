@@ -1,18 +1,13 @@
-from dataclasses import dataclass
 from itertools import count
-from typing import Set
 
-
-@dataclass(slots=True, frozen=True)
-class EntityId:
-    value: int
+from ecs_framework.primitives import EntityId
 
 
 class EntityManager:
 
     def __init__(self):
         self._next_entity_id = count()
-        self._entities: Set[EntityId] = set()
+        self._entities: set[EntityId] = set()
 
     def create(self) -> EntityId:
         entity_id = EntityId(next(self._next_entity_id))

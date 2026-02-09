@@ -1,7 +1,6 @@
-from typing import Dict, Type, TypeVar
+from typing import TypeVar
 
-
-class Resource: ...
+from ecs_framework.primitives import Resource
 
 
 R = TypeVar("R", bound=Resource)
@@ -10,15 +9,15 @@ R = TypeVar("R", bound=Resource)
 class ResourceManager:
 
     def __init__(self):
-        self._resources: Dict[Type[Resource], Resource] = {}
+        self._resources: dict[type[Resource], Resource] = {}
    
     def set(self, resource: Resource) -> None:
         self._resources[type(resource)] = resource
 
-    def get(self, resource_type: Type[R]) -> R | None:
+    def get(self, resource_type: type[R]) -> R | None:
         return self._resources.get(resource_type, None)
 
-    def remove(self, resource_type: Type[Resource]) -> None:
+    def remove(self, resource_type: type[Resource]) -> None:
         self._resources.pop(resource_type, None)
 
     def clear(self) -> None:
