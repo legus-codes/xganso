@@ -1,4 +1,4 @@
-from ecs_framework.world import SystemProtocol
+from ecs_framework.primitives import SystemProtocol
 
 
 class SystemManager:

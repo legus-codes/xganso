@@ -6,8 +6,11 @@ from ecs_framework.managers.render_manager import RenderManager
 
 @dataclass
 class MockDrawCommand(DrawCommand):
-    layer: int
+    z: int
     text: str
+
+    def layer(self) -> int:
+        return self.z
 
 
 def test_create_command():

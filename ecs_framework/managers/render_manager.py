@@ -12,7 +12,7 @@ class RenderManager:
     def drain(self) -> list[DrawCommand]:
         commands = self._queue
         self._queue = []
-        commands.sort(key=lambda c: c.layer)
+        commands.sort(key=lambda c: c.layer())
         return commands
 
     def clear(self) -> None:
