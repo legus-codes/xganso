@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from core.primitives import IVec2
-from ecs_framework.ecs import ComponentProtocol
+from ecs_framework.primitives import ComponentProtocol
 from adapters.input.events import MouseButton
 
 

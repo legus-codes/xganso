@@ -1,5 +1,5 @@
-from typing import Iterable
 import pygame
+from typing import Iterable
 
 from core.primitives import IVec2
 from ecs_framework.managers.event_manager import Event

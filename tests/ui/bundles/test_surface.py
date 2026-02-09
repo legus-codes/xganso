@@ -10,8 +10,6 @@ def test_default_surface():
 
     expected_components = []
     assert len(surface_components) == len(expected_components)
-    for component in expected_components:
-        assert any(isinstance(obj, component) for obj in surface_components)
 
     non_existing_components = [Background, Frame]
     for component in non_existing_components:

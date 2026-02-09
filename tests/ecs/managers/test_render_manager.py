@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from ecs_framework.ecs import DrawCommand
+
+from ecs_framework.primitives import DrawCommand
 from ecs_framework.managers.render_manager import RenderManager
 
 

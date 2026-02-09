@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
-from typing import Iterable, Set
+from typing import Iterable
 
 from core.primitives import Vec2
-from ecs_framework.ecs import Bundle, ComponentProtocol
+from ecs_framework.primitives import Bundle, ComponentProtocol
 from ui.components.content import Text, InputValue
 from ui.components.style import Background, Frame, TextStyle
 from ui.components.layout import TextAlignmentEnum, GridLayout, HorizontalLayout, RenderLayer, TextAlignment, Transform, Parent, VerticalLayout
@@ -101,7 +101,7 @@ class ToggleableBundle(Bundle):
 @dataclass
 class InputBundle(Bundle):
     input_value: str
-    input_filter: Set[str]
+    input_filter: set[str]
 
     def components(self) -> Iterable[ComponentProtocol]:
         yield Focusable()

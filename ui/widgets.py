@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Iterable
 
-from ecs_framework.ecs import Bundle, ComponentProtocol
+from ecs_framework.primitives import Bundle, ComponentProtocol
 from ui.bundles import ActivatableBundle, InputBundle, PanelLayoutBundle, PointerBundle, RectTransformBundle, SelectableBundle, SurfaceBundle, TextVisualBundle, ToggleableBundle, WidgetCoreBundle
 
 

@@ -1,6 +1,7 @@
-from dataclasses import dataclass
 import pytest
-from ecs_framework.ecs import SystemProtocol
+from dataclasses import dataclass
+
+from ecs_framework.primitives import SystemProtocol
 from ecs_framework.managers.system_manager import SystemManager
 
 

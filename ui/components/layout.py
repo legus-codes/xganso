@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Set
 
-from ecs_framework.ecs import ComponentProtocol
+from ecs_framework.primitives import ComponentProtocol
 from core.primitives import Vec2
 
 
@@ -13,7 +12,7 @@ class Parent(ComponentProtocol):
 
 @dataclass(slots=True)
 class Children(ComponentProtocol):
-    entities: Set[int]
+    entities: set[int]
 
 
 @dataclass(slots=True)

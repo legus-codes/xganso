@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from ecs_framework.ecs import ComponentProtocol
+
+from ecs_framework.primitives import ComponentProtocol
 
 
 @dataclass(slots=True)

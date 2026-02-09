@@ -1,7 +1,6 @@
 from dataclasses import dataclass
-from typing import Set
 
-from ecs_framework.ecs import ComponentProtocol
+from ecs_framework.primitives import ComponentProtocol
 
 
 @dataclass(slots=True)
@@ -60,4 +59,4 @@ class Trigger(ComponentProtocol):
 
 @dataclass(slots=True)
 class InputFilter(ComponentProtocol):
-    allowed_chars: Set[str]
+    allowed_chars: set[str]

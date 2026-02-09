@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+
 from ecs_framework.managers.resource_manager import Resource, ResourceManager
 
 

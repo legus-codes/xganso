@@ -1,4 +1,5 @@
 import pytest
+
 from ui.components.layout import GridLayout, HorizontalLayout, Layout, VerticalLayout
 from ui.types import GridLayoutDescription, HorizontalLayoutDescription, LayoutDescription, VerticalLayoutDescription
 from ui.widgets import PanelLayoutBundle
@@ -10,8 +11,6 @@ def test_default_panel_layout():
 
     expected_components = []
     assert len(layout_components) == len(expected_components)
-    for component in expected_components:
-        assert any(isinstance(obj, component) for obj in layout_components)
 
     non_existing_components = [Layout, HorizontalLayout, VerticalLayout, GridLayout]
     for component in non_existing_components:
