@@ -33,7 +33,7 @@ class World:
         self._events.clear()
         self._render.clear()
 
-    def spawn(self, *components: ComponentProtocol) -> int:
+    def spawn(self, *components: ComponentProtocol) -> EntityId:
         entity_id = self._entities.create()
         for component in components:
             self.add_component(entity_id, component)
@@ -63,7 +63,7 @@ class World:
               any_of: tuple[type[ComponentProtocol], ...] = (),
               none_of: tuple[type[ComponentProtocol], ...] = ()
      ) -> Iterable[tuple[EntityId, tuple[*Cs]]]:
-        return self._components.query(*component_types, all_of, any_of, none_of)
+        yield from self._components.query(*component_types, all_of=all_of, any_of=any_of, none_of=none_of)
 
     def add_system(self, system: SystemProtocol) -> None:
         self._systems.add(system)
