@@ -17,8 +17,17 @@ class MouseButton(Enum):
 
 @dataclass(slots=True)
 class KeyDown(Event):
-    char: str
     key: int
+
+
+@dataclass(slots=True)
+class KeyUp(Event):
+    key: int
+
+
+@dataclass(slots=True)
+class TextInput(Event):
+    text: str
 
 
 @dataclass(slots=True)

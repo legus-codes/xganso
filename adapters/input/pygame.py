@@ -3,7 +3,7 @@ from typing import Iterable
 
 from core.primitives import IVec2
 from ecs_framework.managers.event_manager import Event
-from adapters.input.events import KeyDown, MouseButton, MouseButtonDown, MouseMove, MouseButtonUp, QuitRequested
+from adapters.input.events import KeyDown, MouseButton, MouseButtonDown, MouseMove, MouseButtonUp, QuitRequested, TextInput
 
 
 class PygameEventConverter:
@@ -22,7 +22,13 @@ class PygameEventConverter:
                     yield MouseButtonUp(IVec2(*event.pos), MouseButton.left)
 
             elif event.type == pygame.KEYDOWN:
-                yield KeyDown(event.unicode, event.key)
+                yield KeyDown(event.key)
+
+            elif event.type == pygame.KEYUP:
+                yield KeyDown(event.key)
+
+            elif event.type == pygame.TEXTINPUT:
+                yield TextInput(event.text)
 
             if event.type == pygame.QUIT:
                 yield QuitRequested()

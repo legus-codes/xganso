@@ -81,10 +81,16 @@ class World:
         self._events.push(event)
 
     def get_events(self) -> list[Event]:
-        return self._events.drain()
+        return self._events.get()
+    
+    def clear_events(self) -> None:
+        self._events.clear()
 
     def add_draw_command(self, draw_command: DrawCommand) -> None:
         self._render.push(draw_command)
 
     def get_draw_commands(self ) -> list[DrawCommand]:
-        return self._render.drain()
+        return self._render.get()
+    
+    def clear_draw_commands(self) -> None:
+        self._render.clear()

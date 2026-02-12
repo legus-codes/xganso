@@ -19,20 +19,20 @@ def test_create_command():
     assert len(render_manager._queue) == 1
 
     
-def test_drain_events():
+def test_get_commands():
     render_manager = RenderManager()
     render_manager.push(MockDrawCommand(3, 'third'))
     render_manager.push(MockDrawCommand(1, 'first'))
     render_manager.push(MockDrawCommand(2, 'second'))
-    commands = render_manager.drain()
+    commands = render_manager.get()
     assert len(commands) == 3
     assert commands[0].text == 'first'
     assert commands[1].text == 'second'
     assert commands[2].text == 'third'
-    assert len(render_manager._queue) == 0
+    assert len(render_manager._queue) == 3
 
     
-def test_clear_events():
+def test_clear_commands():
     render_manager = RenderManager()
     render_manager.push(MockDrawCommand(3, 'third'))
     render_manager.push(MockDrawCommand(1, 'first'))

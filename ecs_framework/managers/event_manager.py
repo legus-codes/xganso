@@ -9,10 +9,8 @@ class EventManager:
     def push(self, event: Event) -> None:
         self._events.append(event)
 
-    def drain(self) -> list[Event]:
-        events = self._events
-        self._events = []
-        return events
+    def get(self) -> list[Event]:
+        return self._events
 
     def clear(self) -> None:
         self._events.clear()

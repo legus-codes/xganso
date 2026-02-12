@@ -9,11 +9,8 @@ class RenderManager:
     def push(self, command: DrawCommand) -> None:
         self._queue.append(command)
 
-    def drain(self) -> list[DrawCommand]:
-        commands = self._queue
-        self._queue = []
-        commands.sort(key=lambda c: c.layer())
-        return commands
+    def get(self) -> list[DrawCommand]:
+        return sorted(self._queue, key=lambda c: c.layer())
 
     def clear(self) -> None:
         self._queue.clear()

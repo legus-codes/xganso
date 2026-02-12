@@ -7,14 +7,14 @@ def test_create_event():
     assert len(event_manager._events) == 1
 
     
-def test_drain_events():
+def test_get_events():
     event_manager = EventManager()
     event_manager.push(Event())
     event_manager.push(Event())
     event_manager.push(Event())
-    events = event_manager.drain()
+    events = event_manager.get()
     assert len(events) == 3
-    assert len(event_manager._events) == 0
+    assert len(event_manager._events) == 3
 
     
 def test_clear_events():

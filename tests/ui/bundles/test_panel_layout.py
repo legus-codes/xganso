@@ -27,7 +27,7 @@ def test_panel_layout_variants(layout_description: LayoutDescription):
     elif isinstance(layout_description, VerticalLayoutDescription):
         expected_component = VerticalLayout
         non_existing_components = [HorizontalLayout, GridLayout]
-    elif isinstance(layout_description, GridLayoutDescription):
+    else:
         expected_component = GridLayout
         non_existing_components = [HorizontalLayout, VerticalLayout]
 
