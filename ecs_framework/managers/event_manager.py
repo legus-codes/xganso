@@ -1,7 +1,8 @@
 from ecs_framework.primitives import Event
+from ecs_framework.protocols import EventManagerProtocol
 
 
-class EventManager:
+class EventManager(EventManagerProtocol):
 
     def __init__(self):
         self._events: list[Event] = []

@@ -1,40 +1,26 @@
 from asyncio import Event
-from typing import Iterable, TypeVar, TypeVarTuple
+from typing import Iterable
 
-from ecs_framework.managers.component_manager import ComponentManager
-from ecs_framework.managers.entity_manager import EntityManager
-from ecs_framework.managers.event_manager import EventManager
-from ecs_framework.managers.render_manager import RenderManager
-from ecs_framework.managers.resource_manager import ResourceManager
-from ecs_framework.managers.system_manager import SystemManager
 from ecs_framework.primitives import ComponentProtocol, DrawCommand, EntityId, ExecutionStage, Resource, SystemProtocol
-from ecs_framework.systems.cleanup import ClearEventSystem, ClearRenderQueueSystem, ClearTemporaryComponentSystem
-
-
-R = TypeVar("R", bound=Resource)
-Cs = TypeVarTuple("Cs")
+from ecs_framework.protocols import R, ComponentManagerProtocol, Cs, EntityManagerProtocol, EventManagerProtocol, RenderManagerProtocol, ResourceManagerProtocol, SystemManagerProtocol
 
 
 class World:
 
-    def __init__(self):
-        self._entities = EntityManager()
-        self._components = ComponentManager()
-        self._systems = SystemManager()
-        self._add_cleanup_systems()
-        self._resources = ResourceManager()
-        self._events = EventManager()
-        self._render = RenderManager()
+    def __init__(self,
+                 entity_manager: EntityManagerProtocol,
+                 component_manager: ComponentManagerProtocol,
+                 system_manager: SystemManagerProtocol,
+                 resource_manager: ResourceManagerProtocol,
+                 event_manager: EventManagerProtocol,
+                 render_manager: RenderManagerProtocol):
+        self._entities = entity_manager
+        self._components = component_manager
+        self._systems = system_manager
+        self._resources = resource_manager
+        self._events = event_manager
+        self._render = render_manager
         self._running = True
-
-    def reset(self) -> None:
-        self._entities.clear()
-        self._components.clear()
-        self._systems.clear()
-        self._add_cleanup_systems()
-        self._resources.clear()
-        self._events.clear()
-        self._render.clear()
 
     def spawn(self, *components: ComponentProtocol) -> EntityId:
         entity_id = self._entities.create()
@@ -79,11 +65,6 @@ class World:
     
     def add_system(self, system: SystemProtocol, stage: ExecutionStage) -> None:
         self._systems.add(system, stage)
-
-    def _add_cleanup_systems(self) -> None:
-        self.add_system(ClearEventSystem(self), ExecutionStage.frame_start)
-        self.add_system(ClearRenderQueueSystem(self), ExecutionStage.frame_start)
-        self.add_system(ClearTemporaryComponentSystem(self), ExecutionStage.frame_start)
 
     def execute(self, delta_time: float) -> None:
         self._systems.execute(delta_time)

@@ -1,12 +1,8 @@
-from typing import TypeVar
-
 from ecs_framework.primitives import Resource
+from ecs_framework.protocols import R, ResourceManagerProtocol
 
 
-R = TypeVar("R", bound=Resource)
-
-
-class ResourceManager:
+class ResourceManager(ResourceManagerProtocol):
 
     def __init__(self):
         self._resources: dict[type[Resource], Resource] = {}

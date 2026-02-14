@@ -1,10 +1,10 @@
 from itertools import chain
 from typing import Iterable
 from ecs_framework.primitives import ExecutionStage, SystemProtocol
-from ecs_framework.systems.cleanup import ClearEventSystem, ClearRenderQueueSystem, ClearTemporaryComponentSystem
+from ecs_framework.protocols import SystemManagerProtocol
 
 
-class SystemManager:
+class SystemManager(SystemManagerProtocol):
 
     def __init__(self):
         self._systems: dict[ExecutionStage, list[SystemProtocol]] = {

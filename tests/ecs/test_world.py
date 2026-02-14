@@ -1,12 +1,7 @@
 from asyncio import Event
-from ecs_framework.managers.component_manager import ComponentManager
-from ecs_framework.managers.entity_manager import EntityManager
-from ecs_framework.managers.event_manager import EventManager
-from ecs_framework.managers.render_manager import RenderManager
-from ecs_framework.managers.resource_manager import ResourceManager
-from ecs_framework.managers.system_manager import SystemManager
+from ecs_framework.factory import WorldFactory
 from ecs_framework.primitives import ComponentProtocol, DrawCommand, ExecutionStage, Resource, SystemProtocol
-from ecs_framework.world import World
+from ecs_framework.protocols import ComponentManagerProtocol, EntityManagerProtocol, EventManagerProtocol, RenderManagerProtocol, ResourceManagerProtocol, SystemManagerProtocol
 
 
 class MockComponentA(ComponentProtocol): ...
@@ -27,35 +22,17 @@ class MockDrawCommand(DrawCommand):
         return 0
 
 def test_world_has_all_managers():
-    world = World()
-    assert isinstance(world._entities, EntityManager)
-    assert isinstance(world._components, ComponentManager)
-    assert isinstance(world._systems, SystemManager)
+    world = WorldFactory.create_world()
+    assert isinstance(world._entities, EntityManagerProtocol)
+    assert isinstance(world._components, ComponentManagerProtocol)
+    assert isinstance(world._systems, SystemManagerProtocol)
     assert len(list(world._systems.all_systems)) == 3
-    assert isinstance(world._resources, ResourceManager)
-    assert isinstance(world._events, EventManager)
-    assert isinstance(world._render, RenderManager)
-
-def test_reset_world():
-    world = World()
-    world.spawn(MockComponentA(), MockComponentB())
-    world.register_temporary_component(MockComponentA)
-    world.add_system(MockSystem(), ExecutionStage.update)
-    world.set_resource(MockResource())
-    world.push_event(MockEvent())
-    world.add_draw_command(MockDrawCommand())
-
-    world.reset()
-    assert world._entities._entities == set()
-    assert len(world._components._component_storage) == 0
-    assert len(world._components._temporary_components) == 0
-    assert len(list(world._systems.all_systems)) == 3
-    assert len(world._resources._resources) == 0
-    assert world._events._events == []
-    assert world._render._queue == []
+    assert isinstance(world._resources, ResourceManagerProtocol)
+    assert isinstance(world._events, EventManagerProtocol)
+    assert isinstance(world._render, RenderManagerProtocol)
 
 def test_spawn_entity():
-    world = World()
+    world = WorldFactory.create_world()
     componentA = MockComponentA()
     componentB = MockComponentB()
     entity_id = world.spawn(componentA, componentB)
@@ -68,7 +45,7 @@ def test_spawn_entity():
     assert compB == componentB
 
 def test_destroy_entity():
-    world = World()
+    world = WorldFactory.create_world()
     componentA = MockComponentA()
     componentB = MockComponentB()
     entity_id = world.spawn(componentA, componentB)
@@ -77,7 +54,7 @@ def test_destroy_entity():
     assert world.query_entities(any_of=(MockComponentA, MockComponentB)) == set()
 
 def test_add_component():
-    world = World()
+    world = WorldFactory.create_world()
     componentC = MockComponentC()
     entity_id = world.spawn(MockComponentA(), MockComponentB())
     world.add_component(entity_id, componentC)
@@ -89,14 +66,14 @@ def test_add_component():
     assert compC == componentC
 
 def test_remove_component():
-    world = World()
+    world = WorldFactory.create_world()
     entity_id = world.spawn(MockComponentA(), MockComponentB())
     world.remove_component(entity_id, MockComponentA)
 
     assert world.query_entities(all_of=(MockComponentA,)) == set()
 
 def test_register_temporary_component():
-    world = World()
+    world = WorldFactory.create_world()
     world.register_temporary_component(MockComponentA)
     world.spawn(MockComponentA())
     world.spawn(MockComponentA())
@@ -106,7 +83,7 @@ def test_register_temporary_component():
     assert world.query_entities(all_of=(MockComponentA,)) == set()
 
 def test_execute_system():
-    world = World()
+    world = WorldFactory.create_world()
     system = MockSystem()
     world.add_system(system, ExecutionStage.update)
     assert not system.executed
@@ -115,14 +92,14 @@ def test_execute_system():
     assert system.executed
 
 def test_set_resource():
-    world = World()
+    world = WorldFactory.create_world()
     resource = MockResource()
     world.set_resource(resource)
 
     assert world.get_resource(MockResource) == resource
 
 def test_overwrite_resource():
-    world = World()
+    world = WorldFactory.create_world()
     resource = MockResource()
     world.set_resource(MockResource())
     world.set_resource(resource)
@@ -130,7 +107,7 @@ def test_overwrite_resource():
     assert world.get_resource(MockResource) == resource
 
 def test_push_events():
-    world = World()
+    world = WorldFactory.create_world()
     event = MockEvent()
     world.push_event(event)
     world.push_event(event)
@@ -140,7 +117,7 @@ def test_push_events():
     assert world.get_events() == [event, event, event]
 
 def test_add_draw_commands():
-    world = World()
+    world = WorldFactory.create_world()
     draw_command = MockDrawCommand()
     world.add_draw_command(draw_command)
     world.add_draw_command(draw_command)

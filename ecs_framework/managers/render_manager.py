@@ -1,7 +1,8 @@
 from ecs_framework.primitives import DrawCommand
+from ecs_framework.protocols import RenderManagerProtocol
 
 
-class RenderManager:
+class RenderManager(RenderManagerProtocol):
 
     def __init__(self):
         self._queue: list[DrawCommand] = []

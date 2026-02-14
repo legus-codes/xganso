@@ -1,10 +1,9 @@
 from collections import defaultdict
-from typing import Any, Iterable, TypeVarTuple
+from typing import Any, Iterable
 
 from ecs_framework.managers.entity_manager import EntityId
 from ecs_framework.primitives import ComponentProtocol
-
-Cs = TypeVarTuple("Cs")
+from ecs_framework.protocols import ComponentManagerProtocol, Cs
 
 
 class ComponentStorage[C: ComponentProtocol]:
@@ -28,7 +27,7 @@ class ComponentStorage[C: ComponentProtocol]:
         return set(self._components.keys())
 
 
-class ComponentManager:
+class ComponentManager(ComponentManagerProtocol):
 
     def __init__(self):
         self._component_storage: dict[type[ComponentProtocol], ComponentStorage[Any]] = defaultdict(ComponentStorage)

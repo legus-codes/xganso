@@ -1,9 +1,10 @@
 from itertools import count
 
 from ecs_framework.primitives import EntityId
+from ecs_framework.protocols import EntityManagerProtocol
 
 
-class EntityManager:
+class EntityManager(EntityManagerProtocol):
 
     def __init__(self):
         self._next_entity_id = count()
