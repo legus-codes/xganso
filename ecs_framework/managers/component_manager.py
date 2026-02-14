@@ -31,43 +31,49 @@ class ComponentStorage[C: ComponentProtocol]:
 class ComponentManager:
 
     def __init__(self):
-        self._world: dict[type[ComponentProtocol], ComponentStorage[Any]] = defaultdict(ComponentStorage)
+        self._component_storage: dict[type[ComponentProtocol], ComponentStorage[Any]] = defaultdict(ComponentStorage)
+        self._temporary_components: list[type[ComponentProtocol]] = []
 
     def add(self, entity_id: EntityId, component: ComponentProtocol) -> None:
-        self._world[type(component)].add(entity_id, component)
+        self._component_storage[type(component)].add(entity_id, component)
 
     def remove(self, entity_id: EntityId, component_type: type[ComponentProtocol]) -> None:
-        self._world.get(component_type, ComponentStorage()).remove(entity_id)
+        self._component_storage.get(component_type, ComponentStorage()).remove(entity_id)
+
+    def remove_all(self, component_type: type[ComponentProtocol]) -> None:
+        self._component_storage.pop(component_type, None)
 
     def destroy(self, entity_id: EntityId) -> None:
-        for storage in self._world.values():
+        for storage in self._component_storage.values():
             storage.remove(entity_id)
 
     def has(self, entity_id: EntityId, component_type: type[ComponentProtocol]) -> bool:
-        return component_type in self._world and self._world[component_type].has(entity_id)
+        return component_type in self._component_storage and self._component_storage[component_type].has(entity_id)
 
     def query_entities(self,
                        all_of: tuple[type[ComponentProtocol], ...] = (),
                        any_of: tuple[type[ComponentProtocol], ...] = (),
                        none_of: tuple[type[ComponentProtocol], ...] = ()
      ) -> set[EntityId]:
-        
-        entities = set.union(*(storage.entities() for storage in self._world.values()))
+        if len(self._component_storage) == 0:
+            return set()
+
+        entities = set.union(*(storage.entities() for storage in self._component_storage.values()))
 
         if all_of:
             for component in all_of:
-                entities.intersection_update(self._world[component].entities())
+                entities.intersection_update(self._component_storage[component].entities())
             if not entities:
                 return entities
 
         if any_of:
-            candidates = set.union(*(self._world[c].entities() for c in any_of if c in self._world))
+            candidates = set.union(*(self._component_storage[c].entities() for c in any_of if c in self._component_storage))
             entities.intersection_update(candidates)
             if not entities:
                 return entities
 
         if none_of:
-            candidates = set.union(*(self._world[c].entities() for c in none_of if c in self._world))
+            candidates = set.union(*(self._component_storage[c].entities() for c in none_of if c in self._component_storage))
             entities.difference_update(candidates)
 
         return entities
@@ -81,8 +87,15 @@ class ComponentManager:
         entities = self.query_entities(all_of + component_types, any_of, none_of)
 
         for entity in entities:
-            components = tuple(self._world[c].get(entity) for c in component_types)
+            components = tuple(self._component_storage[c].get(entity) for c in component_types)
             yield entity, components
 
+    def register_temporary_component(self, component_type: type[ComponentProtocol]) -> None:
+        self._temporary_components.append(component_type)
+
+    def get_temporary_components(self) -> list[type[ComponentProtocol]]:
+        return self._temporary_components
+
     def clear(self) -> None:
-        self._world.clear()
+        self._component_storage.clear()
+        self._temporary_components.clear()

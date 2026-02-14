@@ -7,7 +7,8 @@ from ecs_framework.managers.event_manager import EventManager
 from ecs_framework.managers.render_manager import RenderManager
 from ecs_framework.managers.resource_manager import ResourceManager
 from ecs_framework.managers.system_manager import SystemManager
-from ecs_framework.primitives import ComponentProtocol, DrawCommand, EntityId, Resource, SystemProtocol
+from ecs_framework.primitives import ComponentProtocol, DrawCommand, EntityId, ExecutionStage, Resource, SystemProtocol
+from ecs_framework.systems.cleanup import ClearEventSystem, ClearRenderQueueSystem, ClearTemporaryComponentSystem
 
 
 R = TypeVar("R", bound=Resource)
@@ -20,6 +21,7 @@ class World:
         self._entities = EntityManager()
         self._components = ComponentManager()
         self._systems = SystemManager()
+        self._add_cleanup_systems()
         self._resources = ResourceManager()
         self._events = EventManager()
         self._render = RenderManager()
@@ -29,6 +31,7 @@ class World:
         self._entities.clear()
         self._components.clear()
         self._systems.clear()
+        self._add_cleanup_systems()
         self._resources.clear()
         self._events.clear()
         self._render.clear()
@@ -49,6 +52,9 @@ class World:
     def remove_component(self, entity_id: EntityId, component_type: type[ComponentProtocol]) -> None:
         self._components.remove(entity_id, component_type)
 
+    def remove_all(self, component_type: type[ComponentProtocol]) -> None:
+        self._components.remove_all(component_type)
+
     def query_entities(self,
                        all_of: tuple[type[ComponentProtocol], ...] = (),
                        any_of: tuple[type[ComponentProtocol], ...] = (),
@@ -65,8 +71,19 @@ class World:
      ) -> Iterable[tuple[EntityId, tuple[*Cs]]]:
         yield from self._components.query(*component_types, all_of=all_of, any_of=any_of, none_of=none_of)
 
-    def add_system(self, system: SystemProtocol) -> None:
-        self._systems.add(system)
+    def register_temporary_component(self, component_type: type[ComponentProtocol]) -> None:
+        self._components.register_temporary_component(component_type)
+
+    def get_temporary_components(self) -> list[type[ComponentProtocol]]:
+        return self._components.get_temporary_components()
+    
+    def add_system(self, system: SystemProtocol, stage: ExecutionStage) -> None:
+        self._systems.add(system, stage)
+
+    def _add_cleanup_systems(self) -> None:
+        self.add_system(ClearEventSystem(self), ExecutionStage.frame_start)
+        self.add_system(ClearRenderQueueSystem(self), ExecutionStage.frame_start)
+        self.add_system(ClearTemporaryComponentSystem(self), ExecutionStage.frame_start)
 
     def execute(self, delta_time: float) -> None:
         self._systems.execute(delta_time)

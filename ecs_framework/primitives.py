@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from enum import Enum
 from typing import Iterable, Protocol
 
 
@@ -26,3 +27,8 @@ class Event: ...
 
 class DrawCommand(Protocol):
     def layer(self) -> int: ...
+
+
+class ExecutionStage(Enum):
+    frame_start = 0
+    update = 1
