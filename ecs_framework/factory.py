@@ -28,6 +28,6 @@ class WorldFactory:
         
     @staticmethod
     def _register_cleanup_systems(world: WorldProtocol) -> None:
-        world.add_system(ClearEventSystem(world), ExecutionStage.frame_start)
-        world.add_system(ClearRenderQueueSystem(world), ExecutionStage.frame_start)
-        world.add_system(ClearTemporaryComponentSystem(world), ExecutionStage.frame_start)
+        world.add_system(ClearRenderQueueSystem(world), ExecutionStage.reset)
+        world.add_system(ClearEventSystem(world), ExecutionStage.cleanup)
+        world.add_system(ClearTemporaryComponentSystem(world), ExecutionStage.cleanup)

@@ -1,3 +1,4 @@
+from collections import defaultdict
 from itertools import chain
 from typing import Iterable
 from ecs_framework.primitives import ExecutionStage, SystemProtocol
@@ -7,10 +8,7 @@ from ecs_framework.protocols import SystemManagerProtocol
 class SystemManager(SystemManagerProtocol):
 
     def __init__(self):
-        self._systems: dict[ExecutionStage, list[SystemProtocol]] = {
-            ExecutionStage.frame_start: [],
-            ExecutionStage.update: []
-        }
+        self._systems: dict[ExecutionStage, list[SystemProtocol]] = defaultdict(list)
    
     @property
     def all_systems(self) -> Iterable[SystemProtocol]:
@@ -26,11 +24,9 @@ class SystemManager(SystemManagerProtocol):
             self._systems[stage] = [system for system in systems if not isinstance(system, system_type)]
 
     def execute(self, delta_time: float) -> None:
-        for system in list(self._systems[ExecutionStage.frame_start]):
-            system.execute(delta_time)
-
-        for system in list(self._systems[ExecutionStage.update]):
-            system.execute(delta_time)
+        for stage in ExecutionStage:
+            for system in self._systems[stage]:
+                system.execute(delta_time)
 
     def clear(self) -> None:
         for systems in self._systems.values():

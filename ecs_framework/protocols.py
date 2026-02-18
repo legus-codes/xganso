@@ -1,5 +1,5 @@
 from asyncio import Event
-from typing import Iterable, Protocol, TypeVar, TypeVarTuple
+from typing import Iterable, Protocol, TypeVar, TypeVarTuple, runtime_checkable
 
 from ecs_framework.primitives import ComponentProtocol, DrawCommand, EntityId, ExecutionStage, Resource, SystemProtocol
 
@@ -60,6 +60,7 @@ class WorldProtocol(Protocol):
     def clear_draw_commands(self) -> None: ...
 
 
+@runtime_checkable
 class EntityManagerProtocol(Protocol): 
 
     def create(self) -> EntityId: ...
@@ -71,6 +72,7 @@ class EntityManagerProtocol(Protocol):
     def clear(self) -> None: ...
 
 
+@runtime_checkable
 class ComponentManagerProtocol(Protocol):
 
     def add(self, entity_id: EntityId, component: ComponentProtocol) -> None: ...
@@ -105,6 +107,7 @@ class ComponentManagerProtocol(Protocol):
     def clear(self) -> None: ...
 
 
+@runtime_checkable
 class SystemManagerProtocol(Protocol):
    
     @property
@@ -119,6 +122,7 @@ class SystemManagerProtocol(Protocol):
     def clear(self) -> None: ...
 
 
+@runtime_checkable
 class ResourceManagerProtocol(Protocol): 
    
     def set(self, resource: Resource) -> None: ...
@@ -130,6 +134,7 @@ class ResourceManagerProtocol(Protocol):
     def clear(self) -> None: ...
 
 
+@runtime_checkable
 class EventManagerProtocol(Protocol): 
 
     def push(self, event: Event) -> None: ...
@@ -139,6 +144,7 @@ class EventManagerProtocol(Protocol):
     def clear(self) -> None: ...
 
 
+@runtime_checkable
 class RenderManagerProtocol(Protocol): 
 
     def push(self, command: DrawCommand) -> None: ...

@@ -30,5 +30,6 @@ class DrawCommand(Protocol):
 
 
 class ExecutionStage(Enum):
-    frame_start = 0
+    reset = 0
     update = 1
+    cleanup = 2
