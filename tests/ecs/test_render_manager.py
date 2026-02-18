@@ -1,16 +1,14 @@
 from dataclasses import dataclass
 
-from ecs_framework.primitives import DrawCommand
-from ecs_framework.managers.render_manager import RenderManager
+from ecs_framework.managers import RenderManager
+from ecs_framework.types import DrawCommandProtocol
+
 
 
 @dataclass
-class MockDrawCommand(DrawCommand):
-    z: int
+class MockDrawCommand(DrawCommandProtocol):
+    layer: int
     text: str
-
-    def layer(self) -> int:
-        return self.z
 
 
 def test_create_command():

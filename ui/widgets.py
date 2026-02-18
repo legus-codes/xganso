@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Iterable
 
-from ecs_framework.primitives import Bundle, ComponentProtocol
+from ecs_framework.types import Bundle, Component
 from ui.bundles import ActivatableBundle, InputBundle, PanelLayoutBundle, PointerBundle, RectTransformBundle, SelectableBundle, SurfaceBundle, TextVisualBundle, ToggleableBundle, WidgetCoreBundle
 
 
@@ -13,7 +13,7 @@ class PanelBundle(Bundle):
     surface: SurfaceBundle
     
     
-    def components(self) -> Iterable[ComponentProtocol]:
+    def components(self) -> Iterable[Component]:
         yield from self.core.components()
         yield from self.transform.components()
         yield from self.layout.components()
@@ -27,7 +27,7 @@ class TextBundle(Bundle):
     transform: RectTransformBundle
     surface: SurfaceBundle
     
-    def components(self) -> Iterable[ComponentProtocol]:
+    def components(self) -> Iterable[Component]:
         yield from self.core.components()
         yield from self.text.components()
         yield from self.transform.components()
@@ -43,7 +43,7 @@ class ButtonBundle(Bundle):
     pointer: PointerBundle
     activatable: ActivatableBundle
     
-    def components(self) -> Iterable[ComponentProtocol]:
+    def components(self) -> Iterable[Component]:
         yield from self.core.components()
         yield from self.text.components()
         yield from self.transform.components()
@@ -62,7 +62,7 @@ class ToggleBundle(Bundle):
     activatable: ActivatableBundle
     toggleable: ToggleableBundle
     
-    def components(self) -> Iterable[ComponentProtocol]:
+    def components(self) -> Iterable[Component]:
         yield from self.core.components()
         yield from self.text.components()
         yield from self.transform.components()
@@ -81,7 +81,7 @@ class TextInputBundle(Bundle):
     pointer: PointerBundle
     inputable: InputBundle
     
-    def components(self) -> Iterable[ComponentProtocol]:
+    def components(self) -> Iterable[Component]:
         yield from self.core.components()
         yield from self.text.components()
         yield from self.transform.components()
@@ -99,7 +99,7 @@ class RadioButtonBundle(Bundle):
     pointer: PointerBundle
     selectable: SelectableBundle
     
-    def components(self) -> Iterable[ComponentProtocol]:
+    def components(self) -> Iterable[Component]:
         yield from self.core.components()
         yield from self.text.components()
         yield from self.transform.components()
@@ -109,7 +109,7 @@ class RadioButtonBundle(Bundle):
 
 
 
-# def create_radio_button(world: ECS, label: str, radio_group: str, rect: pygame.Rect, parent: Optional[int] = None, trigger: Optional[ComponentProtocol] = None) -> int:
+# def create_radio_button(world: ECS, label: str, radio_group: str, rect: pygame.Rect, parent: Optional[int] = None, trigger: Optional[Component] = None) -> int:
 #     entity = create_button(world, label, rect, trigger, parent)
 #     world.add_component(entity, Selectable())
 #     world.add_component(entity, RadioItem(radio_group))

@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import Iterable
 
 from core.primitives import Vec2
-from ecs_framework.primitives import Bundle, ComponentProtocol
+from ecs_framework.types import Bundle, Component
 from ui.components.content import Text, InputValue
 from ui.components.style import Background, Frame, TextStyle
 from ui.components.layout import TextAlignmentEnum, GridLayout, HorizontalLayout, RenderLayer, TextAlignment, Transform, Parent, VerticalLayout
@@ -15,7 +15,7 @@ from ui.types import FrameDescription, GridLayoutDescription, HorizontalLayoutDe
 class WidgetCoreBundle(Bundle):
     enabled: bool = True
 
-    def components(self) -> Iterable[ComponentProtocol]:
+    def components(self) -> Iterable[Component]:
         if self.enabled:
             yield Enabled()
         yield Dirty()
@@ -27,7 +27,7 @@ class TextVisualBundle(Bundle):
     style: TextStyleDescription
     alignment: TextAlignmentEnum = TextAlignmentEnum.left
 
-    def components(self) -> Iterable[ComponentProtocol]:
+    def components(self) -> Iterable[Component]:
         yield Text(self.text)
         yield TextStyle(self.style.font, self.style.size, self.style.color)
         yield TextAlignment(self.alignment)
@@ -40,7 +40,7 @@ class RectTransformBundle(Bundle):
     parent: int | None = None
     layer: int = 0
 
-    def components(self) -> Iterable[ComponentProtocol]:
+    def components(self) -> Iterable[Component]:
         yield Transform(self.size, self.position)
         yield RenderLayer(self.layer)
         if self.parent is not None:
@@ -51,7 +51,7 @@ class RectTransformBundle(Bundle):
 class PanelLayoutBundle(Bundle):
     layout: LayoutDescription | None = None
 
-    def components(self) -> Iterable[ComponentProtocol]:
+    def components(self) -> Iterable[Component]:
         if isinstance(self.layout, HorizontalLayoutDescription):
             yield HorizontalLayout(self.layout.spacing)
         elif isinstance(self.layout, VerticalLayoutDescription):
@@ -65,7 +65,7 @@ class SurfaceBundle(Bundle):
     background_colors: InteractionColors | None = None
     frame: FrameDescription | None = None
 
-    def components(self) -> Iterable[ComponentProtocol]:
+    def components(self) -> Iterable[Component]:
         if self.background_colors is not None:
             yield Background(self.background_colors)
         if self.frame is not None and self.frame.width > 0:
@@ -75,16 +75,16 @@ class SurfaceBundle(Bundle):
 @dataclass
 class PointerBundle(Bundle):
 
-    def components(self) -> Iterable[ComponentProtocol]:
+    def components(self) -> Iterable[Component]:
         yield Hoverable()
         yield Pressable()
 
 
 @dataclass
 class ActivatableBundle(Bundle):
-    trigger: ComponentProtocol
+    trigger: Component
 
-    def components(self) -> Iterable[ComponentProtocol]:
+    def components(self) -> Iterable[Component]:
         yield Trigger(self.trigger)
 
 
@@ -92,7 +92,7 @@ class ActivatableBundle(Bundle):
 class ToggleableBundle(Bundle):
     active: bool = False
 
-    def components(self) -> Iterable[ComponentProtocol]:
+    def components(self) -> Iterable[Component]:
         yield Toggleable()
         if self.active:
             yield Toggled()
@@ -103,7 +103,7 @@ class InputBundle(Bundle):
     input_value: str
     input_filter: set[str]
 
-    def components(self) -> Iterable[ComponentProtocol]:
+    def components(self) -> Iterable[Component]:
         yield Focusable()
         yield InputValue(self.input_value)
         yield InputFilter(self.input_filter)
@@ -114,7 +114,7 @@ class SelectableBundle(Bundle):
     radio_group: str
     active: bool = False
 
-    def components(self) -> Iterable[ComponentProtocol]:
+    def components(self) -> Iterable[Component]:
         yield SelectionGroup(self.radio_group)
         yield Selectable()
         if self.active:

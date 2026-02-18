@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from ecs_framework.managers.event_manager import Event
 from core.primitives import IVec2
+from ecs_framework.types import Event
 
 
 class Key(Enum):

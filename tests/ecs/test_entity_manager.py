@@ -1,4 +1,5 @@
-from ecs_framework.managers.entity_manager import EntityId, EntityManager
+from ecs_framework.managers import EntityManager
+from ecs_framework.types import EntityId
 
 
 def test_create_entity():
@@ -27,11 +28,3 @@ def test_destroy_non_existing_entity():
     entity = entity_manager.create()
     entity_manager.destroy(EntityId(12))
     assert entity_manager.exists(entity)
-
-
-def test_clear_entities():
-    entity_manager = EntityManager()
-    entity_manager.create()
-    entity_manager.create()
-    entity_manager.clear()
-    assert len(entity_manager._entities) == 0

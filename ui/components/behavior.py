@@ -1,62 +1,62 @@
 from dataclasses import dataclass
 
-from ecs_framework.primitives import ComponentProtocol
+from ecs_framework.types import Component
 
 
 @dataclass(slots=True)
-class Enabled(ComponentProtocol): ...
+class Enabled(Component): ...
 
 
 @dataclass(slots=True)
-class Hoverable(ComponentProtocol): ...
+class Hoverable(Component): ...
 
 
 @dataclass(slots=True)
-class Hovered(ComponentProtocol): ...
+class Hovered(Component): ...
 
 
 @dataclass(slots=True)
-class Pressable(ComponentProtocol): ...
+class Pressable(Component): ...
 
 
 @dataclass(slots=True)
-class Pressed(ComponentProtocol): ...
+class Pressed(Component): ...
 
 
 @dataclass(slots=True)
-class Focusable(ComponentProtocol): ...
+class Focusable(Component): ...
 
 
 @dataclass(slots=True)
-class Focused(ComponentProtocol): ...
+class Focused(Component): ...
 
 
 @dataclass(slots=True)
-class Toggleable(ComponentProtocol): ...
+class Toggleable(Component): ...
 
 
 @dataclass(slots=True)
-class Toggled(ComponentProtocol): ...
+class Toggled(Component): ...
 
 
 @dataclass(slots=True)
-class Selectable(ComponentProtocol): ...
+class Selectable(Component): ...
 
 
 @dataclass(slots=True)
-class Selected(ComponentProtocol): ...
+class Selected(Component): ...
 
 
 @dataclass(slots=True)
-class SelectionGroup(ComponentProtocol):
+class SelectionGroup(Component):
     group: str
 
 
 @dataclass(slots=True)
-class Trigger(ComponentProtocol):
-    component: ComponentProtocol
+class Trigger(Component):
+    component: Component
 
 
 @dataclass(slots=True)
-class InputFilter(ComponentProtocol):
+class InputFilter(Component):
     allowed_chars: set[str]

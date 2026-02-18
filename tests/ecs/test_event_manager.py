@@ -1,4 +1,5 @@
-from ecs_framework.managers.event_manager import Event, EventManager
+from ecs_framework.managers import EventManager
+from ecs_framework.types import Event
 
 
 def test_create_event():

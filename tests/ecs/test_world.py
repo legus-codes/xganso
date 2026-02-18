@@ -1,14 +1,14 @@
-from asyncio import Event
-from ecs_framework.factory import WorldFactory
-from ecs_framework.primitives import ComponentProtocol, DrawCommand, ExecutionStage, Resource, SystemProtocol
-from ecs_framework.protocols import ComponentManagerProtocol, EntityManagerProtocol, EventManagerProtocol, RenderManagerProtocol, ResourceManagerProtocol, SystemManagerProtocol
+from ecs_framework.managers import ComponentManager, EntityManager, EventManager, RenderManager, ResourceManager, SystemManager
+from ecs_framework.system import System
+from ecs_framework.types import Component, DrawCommandProtocol, Event, ExecutionStage, Resource
+from ecs_framework.world import WorldFactory
 
 
-class MockComponentA(ComponentProtocol): ...
-class MockComponentB(ComponentProtocol): ...
-class MockComponentC(ComponentProtocol): ...
+class MockComponentA(Component): ...
+class MockComponentB(Component): ...
+class MockComponentC(Component): ...
 
-class MockSystem(SystemProtocol):
+class MockSystem(System):
     executed: bool = False
     def execute(self, delta_time: float) -> None:
         self.executed = True
@@ -17,19 +17,18 @@ class MockResource(Resource): ...
 
 class MockEvent(Event): ...
 
-class MockDrawCommand(DrawCommand):
-    def layer(self) -> int:
-        return 0
+class MockDrawCommand(DrawCommandProtocol):
+    layer: int = 0
 
 def test_world_has_all_managers():
     world = WorldFactory.create_world()
-    assert isinstance(world._entities, EntityManagerProtocol)
-    assert isinstance(world._components, ComponentManagerProtocol)
-    assert isinstance(world._systems, SystemManagerProtocol)
+    assert isinstance(world._entities, EntityManager)
+    assert isinstance(world._components, ComponentManager)
+    assert isinstance(world._systems, SystemManager)
     assert len(list(world._systems.all_systems)) == 3
-    assert isinstance(world._resources, ResourceManagerProtocol)
-    assert isinstance(world._events, EventManagerProtocol)
-    assert isinstance(world._render, RenderManagerProtocol)
+    assert isinstance(world._resources, ResourceManager)
+    assert isinstance(world._events, EventManager)
+    assert isinstance(world._render, RenderManager)
 
 def test_spawn_entity():
     world = WorldFactory.create_world()
@@ -85,7 +84,7 @@ def test_register_temporary_component():
 def test_execute_system():
     world = WorldFactory.create_world()
     system = MockSystem()
-    world.add_system(system, ExecutionStage.update)
+    world.register_system(system, ExecutionStage.update)
     assert not system.executed
 
     world.execute(0)

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from core.primitives import IVec2
-from ecs_framework.primitives import Resource
+from ecs_framework.types import Resource
 from adapters.input.events import MouseButton
 
 

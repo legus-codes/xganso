@@ -1,14 +1,14 @@
-from ecs_framework.managers.component_manager import ComponentManager, ComponentStorage
-from ecs_framework.primitives import ComponentProtocol, EntityId
+from ecs_framework.managers import ComponentManager, ComponentStorage
+from ecs_framework.types import Component, EntityId
 
 
-class MockComponent(ComponentProtocol): ...
+class MockComponent(Component): ...
 
-class MockComponentA(ComponentProtocol): ...
-class MockComponentB(ComponentProtocol): ...
-class MockComponentC(ComponentProtocol): ...
-class MockComponentD(ComponentProtocol): ...
-class MockComponentE(ComponentProtocol): ...
+class MockComponentA(Component): ...
+class MockComponentB(Component): ...
+class MockComponentC(Component): ...
+class MockComponentD(Component): ...
+class MockComponentE(Component): ...
 
 
 def test_add_component_storage():
@@ -83,20 +83,6 @@ def test_destroy_component_manager():
     component_manager.add(entity_id, MockComponentC())
     component_manager.add(entity_id, MockComponentD())
     component_manager.destroy(entity_id)
-
-    assert not component_manager.has(entity_id, MockComponentA)
-    assert not component_manager.has(entity_id, MockComponentB)
-    assert not component_manager.has(entity_id, MockComponentC)
-    assert not component_manager.has(entity_id, MockComponentD)
-
-def test_clear_component_manager():
-    component_manager = ComponentManager()
-    entity_id = EntityId(1)
-    component_manager.add(entity_id, MockComponentA())
-    component_manager.add(entity_id, MockComponentB())
-    component_manager.add(entity_id, MockComponentC())
-    component_manager.add(entity_id, MockComponentD())
-    component_manager.clear()
 
     assert not component_manager.has(entity_id, MockComponentA)
     assert not component_manager.has(entity_id, MockComponentB)

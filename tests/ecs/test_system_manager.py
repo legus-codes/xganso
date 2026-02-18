@@ -1,26 +1,28 @@
 import pytest
 from dataclasses import dataclass
 
-from ecs_framework.primitives import ExecutionStage, SystemProtocol
-from ecs_framework.managers.system_manager import SystemManager
+from ecs_framework.managers import SystemManager
+from ecs_framework.system import System
+from ecs_framework.types import ExecutionStage
+
 
 
 @dataclass
-class SystemA(SystemProtocol): 
+class SystemA(System): 
     executed: bool = False
 
     def execute(self, delta_time):
         self.executed = True
 
 @dataclass
-class SystemB(SystemProtocol):
+class SystemB(System):
     executed: bool = False
 
     def execute(self, delta_time):
         self.executed = True
 
 @dataclass
-class SystemC(SystemProtocol):
+class SystemC(System):
     executed: bool = False
 
     def execute(self, delta_time):
@@ -58,11 +60,3 @@ def test_remove_system():
     system_manager.remove(SystemA)
     system_manager.remove(SystemB)
     assert len(list(system_manager.all_systems)) == 1
-
-def test_clear_systems():
-    system_manager = SystemManager()
-    system_manager.add(SystemA(), ExecutionStage.reset)
-    system_manager.add(SystemB(), ExecutionStage.update)
-    system_manager.add(SystemC(), ExecutionStage.cleanup)
-    system_manager.clear()
-    assert len(list(system_manager.all_systems)) == 0

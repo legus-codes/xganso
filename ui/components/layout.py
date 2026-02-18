@@ -1,39 +1,39 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from ecs_framework.primitives import ComponentProtocol
+from ecs_framework.types import Component
 from core.primitives import Vec2
 
 
 @dataclass(slots=True)
-class Parent(ComponentProtocol):
+class Parent(Component):
     entity: int
 
 
 @dataclass(slots=True)
-class Children(ComponentProtocol):
+class Children(Component):
     entities: set[int]
 
 
 @dataclass(slots=True)
-class Transform(ComponentProtocol):
+class Transform(Component):
     position: Vec2
     size: Vec2
 
 
 @dataclass(slots=True)
-class WorldTransform(ComponentProtocol):
+class WorldTransform(Component):
     position: Vec2
     size: Vec2
 
 
 @dataclass(slots=True)
-class RenderLayer(ComponentProtocol):
+class RenderLayer(Component):
     layer: int
 
 
 @dataclass(slots=True)
-class Padding(ComponentProtocol):
+class Padding(Component):
     left: int = 0
     right: int = 0
     top: int = 0
@@ -41,7 +41,7 @@ class Padding(ComponentProtocol):
 
 
 @dataclass(slots=True)
-class Layout(ComponentProtocol): ...
+class Layout(Component): ...
 
 
 @dataclass(slots=True)
@@ -63,7 +63,7 @@ class GridLayout(Layout):
 
 
 @dataclass(slots=True)
-class Anchor(ComponentProtocol):
+class Anchor(Component):
     value: Vec2
 
 
@@ -74,5 +74,5 @@ class TextAlignmentEnum(Enum):
 
 
 @dataclass(slots=True)
-class TextAlignment(ComponentProtocol):
+class TextAlignment(Component):
     alignment: TextAlignmentEnum

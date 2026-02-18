@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 
-from ecs_framework.primitives import ComponentProtocol
+from ecs_framework.types import Component
 
 
 @dataclass(slots=True)
-class AlwaysRedraw(ComponentProtocol): ...
+class AlwaysRedraw(Component): ...
 
 
 @dataclass(slots=True)
-class Dirty(ComponentProtocol): ...
+class Dirty(Component): ...

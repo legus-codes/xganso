@@ -1,19 +1,19 @@
-from asyncio import Event
 from typing import Iterable
 
-from ecs_framework.primitives import ComponentProtocol, DrawCommand, EntityId, ExecutionStage, Resource, SystemProtocol
-from ecs_framework.protocols import R, ComponentManagerProtocol, Cs, EntityManagerProtocol, EventManagerProtocol, RenderManagerProtocol, ResourceManagerProtocol, SystemManagerProtocol
+from ecs_framework.managers import ComponentManager, EntityManager, EventManager, RenderManager, ResourceManager, SystemManager
+from ecs_framework.system import ClearEventSystem, ClearRenderQueueSystem, ClearTemporaryComponentSystem, System
+from ecs_framework.types import R, Component, Cs, DrawCommandProtocol, EntityId, Event, ExecutionStage, Resource
 
 
 class World:
 
     def __init__(self,
-                 entity_manager: EntityManagerProtocol,
-                 component_manager: ComponentManagerProtocol,
-                 system_manager: SystemManagerProtocol,
-                 resource_manager: ResourceManagerProtocol,
-                 event_manager: EventManagerProtocol,
-                 render_manager: RenderManagerProtocol):
+                 entity_manager: EntityManager,
+                 component_manager: ComponentManager,
+                 system_manager: SystemManager,
+                 resource_manager: ResourceManager,
+                 event_manager: EventManager,
+                 render_manager: RenderManager):
         self._entities = entity_manager
         self._components = component_manager
         self._systems = system_manager
@@ -22,7 +22,7 @@ class World:
         self._render = render_manager
         self._running = True
 
-    def spawn(self, *components: ComponentProtocol) -> EntityId:
+    def spawn(self, *components: Component) -> EntityId:
         entity_id = self._entities.create()
         for component in components:
             self.add_component(entity_id, component)
@@ -32,38 +32,39 @@ class World:
         self._components.destroy(entity_id)
         self._entities.destroy(entity_id)
 
-    def add_component(self, entity_id: EntityId, component: ComponentProtocol) -> None:
+    def add_component(self, entity_id: EntityId, component: Component) -> None:
         self._components.add(entity_id, component)
 
-    def remove_component(self, entity_id: EntityId, component_type: type[ComponentProtocol]) -> None:
+    def remove_component(self, entity_id: EntityId, component_type: type[Component]) -> None:
         self._components.remove(entity_id, component_type)
 
-    def remove_all(self, component_type: type[ComponentProtocol]) -> None:
+    def remove_all(self, component_type: type[Component]) -> None:
         self._components.remove_all(component_type)
 
     def query_entities(self,
-                       all_of: tuple[type[ComponentProtocol], ...] = (),
-                       any_of: tuple[type[ComponentProtocol], ...] = (),
-                       none_of: tuple[type[ComponentProtocol], ...] = ()
+                       all_of: tuple[type[Component], ...] = (),
+                       any_of: tuple[type[Component], ...] = (),
+                       none_of: tuple[type[Component], ...] = ()
      ) -> set[EntityId]:
         return self._components.query_entities(all_of, any_of, none_of)
 
 
     def query(self,
               *component_types: *Cs,
-              all_of: tuple[type[ComponentProtocol], ...] = (),
-              any_of: tuple[type[ComponentProtocol], ...] = (),
-              none_of: tuple[type[ComponentProtocol], ...] = ()
+              all_of: tuple[type[Component], ...] = (),
+              any_of: tuple[type[Component], ...] = (),
+              none_of: tuple[type[Component], ...] = ()
      ) -> Iterable[tuple[EntityId, tuple[*Cs]]]:
         yield from self._components.query(*component_types, all_of=all_of, any_of=any_of, none_of=none_of)
 
-    def register_temporary_component(self, component_type: type[ComponentProtocol]) -> None:
+    def register_temporary_component(self, component_type: type[Component]) -> None:
         self._components.register_temporary_component(component_type)
 
-    def get_temporary_components(self) -> list[type[ComponentProtocol]]:
+    def get_temporary_components(self) -> list[type[Component]]:
         return self._components.get_temporary_components()
     
-    def add_system(self, system: SystemProtocol, stage: ExecutionStage) -> None:
+    def register_system(self, system: System, stage: ExecutionStage) -> None:
+        system.register(self)
         self._systems.add(system, stage)
 
     def execute(self, delta_time: float) -> None:
@@ -84,11 +85,30 @@ class World:
     def clear_events(self) -> None:
         self._events.clear()
 
-    def add_draw_command(self, draw_command: DrawCommand) -> None:
+    def add_draw_command(self, draw_command: DrawCommandProtocol) -> None:
         self._render.push(draw_command)
 
-    def get_draw_commands(self ) -> list[DrawCommand]:
+    def get_draw_commands(self ) -> list[DrawCommandProtocol]:
         return self._render.get()
     
     def clear_draw_commands(self) -> None:
         self._render.clear()
+
+
+class WorldFactory:
+
+    @staticmethod
+    def create_world() -> World:
+        entity_manager = EntityManager()
+        component_manager = ComponentManager()
+        system_manager = SystemManager()
+        resource_manager = ResourceManager()
+        event_manager = EventManager()
+        render_manager = RenderManager()
+
+        world = World(entity_manager, component_manager, system_manager, resource_manager, event_manager, render_manager)
+        world.register_system(ClearRenderQueueSystem(), ExecutionStage.reset)
+        world.register_system(ClearEventSystem(), ExecutionStage.cleanup)
+        world.register_system(ClearTemporaryComponentSystem(), ExecutionStage.cleanup)
+        
+        return world

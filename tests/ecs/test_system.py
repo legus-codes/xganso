@@ -1,11 +1,15 @@
-from ecs_framework.factory import WorldFactory
-from ecs_framework.primitives import ComponentProtocol, DrawCommand, Event
-from ecs_framework.systems.cleanup import ClearEventSystem, ClearRenderQueueSystem, ClearTemporaryComponentSystem
+from dataclasses import dataclass
+from ecs_framework.system import ClearEventSystem, ClearRenderQueueSystem, ClearTemporaryComponentSystem
+from ecs_framework.types import Component, DrawCommandProtocol, Event
+from ecs_framework.world import WorldFactory
 
 
 class MockEvent(Event): ...
-class MockDrawCommand(DrawCommand): ...
-class MockTemporaryComponent(ComponentProtocol): ...
+class MockTemporaryComponent(Component): ...
+
+@dataclass
+class MockDrawCommand(DrawCommandProtocol): 
+    layer: int
 
 
 def test_clear_event_system():
@@ -23,7 +27,7 @@ def test_clear_render_queue_system():
     world = WorldFactory.create_world()
     assert any(isinstance(system, ClearRenderQueueSystem) for system in world._systems.all_systems)
 
-    world.add_draw_command(MockDrawCommand())
+    world.add_draw_command(MockDrawCommand(3))
     assert len(world.get_draw_commands()) == 1
 
     world.execute(0)
