@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from core.primitives import IVec2
 from ecs_framework.types import Resource
@@ -7,10 +7,10 @@ from adapters.input.events import MouseButton
 
 @dataclass(slots=True)
 class PointerState(Resource):
-    position: IVec2
-    buttons_down: set[MouseButton]
-    buttons_pressed: set[MouseButton]
-    buttons_released: set[MouseButton]
+    position: IVec2 = field(default_factory=IVec2)
+    buttons_down: set[MouseButton] = field(default_factory=set)
+    buttons_pressed: set[MouseButton] = field(default_factory=set)
+    buttons_released: set[MouseButton] = field(default_factory=set)
 
     def is_down(self, button: MouseButton) -> bool:
         return button in self.buttons_down
@@ -28,10 +28,10 @@ class PointerState(Resource):
 
 @dataclass(slots=True)
 class KeyboardState(Resource):
-    keys_down: set[int]
-    keys_pressed: set[int]
-    keys_released: set[int]
-    text_input: list[str]
+    keys_down: set[int] = field(default_factory=set)
+    keys_pressed: set[int] = field(default_factory=set)
+    keys_released: set[int] = field(default_factory=set)
+    text_input: list[str] = field(default_factory=list)
 
     def is_down(self, key: int) -> bool:
         return key in self.keys_down

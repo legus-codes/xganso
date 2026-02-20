@@ -1,14 +1,11 @@
 from adapters.input.events import KeyDown, KeyUp, MouseButtonDown, MouseButtonUp, MouseMove, TextInput
-from ecs_framework.world import World, SystemProtocol
+from ecs_framework.system import System
 from ui.resources.state import KeyboardState, PointerState
 
 
-class PointerStateSystem(SystemProtocol):
+class PointerStateSystem(System):
 
-    def __init__(self, world: World):
-        self.world = world
-
-    def execute(self, delta_time: float):
+    def execute(self, _: float):
         pointer_state = self.world.get_resource(PointerState)
         pointer_state.reset()
 
@@ -27,18 +24,15 @@ class PointerStateSystem(SystemProtocol):
                 pointer_state.buttons_down.discard(event.button)
 
 
-class KeyboardStateSystem(SystemProtocol):
+class KeyboardStateSystem(System):
 
-    def __init__(self, world: World):
-        self.world = world
-
-    def execute(self, delta_time: float):
+    def execute(self, _: float):
         keyboard_state = self.world.get_resource(KeyboardState)
         keyboard_state.reset()
 
         for event in self.world.get_events():
             if isinstance(event, KeyDown):
-                keyboard_state.keys_pressed.add(event.key)                
+                keyboard_state.keys_pressed.add(event.key)
                 keyboard_state.keys_down.add(event.key)
 
             elif isinstance(event, KeyUp):
