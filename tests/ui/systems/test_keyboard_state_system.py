@@ -3,7 +3,7 @@ from core.primitives import IVec2
 from ecs_framework.types import ExecutionStage
 from ecs_framework.world import WorldFactory
 from ui.resources.state import KeyboardState
-from ui.systems.state import KeyboardStateSystem
+from ui.systems.input_system import KeyboardStateSystem
 
 
 def test_unrelated_event():

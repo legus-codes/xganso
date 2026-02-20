@@ -3,7 +3,7 @@ from core.primitives import IVec2
 from ecs_framework.types import ExecutionStage
 from ecs_framework.world import WorldFactory
 from ui.resources.state import PointerState
-from ui.systems.state import PointerStateSystem
+from ui.systems.input_system import PointerStateSystem
 
 
 def test_unrelated_event():
