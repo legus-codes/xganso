@@ -66,6 +66,9 @@ class World:
     def register_system(self, system: System, stage: ExecutionStage) -> None:
         system.register(self)
         self._systems.add(system, stage)
+    
+    def unregister_system(self, system_type: type[System]) -> None:
+        self._systems.remove(system_type)
 
     def execute(self, delta_time: float) -> None:
         self._systems.execute(delta_time)

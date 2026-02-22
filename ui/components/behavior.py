@@ -60,3 +60,11 @@ class Trigger(Component):
 @dataclass(slots=True)
 class InputFilter(Component):
     allowed_chars: set[str]
+
+
+@dataclass(slots=True)
+class PressIntent(Component): ...
+
+
+@dataclass(slots=True)
+class ActivateIntent(Component): ...

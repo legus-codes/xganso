@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 
 from core.primitives import IVec2
-from ecs_framework.types import Resource
+from ecs_framework.types import EntityId, Resource
 from adapters.input.events import MouseButton
 
 
@@ -11,6 +11,7 @@ class PointerState(Resource):
     buttons_down: set[MouseButton] = field(default_factory=set)
     buttons_pressed: set[MouseButton] = field(default_factory=set)
     buttons_released: set[MouseButton] = field(default_factory=set)
+    hovered_entity: EntityId | None = None
 
     def is_down(self, button: MouseButton) -> bool:
         return button in self.buttons_down

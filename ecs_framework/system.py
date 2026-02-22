@@ -13,6 +13,9 @@ class System:
 
     def register(self, world: World) -> None:
         self.world = world
+        self.on_register()
+
+    def on_register(self) -> None: ...
 
     def execute(self, delta_time: float) -> None: ...
         
