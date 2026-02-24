@@ -11,7 +11,7 @@ class PointerState(Resource):
     buttons_down: set[MouseButton] = field(default_factory=set)
     buttons_pressed: set[MouseButton] = field(default_factory=set)
     buttons_released: set[MouseButton] = field(default_factory=set)
-    hovered_entity: EntityId | None = None
+    hovered_entities: set[EntityId] = field(default_factory=set)
 
     def is_down(self, button: MouseButton) -> bool:
         return button in self.buttons_down

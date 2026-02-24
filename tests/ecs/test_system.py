@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-from ecs_framework.system import ClearEventSystem, ClearRenderQueueSystem, ClearTemporaryComponentSystem
-from ecs_framework.types import Component, DrawCommandProtocol, Event
+from ecs_framework.system import ClearEventSystem, ClearRenderQueueSystem, ClearTemporaryComponentSystem, System
+from ecs_framework.types import Component, DrawCommandProtocol, Event, ExecutionStage
 from ecs_framework.world import WorldFactory
 
 
@@ -10,6 +10,23 @@ class MockTemporaryComponent(Component): ...
 @dataclass
 class MockDrawCommand(DrawCommandProtocol): 
     layer: int
+
+class MockSystem(System):
+    def on_register(self):
+        self.world.register_temporary_component(MockTemporaryComponent)
+
+
+def test_system_on_register_temporary_component():
+    world = WorldFactory.create_world()
+    world.register_system(MockSystem(), ExecutionStage.update)
+
+    world.spawn(MockTemporaryComponent())
+    world.spawn(MockTemporaryComponent())
+    world.spawn(MockTemporaryComponent())
+    assert len(list(world.query_entities(all_of=(MockTemporaryComponent,)))) == 3
+
+    world.execute(0)
+    assert len(list(world.query_entities(all_of=(MockTemporaryComponent,)))) == 0
 
 
 def test_clear_event_system():

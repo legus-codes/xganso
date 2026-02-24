@@ -29,16 +29,6 @@ def test_hovered_press_intent():
 
     assert entity_id in world.query_entities(all_of=(PressIntent,))
 
-def test_press_intent_is_cleared_correctly():
-    world = WorldFactory.create_world()
-    world.register_system(PressIntentSystem(), ExecutionStage.update)
-    world.set_resource(PointerState(buttons_pressed=set([MouseButton.left])))
-
-    world.spawn(Hovered())
-    world.execute(0)
-
-    assert world.query_entities(all_of=(PressIntent,)) == set()
-
 def test_not_hovered_press_intent():
     world = WorldFactory.create_world()
     world.register_system(PressIntentSystem(), ExecutionStage.update)

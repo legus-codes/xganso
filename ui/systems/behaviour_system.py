@@ -1,0 +1,20 @@
+from ecs_framework.system import System
+from ui.components.behavior import HoverIntention, Hovered
+from ui.resources.state import PointerState
+
+
+class HoverSystem(System):
+
+    def execute(self, _: float) -> None:
+        pointer = self.world.get_resource(PointerState)
+        current_targets = self.world.query_entities(all_of=(HoverIntention,))
+        
+        for entity_id in pointer.hovered_entities.difference(current_targets):
+            self.world.remove_component(entity_id, Hovered)
+            pointer.hovered_entities.discard(entity_id)
+
+        for entity_id in current_targets.difference(pointer.hovered_entities):
+            self.world.add_component(entity_id, Hovered())
+            pointer.hovered_entities.add(entity_id)
+
+        self.world.set_resource(pointer)

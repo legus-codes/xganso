@@ -63,6 +63,10 @@ class InputFilter(Component):
 
 
 @dataclass(slots=True)
+class HoverIntention(Component): ...
+
+
+@dataclass(slots=True)
 class PressIntent(Component): ...
 
 
