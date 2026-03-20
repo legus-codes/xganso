@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 
 from core.primitives import IVec2
-from ecs_framework.types import Event
+from omniecs.types import Event
 
 
 class Key(Enum):

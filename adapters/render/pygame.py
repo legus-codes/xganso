@@ -1,7 +1,7 @@
 import pygame
 
 from adapters.render.commands import DrawRect, DrawText
-from ecs_framework.types import DrawCommandProtocol
+from omniecs.types import DrawCommandProtocol
 
 
 class PygameRenderer:

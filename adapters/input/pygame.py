@@ -3,7 +3,7 @@ from typing import Iterable
 
 from core.primitives import IVec2
 from adapters.input.events import KeyDown, MouseButton, MouseButtonDown, MouseMove, MouseButtonUp, QuitRequested, TextInput
-from ecs_framework.types import Event
+from omniecs.types import Event
 
 
 class PygameEventConverter:
