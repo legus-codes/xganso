@@ -8,9 +8,8 @@ from ui.systems.hit_test_system import PointerHitTestSystem
 
 
 def test_pointer_hit_test():
-    world = WorldFactory.create_world()
+    world = WorldFactory.create_empty_world()
     world.register_system(PointerHitTestSystem())
-    world.unregister_system(ClearTemporaryComponentSystem)
     world.set_resource(PointerState(position=IVec2(10, 10)))
 
     entity_id = world.spawn(WorldTransform(IVec2(5, 5), IVec2(10, 10)), RenderLayer(0), Enabled(), Hoverable())
@@ -19,9 +18,8 @@ def test_pointer_hit_test():
     assert entity_id in world.query_entities(all_of=(HoverIntention,))
 
 def test_pointer_hit_miss_test():
-    world = WorldFactory.create_world()
+    world = WorldFactory.create_empty_world()
     world.register_system(PointerHitTestSystem())
-    world.unregister_system(ClearTemporaryComponentSystem)
     world.set_resource(PointerState(position=IVec2(10, 10)))
 
     entity_id = world.spawn(WorldTransform(IVec2(15, 15), IVec2(10, 10)), RenderLayer(0), Enabled(), Hoverable())
@@ -30,9 +28,8 @@ def test_pointer_hit_miss_test():
     assert entity_id not in world.query_entities(all_of=(HoverIntention,))
 
 def test_pointer_hit_with_multiple_entities_test():
-    world = WorldFactory.create_world()
+    world = WorldFactory.create_empty_world()
     world.register_system(PointerHitTestSystem())
-    world.unregister_system(ClearTemporaryComponentSystem)
     world.set_resource(PointerState(position=IVec2(10, 10)))
 
     world.spawn(WorldTransform(IVec2(5, 5), IVec2(10, 10)), RenderLayer(0), Enabled(), Hoverable())

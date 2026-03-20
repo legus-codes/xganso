@@ -7,9 +7,8 @@ from ui.systems.intent_system import ActivateIntentSystem
 
 
 def test_no_activate_intent():
-    world = WorldFactory.create_world()
+    world = WorldFactory.create_empty_world()
     world.register_system(ActivateIntentSystem())
-    world.unregister_system(ClearTemporaryComponentSystem)
     world.set_resource(PointerState())
 
     world.spawn(Hovered(), Pressed())
@@ -18,9 +17,8 @@ def test_no_activate_intent():
     assert world.query_entities(all_of=(ActivateIntent,)) == set()
 
 def test_hovered_and_pressed_activate_intent():
-    world = WorldFactory.create_world()
+    world = WorldFactory.create_empty_world()
     world.register_system(ActivateIntentSystem())
-    world.unregister_system(ClearTemporaryComponentSystem)
     world.set_resource(PointerState(buttons_released=set([MouseButton.left])))
 
     entity_id = world.spawn(Hovered(), Pressed())
@@ -29,9 +27,8 @@ def test_hovered_and_pressed_activate_intent():
     assert entity_id in world.query_entities(all_of=(ActivateIntent,))
 
 def test_hovered_not_pressed_activated_intent():
-    world = WorldFactory.create_world()
+    world = WorldFactory.create_empty_world()
     world.register_system(ActivateIntentSystem())
-    world.unregister_system(ClearTemporaryComponentSystem)
     world.set_resource(PointerState(buttons_released=set([MouseButton.left])))
 
     world.spawn(Hovered())
@@ -40,9 +37,8 @@ def test_hovered_not_pressed_activated_intent():
     assert world.query_entities(all_of=(ActivateIntent,)) == set()
 
 def test_not_hovered_pressed_activated_intent():
-    world = WorldFactory.create_world()
+    world = WorldFactory.create_empty_world()
     world.register_system(ActivateIntentSystem())
-    world.unregister_system(ClearTemporaryComponentSystem)
     world.set_resource(PointerState(buttons_released=set([MouseButton.left])))
 
     world.spawn(Pressed())

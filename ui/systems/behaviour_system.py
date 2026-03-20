@@ -36,5 +36,5 @@ class ActivateSystem(System):
         self.world.register_temporary_component(Triggered)
 
     def execute(self, _: float) -> None:
-        for entity_id in self.world.query_entities(all_of=(ActivateIntent)):
+        for entity_id in self.world.query_entities(all_of=(ActivateIntent,)):
             self.world.add_component(entity_id, Triggered())

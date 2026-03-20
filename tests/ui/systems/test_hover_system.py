@@ -1,8 +1,3 @@
-# pointer = self.world.get_resource(PointerState)
-# current_targets = self.world.query_entities(HoverIntention)
-
-# difference between both
-
 from omniecs.world import WorldFactory
 from ui.components.behavior import Enabled, HoverIntention, Hovered
 from ui.resources.state import PointerState

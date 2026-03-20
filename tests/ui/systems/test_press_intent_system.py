@@ -7,9 +7,8 @@ from ui.systems.intent_system import PressIntentSystem
 
 
 def test_no_press_intent():
-    world = WorldFactory.create_world()
+    world = WorldFactory.create_empty_world()
     world.register_system(PressIntentSystem())
-    world.unregister_system(ClearTemporaryComponentSystem)
     world.set_resource(PointerState())
 
     world.spawn(Hovered())
@@ -18,9 +17,8 @@ def test_no_press_intent():
     assert world.query_entities(all_of=(PressIntent,)) == set()
 
 def test_hovered_press_intent():
-    world = WorldFactory.create_world()
+    world = WorldFactory.create_empty_world()
     world.register_system(PressIntentSystem())
-    world.unregister_system(ClearTemporaryComponentSystem)
     world.set_resource(PointerState(buttons_pressed=set([MouseButton.left])))
 
     entity_id = world.spawn(Hovered())
@@ -29,9 +27,8 @@ def test_hovered_press_intent():
     assert entity_id in world.query_entities(all_of=(PressIntent,))
 
 def test_not_hovered_press_intent():
-    world = WorldFactory.create_world()
+    world = WorldFactory.create_empty_world()
     world.register_system(PressIntentSystem())
-    world.unregister_system(ClearTemporaryComponentSystem)
     world.set_resource(PointerState(buttons_pressed=set([MouseButton.left])))
 
     world.spawn()
