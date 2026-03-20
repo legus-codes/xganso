@@ -1,5 +1,5 @@
-from ecs_framework.system import System
-from ui.components.behavior import HoverIntention, Hovered
+from omniecs.system import System
+from ui.components.behavior import ActivateIntent, HoverIntention, Hovered, PressIntent, Pressed, Triggered
 from ui.resources.state import PointerState
 
 
@@ -18,3 +18,23 @@ class HoverSystem(System):
             pointer.hovered_entities.add(entity_id)
 
         self.world.set_resource(pointer)
+
+
+class PressSystem(System):
+
+    def on_register(self) -> None:
+        self.world.register_temporary_component(Pressed)
+
+    def execute(self, _: float) -> None:
+        for entity_id in self.world.query_entities(all_of=(PressIntent,)):
+            self.world.add_component(entity_id, Pressed())
+
+
+class ActivateSystem(System):
+
+    def on_register(self) -> None:
+        self.world.register_temporary_component(Triggered)
+
+    def execute(self, _: float) -> None:
+        for entity_id in self.world.query_entities(all_of=(ActivateIntent)):
+            self.world.add_component(entity_id, Triggered())

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from ecs_framework.types import Component
+from omniecs.types import Component
 
 
 @dataclass(slots=True)

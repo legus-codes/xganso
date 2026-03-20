@@ -1,5 +1,5 @@
 from adapters.input.events import KeyDown, KeyUp, MouseButtonDown, MouseButtonUp, MouseMove, TextInput
-from ecs_framework.system import System
+from omniecs.system import System
 from ui.resources.state import KeyboardState, PointerState
 
 

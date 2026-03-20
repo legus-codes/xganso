@@ -1,6 +1,6 @@
 from core.primitives import Rect
-from ecs_framework.system import System
-from ecs_framework.types import EntityId
+from omniecs.system import System
+from omniecs.types import EntityId
 from ui.components.behavior import Enabled, HoverIntention, Hoverable
 from ui.components.layout import RenderLayer, WorldTransform
 from ui.resources.state import PointerState

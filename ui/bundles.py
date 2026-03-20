@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import Iterable
 
 from core.primitives import Vec2
-from ecs_framework.types import Bundle, Component
+from omniecs.types import Bundle, Component
 from ui.components.content import Text, InputValue
 from ui.components.style import Background, Frame, TextStyle
 from ui.components.layout import TextAlignmentEnum, GridLayout, HorizontalLayout, RenderLayer, TextAlignment, Transform, Parent, VerticalLayout

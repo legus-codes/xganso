@@ -1,7 +1,6 @@
 from adapters.input.events import MouseButton
-from ecs_framework.system import ClearTemporaryComponentSystem
-from ecs_framework.types import ExecutionStage
-from ecs_framework.world import WorldFactory
+from omniecs.system import ClearTemporaryComponentSystem
+from omniecs.world import WorldFactory
 from ui.components.behavior import Hovered, PressIntent
 from ui.resources.state import PointerState
 from ui.systems.intent_system import PressIntentSystem
@@ -9,7 +8,7 @@ from ui.systems.intent_system import PressIntentSystem
 
 def test_no_press_intent():
     world = WorldFactory.create_world()
-    world.register_system(PressIntentSystem(), ExecutionStage.update)
+    world.register_system(PressIntentSystem())
     world.unregister_system(ClearTemporaryComponentSystem)
     world.set_resource(PointerState())
 
@@ -20,7 +19,7 @@ def test_no_press_intent():
 
 def test_hovered_press_intent():
     world = WorldFactory.create_world()
-    world.register_system(PressIntentSystem(), ExecutionStage.update)
+    world.register_system(PressIntentSystem())
     world.unregister_system(ClearTemporaryComponentSystem)
     world.set_resource(PointerState(buttons_pressed=set([MouseButton.left])))
 
@@ -31,7 +30,7 @@ def test_hovered_press_intent():
 
 def test_not_hovered_press_intent():
     world = WorldFactory.create_world()
-    world.register_system(PressIntentSystem(), ExecutionStage.update)
+    world.register_system(PressIntentSystem())
     world.unregister_system(ClearTemporaryComponentSystem)
     world.set_resource(PointerState(buttons_pressed=set([MouseButton.left])))
 

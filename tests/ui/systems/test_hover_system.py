@@ -3,8 +3,7 @@
 
 # difference between both
 
-from ecs_framework.types import ExecutionStage
-from ecs_framework.world import WorldFactory
+from omniecs.world import WorldFactory
 from ui.components.behavior import Enabled, HoverIntention, Hovered
 from ui.resources.state import PointerState
 from ui.systems.behaviour_system import HoverSystem
@@ -12,7 +11,7 @@ from ui.systems.behaviour_system import HoverSystem
 
 def test_no_hover_intention_or_hovered():
     world = WorldFactory.create_world()
-    world.register_system(HoverSystem(), ExecutionStage.update)
+    world.register_system(HoverSystem())
     world.set_resource(PointerState())
 
     world.spawn(Enabled())
@@ -24,7 +23,7 @@ def test_no_hover_intention_or_hovered():
 
 def test_adding_hover_intentions():
     world = WorldFactory.create_world()
-    world.register_system(HoverSystem(), ExecutionStage.update)
+    world.register_system(HoverSystem())
     world.set_resource(PointerState())
 
     entity_id1 = world.spawn(HoverIntention())
@@ -37,7 +36,7 @@ def test_adding_hover_intentions():
 
 def test_removing_hovered():
     world = WorldFactory.create_world()
-    world.register_system(HoverSystem(), ExecutionStage.update)
+    world.register_system(HoverSystem())
 
     entity_id1 = world.spawn(Enabled())
     entity_id2 = world.spawn(Enabled())
@@ -50,7 +49,7 @@ def test_removing_hovered():
 
 def test_changing_hovered():
     world = WorldFactory.create_world()
-    world.register_system(HoverSystem(), ExecutionStage.update)
+    world.register_system(HoverSystem())
 
     entity_id1 = world.spawn(Enabled())
     world.spawn(Enabled())

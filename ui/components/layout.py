@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from ecs_framework.types import Component
+from omniecs.types import Component
 from core.primitives import Vec2
 
 

@@ -1,5 +1,5 @@
 from adapters.input.events import MouseButton
-from ecs_framework.system import System
+from omniecs.system import System
 from ui.components.behavior import ActivateIntent, Hovered, PressIntent, Pressed
 from ui.resources.state import PointerState
 

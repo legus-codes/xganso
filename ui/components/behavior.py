@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from ecs_framework.types import Component
+from omniecs.types import Component
 
 
 @dataclass(slots=True)
@@ -55,6 +55,10 @@ class SelectionGroup(Component):
 @dataclass(slots=True)
 class Trigger(Component):
     component: Component
+
+
+@dataclass(slots=True)
+class Triggered(Component): ...
 
 
 @dataclass(slots=True)
