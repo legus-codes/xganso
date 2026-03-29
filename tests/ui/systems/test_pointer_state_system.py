@@ -11,7 +11,7 @@ def test_unrelated_event():
     world.set_resource(PointerState())
 
     world.push_event(KeyDown(Key.DELETE))
-    world.execute(0)
+    world.execute()
     
     pointer_state = world.get_resource(PointerState)
     assert pointer_state.position == IVec2(0, 0)
@@ -25,7 +25,7 @@ def test_mouse_move_event():
     world.set_resource(PointerState())
 
     world.push_event(MouseMove(IVec2(5, 5)))
-    world.execute(0)
+    world.execute()
     
     pointer_state = world.get_resource(PointerState)
     assert pointer_state.position == IVec2(5, 5)
@@ -39,7 +39,7 @@ def test_mouse_button_down_event():
     world.set_resource(PointerState())
 
     world.push_event(MouseButtonDown(IVec2(2, 7), MouseButton.left))
-    world.execute(0)
+    world.execute()
     
     pointer_state = world.get_resource(PointerState)
     assert pointer_state.position == IVec2(2, 7)
@@ -53,7 +53,7 @@ def test_mouse_button_up_event():
     world.set_resource(PointerState())
 
     world.push_event(MouseButtonUp(IVec2(7, 2), MouseButton.right))
-    world.execute(0)
+    world.execute()
     
     pointer_state = world.get_resource(PointerState)
     assert pointer_state.position == IVec2(7, 2)
@@ -67,7 +67,7 @@ def test_mouse_click():
     world.set_resource(PointerState())
 
     world.push_event(MouseButtonDown(IVec2(2, 7), MouseButton.left))
-    world.execute(0)
+    world.execute()
     
     pointer_state = world.get_resource(PointerState)
     assert pointer_state.position == IVec2(2, 7)
@@ -75,7 +75,7 @@ def test_mouse_click():
     assert pointer_state.buttons_pressed == set([MouseButton.left])
     assert pointer_state.buttons_released == set()
 
-    world.execute(0)
+    world.execute()
 
     pointer_state = world.get_resource(PointerState)
     assert pointer_state.position == IVec2(2, 7)
@@ -84,7 +84,7 @@ def test_mouse_click():
     assert pointer_state.buttons_released == set()
 
     world.push_event(MouseButtonUp(IVec2(7, 2), MouseButton.left))
-    world.execute(0)
+    world.execute()
     
     pointer_state = world.get_resource(PointerState)
     assert pointer_state.position == IVec2(7, 2)

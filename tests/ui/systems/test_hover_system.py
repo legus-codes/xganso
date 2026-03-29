@@ -10,7 +10,7 @@ def test_no_hover_intention_or_hovered():
     world.set_resource(PointerState())
 
     world.spawn(Enabled())
-    world.execute(0)
+    world.execute()
 
     pointer = world.get_resource(PointerState)
     assert pointer.hovered_entities == set()
@@ -23,7 +23,7 @@ def test_adding_hover_intentions():
 
     entity_id1 = world.spawn(HoverIntention())
     entity_id2 = world.spawn(HoverIntention())
-    world.execute(0)
+    world.execute()
 
     pointer = world.get_resource(PointerState)
     assert pointer.hovered_entities == set([entity_id1, entity_id2])
@@ -36,7 +36,7 @@ def test_removing_hovered():
     entity_id1 = world.spawn(Enabled())
     entity_id2 = world.spawn(Enabled())
     world.set_resource(PointerState(hovered_entities=set([entity_id1, entity_id2])))
-    world.execute(0)
+    world.execute()
 
     pointer = world.get_resource(PointerState)
     assert pointer.hovered_entities == set([])
@@ -50,7 +50,7 @@ def test_changing_hovered():
     world.spawn(Enabled())
     entity_id3 = world.spawn(HoverIntention())
     world.set_resource(PointerState(hovered_entities=set([entity_id1])))
-    world.execute(0)
+    world.execute()
 
     pointer = world.get_resource(PointerState)
     assert pointer.hovered_entities == set([entity_id3])

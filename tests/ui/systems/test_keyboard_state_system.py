@@ -11,7 +11,7 @@ def test_unrelated_event():
     world.set_resource(KeyboardState())
 
     world.push_event(MouseMove(IVec2(5, 5)))
-    world.execute(0)
+    world.execute()
     
     keyboard_state = world.get_resource(KeyboardState)
     assert keyboard_state.keys_down == set()
@@ -25,7 +25,7 @@ def test_key_down_event():
     world.set_resource(KeyboardState())
 
     world.push_event(KeyDown(Key.DELETE))
-    world.execute(0)
+    world.execute()
     
     keyboard_state = world.get_resource(KeyboardState)
     assert keyboard_state.keys_down == set([Key.DELETE])
@@ -39,7 +39,7 @@ def test_key_up_event():
     world.set_resource(KeyboardState())
 
     world.push_event(KeyUp(Key.ENTER))
-    world.execute(0)
+    world.execute()
     
     keyboard_state = world.get_resource(KeyboardState)
     assert keyboard_state.keys_down == set()
@@ -53,7 +53,7 @@ def test_keyboard_click():
     world.set_resource(KeyboardState())
 
     world.push_event(KeyDown(Key.DELETE))
-    world.execute(0)
+    world.execute()
     
     keyboard_state = world.get_resource(KeyboardState)
     assert keyboard_state.keys_down == set([Key.DELETE])
@@ -61,7 +61,7 @@ def test_keyboard_click():
     assert keyboard_state.keys_released == set()
     assert keyboard_state.text_input == []
 
-    world.execute(0)
+    world.execute()
     
     keyboard_state = world.get_resource(KeyboardState)
     assert keyboard_state.keys_down == set([Key.DELETE])
@@ -70,7 +70,7 @@ def test_keyboard_click():
     assert keyboard_state.text_input == []
 
     world.push_event(KeyUp(Key.DELETE))
-    world.execute(0)
+    world.execute()
     
     keyboard_state = world.get_resource(KeyboardState)
     assert keyboard_state.keys_down == set()
@@ -84,7 +84,7 @@ def test_text_input_event():
     world.set_resource(KeyboardState())
 
     world.push_event(TextInput('text'))
-    world.execute(0)
+    world.execute()
 
     keyboard_state = world.get_resource(KeyboardState)
     assert keyboard_state.keys_down == set()

@@ -1,5 +1,4 @@
 from adapters.input.events import MouseButton
-from omniecs.system import ClearTemporaryComponentSystem
 from omniecs.world import WorldFactory
 from ui.components.behavior import ActivateIntent, Hovered, Pressed
 from ui.resources.state import PointerState
@@ -12,7 +11,7 @@ def test_no_activate_intent():
     world.set_resource(PointerState())
 
     world.spawn(Hovered(), Pressed())
-    world.execute(0)
+    world.execute()
 
     assert world.query_entities(all_of=(ActivateIntent,)) == set()
 
@@ -22,7 +21,7 @@ def test_hovered_and_pressed_activate_intent():
     world.set_resource(PointerState(buttons_released=set([MouseButton.left])))
 
     entity_id = world.spawn(Hovered(), Pressed())
-    world.execute(0)
+    world.execute()
 
     assert entity_id in world.query_entities(all_of=(ActivateIntent,))
 
@@ -32,7 +31,7 @@ def test_hovered_not_pressed_activated_intent():
     world.set_resource(PointerState(buttons_released=set([MouseButton.left])))
 
     world.spawn(Hovered())
-    world.execute(0)
+    world.execute()
 
     assert world.query_entities(all_of=(ActivateIntent,)) == set()
 
@@ -42,6 +41,6 @@ def test_not_hovered_pressed_activated_intent():
     world.set_resource(PointerState(buttons_released=set([MouseButton.left])))
 
     world.spawn(Pressed())
-    world.execute(0)
+    world.execute()
 
     assert world.query_entities(all_of=(ActivateIntent,)) == set()

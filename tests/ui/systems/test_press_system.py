@@ -8,7 +8,7 @@ def test_no_press_intention():
     world.register_system(PressSystem())
 
     world.spawn(Enabled())
-    world.execute(0)
+    world.execute()
 
     assert world.query_entities(all_of=(Pressed,)) == set()
 
@@ -18,7 +18,7 @@ def test_with_press_intent():
 
     entity_id1 = world.spawn(PressIntent())
     entity_id2 = world.spawn(PressIntent())
-    world.execute(0)
+    world.execute()
 
     assert world.query_entities(all_of=(Pressed,)) == set([entity_id1, entity_id2])
 
@@ -28,6 +28,6 @@ def test_pressed_is_cleared_after_execute():
 
     world.spawn(Pressed())
     world.spawn(Pressed())
-    world.execute(0)
+    world.execute()
 
     assert world.query_entities(all_of=(Pressed,)) == set()

@@ -1,5 +1,4 @@
 from core.primitives import IVec2
-from omniecs.system import ClearTemporaryComponentSystem
 from omniecs.world import WorldFactory
 from ui.components.behavior import Enabled, HoverIntention, Hoverable
 from ui.components.layout import RenderLayer, WorldTransform
@@ -13,7 +12,7 @@ def test_pointer_hit_test():
     world.set_resource(PointerState(position=IVec2(10, 10)))
 
     entity_id = world.spawn(WorldTransform(IVec2(5, 5), IVec2(10, 10)), RenderLayer(0), Enabled(), Hoverable())
-    world.execute(0)
+    world.execute()
 
     assert entity_id in world.query_entities(all_of=(HoverIntention,))
 
@@ -23,7 +22,7 @@ def test_pointer_hit_miss_test():
     world.set_resource(PointerState(position=IVec2(10, 10)))
 
     entity_id = world.spawn(WorldTransform(IVec2(15, 15), IVec2(10, 10)), RenderLayer(0), Enabled(), Hoverable())
-    world.execute(0)
+    world.execute()
 
     assert entity_id not in world.query_entities(all_of=(HoverIntention,))
 
@@ -35,6 +34,6 @@ def test_pointer_hit_with_multiple_entities_test():
     world.spawn(WorldTransform(IVec2(5, 5), IVec2(10, 10)), RenderLayer(0), Enabled(), Hoverable())
     entity_id = world.spawn(WorldTransform(IVec2(5, 5), IVec2(10, 10)), RenderLayer(2), Enabled(), Hoverable())
     world.spawn(WorldTransform(IVec2(5, 5), IVec2(10, 10)), RenderLayer(1), Enabled(), Hoverable())
-    world.execute(0)
+    world.execute()
 
     assert entity_id in world.query_entities(all_of=(HoverIntention,))
