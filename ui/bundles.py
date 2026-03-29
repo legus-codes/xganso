@@ -69,7 +69,7 @@ class SurfaceBundle(Bundle):
         if self.background_colors is not None:
             yield Background(self.background_colors)
         if self.frame is not None and self.frame.width > 0:
-            yield Frame(self.frame.width, self.frame.colors)
+            yield Frame(self.frame.colors, self.frame.width)
 
 
 @dataclass

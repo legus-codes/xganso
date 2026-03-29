@@ -1,7 +1,7 @@
 import pygame
 
 from adapters.render.commands import DrawFrame, DrawRectangle, DrawText
-from omniecs.types import DrawCommandProtocol
+from omniecs.types import DrawCommand
 
 
 class PygameRenderer:
@@ -9,13 +9,13 @@ class PygameRenderer:
     def __init__(self, screen: pygame.Surface):
         self.screen = screen
 
-    def render(self, draw_commands: list[DrawCommandProtocol]) -> None:
-        for draw_command in sorted(draw_commands, key=lambda command: command.layer):
+    def render(self, draw_commands: list[DrawCommand]) -> None:
+        for draw_command in sorted(draw_commands, key=lambda command: (command.global_layer, command.local_layer)):
             self.draw(draw_command)
 
         self.screen.blit(self.screen, (0, 0))
 
-    def draw(self, draw_command: DrawCommandProtocol) -> None:
+    def draw(self, draw_command: DrawCommand) -> None:
         match draw_command:
             case DrawFrame():
                 draw_command: DrawFrame

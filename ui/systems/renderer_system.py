@@ -5,16 +5,29 @@ from omniecs.system import System
 from ui.components.behavior import Enabled
 from ui.components.layout import RenderLayer, Transform
 from ui.components.rendering import Dirty
-from ui.components.style import Background
+from ui.components.style import Background, Frame
 
 
-class BackgroundRendererSystem(System):
+class BaseRendererSystem(System):
+    
+    def on_register(self):
+        self.world.register_temporary_component(Dirty)
+
+
+class BackgroundRendererSystem(BaseRendererSystem):
 
     def execute(self, _: float) -> None:
-        for (entity_id, (background, transform, layer)) in self.world.query(Background, Transform, RenderLayer, all_of=(Enabled, Dirty)):
-            command = DrawRectangle(layer.layer, transform.position, transform.size, background.color.normal)
+        for (_, (background, transform, layer)) in self.world.query(Background, Transform, RenderLayer, all_of=(Enabled, Dirty)):
+            command = DrawRectangle(global_layer=layer.layer, local_layer=0, position=transform.position, size=transform.size, color=background.color.normal)
             self.world.add_draw_command(command)
-            self.world.remove_component(entity_id, Dirty)
+
+
+class FrameRendererSystem(BaseRendererSystem):
+
+    def execute(self, _: float) -> None:
+        for (_, (frame, transform, layer)) in self.world.query(Frame, Transform, RenderLayer, all_of=(Enabled, Dirty)):
+            command = DrawFrame(global_layer=layer.layer, local_layer=1, position=transform.position, size=transform.size, color=frame.color.normal, width=frame.width)
+            self.world.add_draw_command(command)
 
 
 def create_draw_rectangle() -> DrawRectangle:
