@@ -9,17 +9,29 @@ class Color:
     b: int
     a: int = 255
 
+    @property
+    def tuple(self) -> tuple[int, int, int, int]:
+        return (self.r, self.g, self.b, self.a)
+
 
 @dataclass(slots=True)
 class Vec2:
     x: float = 0
     y: float = 0
 
+    @property
+    def tuple(self) -> tuple[float, float]:
+        return (self.x, self.y)
+
 
 @dataclass(slots=True)
 class IVec2:
     x: int = 0
     y: int = 0
+
+    @property
+    def tuple(self) -> tuple[int, int]:
+        return (self.x, self.y)
 
 
 @dataclass(slots=True)

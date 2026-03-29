@@ -12,7 +12,6 @@ class PanelBundle(Bundle):
     layout: PanelLayoutBundle
     surface: SurfaceBundle
     
-    
     def components(self) -> Iterable[Component]:
         yield from self.core.components()
         yield from self.transform.components()

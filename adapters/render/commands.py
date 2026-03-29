@@ -1,14 +1,19 @@
 from dataclasses import dataclass
 
 from core.primitives import Color, IVec2
+from omniecs.types import DrawCommandProtocol
 
 
 @dataclass
-class DrawRect:
+class DrawRectangle(DrawCommandProtocol):
     position: IVec2
     size: IVec2
     color: Color
-    z: int = 0
+
+
+@dataclass
+class DrawFrame(DrawRectangle):
+    width: int
 
 
 @dataclass
