@@ -1,5 +1,5 @@
 from omniecs.system import System
-from ui.components.behavior import ActivateIntent, HoverIntention, Hovered, PressIntent, Pressed, Triggered
+from ui.components.behavior import ActivateIntent, HoverIntention, Hovered, PressIntent, Pressable, Pressed, Trigger, Triggered
 from ui.resources.state import PointerState
 
 
@@ -26,7 +26,7 @@ class PressSystem(System):
         self.world.register_temporary_component(Pressed)
 
     def execute(self, _: float) -> None:
-        for entity_id in self.world.query_entities(all_of=(PressIntent,)):
+        for entity_id in self.world.query_entities(all_of=(PressIntent, Pressable)):
             self.world.add_component(entity_id, Pressed())
 
 
@@ -36,5 +36,5 @@ class ActivateSystem(System):
         self.world.register_temporary_component(Triggered)
 
     def execute(self, _: float) -> None:
-        for entity_id in self.world.query_entities(all_of=(ActivateIntent,)):
+        for entity_id in self.world.query_entities(all_of=(ActivateIntent, Trigger)):
             self.world.add_component(entity_id, Triggered())
