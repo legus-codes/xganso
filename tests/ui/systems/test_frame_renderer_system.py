@@ -62,8 +62,8 @@ def test_render_panel_bundle():
     assert isinstance(draw_command, DrawFrame)
     assert draw_command.global_layer == 0
     assert draw_command.local_layer == 1
-    assert draw_command.position == Vec2(50, 50)
-    assert draw_command.size == Vec2(0, 0)
+    assert draw_command.position == Vec2(0, 0)
+    assert draw_command.size == Vec2(50, 50)
     assert draw_command.color == Color(0, 0, 200)
     assert draw_command.width == 2
 

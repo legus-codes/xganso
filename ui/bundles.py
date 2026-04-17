@@ -45,7 +45,7 @@ class RectTransformBundle(Bundle):
     layer: int = 0
 
     def components(self) -> Iterable[Component]:
-        yield Transform(self.size, self.position)
+        yield Transform(self.position, self.size)
         yield RenderLayer(self.layer)
         if self.parent is not None:
             yield Parent(self.parent)

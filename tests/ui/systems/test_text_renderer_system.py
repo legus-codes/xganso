@@ -71,11 +71,11 @@ def test_render_text_bundle():
     assert isinstance(draw_command, DrawText)
     assert draw_command.global_layer == 0
     assert draw_command.local_layer == 2
-    assert draw_command.position == Vec2(50, 50)
+    assert draw_command.position == Vec2(0, 0)
     assert draw_command.text == 'text'
     assert draw_command.font_id == 'couriernew'
     assert draw_command.font_size == 16
-    assert draw_command.size == Vec2(0, 0)
+    assert draw_command.size == Vec2(50, 50)
     assert draw_command.color == Color(20, 20, 20)
     assert draw_command.horizontal_alignment == HorizontalAlignment.left
     assert draw_command.vertical_alignment == VerticalAlignment.top
