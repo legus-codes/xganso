@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import Iterable
 
 from core.primitives import Vec2
-from omniecs.types import Bundle, Component
+from omniecs.types import Bundle, Component, EntityId
 from ui.components.content import Text, InputValue
 from ui.components.style import Background, Frame, TextStyle
 from ui.components.layout import HorizontalAlignment, GridLayout, HorizontalLayout, RenderLayer, Spacing, TextAlignment, Transform, Parent, VerticalAlignment, VerticalLayout
@@ -41,7 +41,7 @@ class TextVisualBundle(Bundle):
 class RectTransformBundle(Bundle):
     size: Vec2
     position: Vec2 = field(default_factory=Vec2)
-    parent: int | None = None
+    parent: EntityId | None = None
     layer: int = 0
 
     def components(self) -> Iterable[Component]:

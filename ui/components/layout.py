@@ -1,18 +1,18 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 
-from omniecs.types import Component
+from omniecs.types import Component, EntityId
 from core.primitives import Vec2
 
 
 @dataclass(slots=True)
 class Parent(Component):
-    entity: int
+    entity: EntityId
 
 
 @dataclass(slots=True)
 class Children(Component):
-    entities: set[int]
+    entities: set[EntityId] = field(default_factory=set)  
 
 
 @dataclass(slots=True)

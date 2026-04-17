@@ -30,7 +30,7 @@ def test_default_text_input():
         assert not any(isinstance(obj, component) for obj in text_input_components)
 
 
-def test_full_toggle():
+def test_full_text_input():
     core = WidgetCoreBundle()
     text = TextVisualBundle('text', TextStyleDescription('couriernew', 16, InteractionColors(normal=Color(20, 20, 20))), HorizontalAlignment.center, VerticalAlignment.middle, 6, 8)
     transform = RectTransformBundle(Vec2(x=50, y=50), Vec2(x=50, y=50), 1, 1)
