@@ -5,7 +5,7 @@ from core.primitives import Vec2
 from omniecs.types import Bundle, Component
 from ui.components.content import Text, InputValue
 from ui.components.style import Background, Frame, TextStyle
-from ui.components.layout import TextAlignmentEnum, GridLayout, HorizontalLayout, RenderLayer, TextAlignment, Transform, Parent, VerticalLayout
+from ui.components.layout import HorizontalAlignment, GridLayout, HorizontalLayout, RenderLayer, Spacing, TextAlignment, Transform, Parent, VerticalAlignment, VerticalLayout
 from ui.components.rendering import Dirty
 from ui.components.behavior import Enabled, Focusable, Hoverable, Pressable, Selectable, Selected, SelectionGroup, Toggleable, Toggled, Trigger, InputFilter
 from ui.types import FrameDescription, GridLayoutDescription, HorizontalLayoutDescription, InteractionColors, LayoutDescription, TextStyleDescription, VerticalLayoutDescription
@@ -25,12 +25,16 @@ class WidgetCoreBundle(Bundle):
 class TextVisualBundle(Bundle):
     text: str
     style: TextStyleDescription
-    alignment: TextAlignmentEnum = TextAlignmentEnum.left
+    horizontal_alignment: HorizontalAlignment = HorizontalAlignment.left
+    vertical_alignment: HorizontalAlignment = VerticalAlignment.top
+    horizontal_spacing: int = 0
+    vertical_spacing: int = 0
 
     def components(self) -> Iterable[Component]:
         yield Text(self.text)
         yield TextStyle(self.style.font, self.style.size, self.style.color)
-        yield TextAlignment(self.alignment)
+        yield TextAlignment(self.horizontal_alignment, self.vertical_alignment)
+        yield Spacing(self.horizontal_spacing, self.vertical_spacing)
 
 
 @dataclass

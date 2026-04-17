@@ -41,6 +41,12 @@ class Padding(Component):
 
 
 @dataclass(slots=True)
+class Spacing(Component):
+    horizontal: int = 0
+    vertical: int = 0
+
+
+@dataclass(slots=True)
 class Layout(Component): ...
 
 
@@ -67,12 +73,19 @@ class Anchor(Component):
     value: Vec2
 
 
-class TextAlignmentEnum(Enum):
+class HorizontalAlignment(Enum):
     left = 0
     center = 1
     right = 2
 
 
+class VerticalAlignment(Enum):
+    top = 0
+    middle = 1
+    bottom = 2
+
+
 @dataclass(slots=True)
 class TextAlignment(Component):
-    alignment: TextAlignmentEnum
+    horizontal: HorizontalAlignment
+    vertical: VerticalAlignment

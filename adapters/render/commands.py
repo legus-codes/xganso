@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 
-from core.primitives import Color, IVec2
+from core.primitives import Color, IVec2, Rect
 from omniecs.types import DrawCommand
+
+from ui.components.layout import HorizontalAlignment, VerticalAlignment
 
 
 @dataclass(kw_only=True)
@@ -16,10 +18,11 @@ class DrawFrame(DrawRectangle):
     width: int
 
 
-@dataclass
-class DrawText:
-    position: IVec2
+@dataclass(kw_only=True)
+class DrawText(DrawRectangle):
     text: str
     font_id: str
-    color: Color
-    z: int = 0
+    font_size: int
+    horizontal_alignment: HorizontalAlignment
+    vertical_alignment: VerticalAlignment
+    spacing: IVec2

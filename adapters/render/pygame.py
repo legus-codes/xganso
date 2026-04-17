@@ -3,6 +3,9 @@ import pygame
 from adapters.render.commands import DrawFrame, DrawRectangle, DrawText
 from omniecs.types import DrawCommand
 
+from core.primitives import IVec2
+from ui.components.layout import HorizontalAlignment, VerticalAlignment
+
 
 class PygameRenderer:
     
@@ -23,11 +26,37 @@ class PygameRenderer:
                 rect = pygame.Rect(*draw_command.position.tuple, *draw_command.size.tuple)
                 pygame.draw.rect(self.screen, color, rect, draw_command.width)
 
+            case DrawText():
+                draw_command: DrawText
+                color = pygame.Color(*draw_command.color.tuple)
+                font = pygame.font.SysFont(draw_command.font_id, draw_command.font_size)
+                surface = font.render(draw_command.text, True, color)
+                spacing = draw_command.spacing
+                offset = self._get_text_offset(draw_command.size, IVec2(*surface.get_size()), draw_command.horizontal_alignment, draw_command.vertical_alignment)
+                position = draw_command.position + offset + spacing
+                self.screen.blit(surface, position.tuple)
+
             case DrawRectangle():
                 draw_command: DrawRectangle
                 color = pygame.Color(*draw_command.color.tuple)
                 rect = pygame.Rect(*draw_command.position.tuple, *draw_command.size.tuple)
                 pygame.draw.rect(self.screen, color, rect)
 
-            case DrawText():
-                ...
+    def _get_text_offset(self, area_size: IVec2, text_size: IVec2, horizontal_alignment: HorizontalAlignment, vertical_alignment: VerticalAlignment) -> IVec2:
+        match horizontal_alignment:
+            case HorizontalAlignment.left:
+                x = 0
+            case HorizontalAlignment.center:
+                x = (area_size.x - text_size.x) / 2
+            case HorizontalAlignment.right:
+                x = area_size.x - text_size.x
+
+        match vertical_alignment:
+            case VerticalAlignment.top:
+                y = 0
+            case VerticalAlignment.middle:
+                y = (area_size.y - text_size.y) / 2
+            case VerticalAlignment.bottom:
+                y = area_size.y - text_size.y
+
+        return IVec2(x, y)

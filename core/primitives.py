@@ -23,6 +23,9 @@ class Vec2:
     def tuple(self) -> tuple[float, float]:
         return (self.x, self.y)
 
+    def __add__(self, other: Self) -> Self:
+        return Vec2(self.x + other.x, self.y + other.y)
+
 
 @dataclass(slots=True)
 class IVec2:

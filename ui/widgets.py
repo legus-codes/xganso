@@ -31,7 +31,7 @@ class TextBundle(Bundle):
         yield from self.text.components()
         yield from self.transform.components()
         yield from self.surface.components()
-
+        
 
 @dataclass
 class ButtonBundle(Bundle):
