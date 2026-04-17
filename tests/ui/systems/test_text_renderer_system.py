@@ -5,10 +5,11 @@ from core.primitives import Color, IVec2, Vec2
 from ui.bundles import RectTransformBundle, SurfaceBundle, TextVisualBundle, WidgetCoreBundle
 from ui.components.behavior import Enabled
 from ui.components.content import Text
-from ui.components.layout import RenderLayer, Spacing, TextAlignment, HorizontalAlignment, Transform, VerticalAlignment
+from ui.components.layout import RenderLayer, Spacing, TextAlignment, HorizontalAlignment, WorldTransform, VerticalAlignment
 from ui.components.rendering import Dirty
 from ui.components.style import TextStyle
-from ui.systems.renderer_system import FrameRendererSystem, TextRendererSystem
+from ui.systems.layout_system import WorldTransformationSystem
+from ui.systems.renderer_system import TextRendererSystem
 from ui.types import InteractionColors, TextStyleDescription
 from ui.widgets import TextBundle
 
@@ -17,7 +18,7 @@ text = Text('text')
 text_style = TextStyle('arial', 16, InteractionColors(normal=Color(155, 0, 0)))
 text_alignment = TextAlignment(HorizontalAlignment.center, VerticalAlignment.middle)
 spacing = Spacing(5, 10)
-transform = Transform(Vec2(100, 100), Vec2(50, 50))
+transform = WorldTransform(Vec2(100, 100), Vec2(50, 50))
 render_layer = RenderLayer(3)
 enabled = Enabled()
 dirty = Dirty()
@@ -59,6 +60,7 @@ def test_render_text_bundle():
 
     world = WorldFactory.create_world()
     world.spawn(*text.components())
+    world.register_system(WorldTransformationSystem())
     world.register_system(TextRendererSystem())
 
     world.execute()

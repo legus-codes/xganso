@@ -4,16 +4,17 @@ from adapters.render.commands import DrawFrame
 from core.primitives import Color, Vec2
 from ui.bundles import PanelLayoutBundle, RectTransformBundle, SurfaceBundle, WidgetCoreBundle
 from ui.components.behavior import Enabled
-from ui.components.layout import RenderLayer, Transform
+from ui.components.layout import RenderLayer, WorldTransform
 from ui.components.rendering import Dirty
 from ui.components.style import Frame
+from ui.systems.layout_system import WorldTransformationSystem
 from ui.systems.renderer_system import FrameRendererSystem
 from ui.types import FrameDescription, InteractionColors
 from ui.widgets import PanelBundle
 
 
 frame = Frame(color=InteractionColors(normal=Color(200, 0, 0)), width=2)
-transform = Transform(Vec2(100, 100), Vec2(50, 50))
+transform = WorldTransform(Vec2(100, 100), Vec2(50, 50))
 render_layer = RenderLayer(3)
 enabled = Enabled()
 dirty = Dirty()
@@ -50,6 +51,7 @@ def test_render_panel_bundle():
 
     world = WorldFactory.create_world()
     world.spawn(*panel.components())
+    world.register_system(WorldTransformationSystem())
     world.register_system(FrameRendererSystem())
 
     world.execute()
