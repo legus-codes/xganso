@@ -1,9 +1,9 @@
-from adapters.render.commands import DrawFrame, DrawRectangle, DrawText
-from core.primitives import Color, IVec2
+from adapters.render.commands import DrawFrame, DrawInput, DrawRectangle, DrawText
+from core.primitives import IVec2
 from omniecs.system import System
 
 from ui.components.behavior import Enabled
-from ui.components.content import Text
+from ui.components.content import InputValue, Text
 from ui.components.layout import RenderLayer, Spacing, TextAlignment, WorldTransform
 from ui.components.rendering import Dirty
 from ui.components.style import Background, Frame, TextStyle
@@ -34,9 +34,15 @@ class FrameRendererSystem(BaseRendererSystem):
 class TextRendererSystem(BaseRendererSystem):
 
     def execute(self, _: float) -> None:
-        for (_, (text, text_style, text_alignment, spacing, world_transform, layer)) in self.world.query(Text, TextStyle, TextAlignment, Spacing, WorldTransform, RenderLayer, all_of=(Enabled, Dirty)):
-            command = DrawText(global_layer=layer.layer, local_layer=2, position=world_transform.position, size=world_transform.size, color=text_style.color.normal, 
-                               text=text.text, font_id=text_style.font, font_size=text_style.size, horizontal_alignment=text_alignment.horizontal,
-                               vertical_alignment=text_alignment.vertical, spacing=IVec2(spacing.horizontal, spacing.vertical))
-            self.world.add_draw_command(command)
+        for (entity_id, (text, text_style, text_alignment, spacing, world_transform, layer)) in self.world.query(Text, TextStyle, TextAlignment, Spacing, WorldTransform, RenderLayer, all_of=(Enabled, Dirty)):
+            input_value = self.world.get_component(entity_id, InputValue)
 
+            if input_value:
+                command = DrawInput(global_layer=layer.layer, local_layer=2, position=world_transform.position, size=world_transform.size, color=text_style.color.normal, 
+                                    text=text.text, font_id=text_style.font, font_size=text_style.size, horizontal_alignment=text_alignment.horizontal,
+                                    vertical_alignment=text_alignment.vertical, spacing=IVec2(spacing.horizontal, spacing.vertical), value=input_value.value)
+            else:
+                command = DrawText(global_layer=layer.layer, local_layer=2, position=world_transform.position, size=world_transform.size, color=text_style.color.normal,
+                                   text=text.text, font_id=text_style.font, font_size=text_style.size, horizontal_alignment=text_alignment.horizontal,
+                                   vertical_alignment=text_alignment.vertical, spacing=IVec2(spacing.horizontal, spacing.vertical))
+            self.world.add_draw_command(command)

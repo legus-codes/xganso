@@ -1,6 +1,6 @@
 import pygame
 
-from adapters.render.commands import DrawFrame, DrawRectangle, DrawText
+from adapters.render.commands import DrawFrame, DrawInput, DrawRectangle, DrawText
 from omniecs.types import DrawCommand
 
 from core.primitives import IVec2
@@ -20,11 +20,15 @@ class PygameRenderer:
 
     def draw(self, draw_command: DrawCommand) -> None:
         match draw_command:
-            case DrawFrame():
-                draw_command: DrawFrame
+            case DrawInput():
+                draw_command: DrawInput
                 color = pygame.Color(*draw_command.color.tuple)
-                rect = pygame.Rect(*draw_command.position.tuple, *draw_command.size.tuple)
-                pygame.draw.rect(self.screen, color, rect, draw_command.width)
+                font = pygame.font.SysFont(draw_command.font_id, draw_command.font_size)
+                surface = font.render(draw_command.text + draw_command.value, True, color)
+                spacing = draw_command.spacing
+                offset = self._get_text_offset(draw_command.size, IVec2(*surface.get_size()), draw_command.horizontal_alignment, draw_command.vertical_alignment)
+                position = draw_command.position + offset + spacing
+                self.screen.blit(surface, position.tuple)
 
             case DrawText():
                 draw_command: DrawText
@@ -35,6 +39,12 @@ class PygameRenderer:
                 offset = self._get_text_offset(draw_command.size, IVec2(*surface.get_size()), draw_command.horizontal_alignment, draw_command.vertical_alignment)
                 position = draw_command.position + offset + spacing
                 self.screen.blit(surface, position.tuple)
+
+            case DrawFrame():
+                draw_command: DrawFrame
+                color = pygame.Color(*draw_command.color.tuple)
+                rect = pygame.Rect(*draw_command.position.tuple, *draw_command.size.tuple)
+                pygame.draw.rect(self.screen, color, rect, draw_command.width)
 
             case DrawRectangle():
                 draw_command: DrawRectangle

@@ -26,3 +26,8 @@ class DrawText(DrawRectangle):
     horizontal_alignment: HorizontalAlignment
     vertical_alignment: VerticalAlignment
     spacing: IVec2
+
+
+@dataclass(kw_only=True)
+class DrawInput(DrawText):
+    value: str
