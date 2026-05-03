@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Iterable
 
 from omniecs.types import Bundle, Component
-from ui.bundles import ActivatableBundle, InputBundle, PanelLayoutBundle, PointerBundle, RectTransformBundle, SelectableBundle, SurfaceBundle, TextVisualBundle, ToggleableBundle, WidgetCoreBundle
+from ui.bundles import ActivatableBundle, InputBundle, PanelLayoutBundle, PointerBundle, PressableBundle, RectTransformBundle, SelectableBundle, SurfaceBundle, TextVisualBundle, ToggleableBundle, WidgetCoreBundle
 
 
 @dataclass
@@ -40,6 +40,7 @@ class ButtonBundle(Bundle):
     transform: RectTransformBundle
     surface: SurfaceBundle
     pointer: PointerBundle
+    pressable: PressableBundle
     activatable: ActivatableBundle
     
     def components(self) -> Iterable[Component]:
@@ -48,6 +49,7 @@ class ButtonBundle(Bundle):
         yield from self.transform.components()
         yield from self.surface.components()
         yield from self.pointer.components()
+        yield from self.pressable.components()
         yield from self.activatable.components()
 
 

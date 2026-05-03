@@ -1,6 +1,6 @@
 from core.primitives import Color, Vec2
 from ui.bundles import ActivatableBundle, PointerBundle, RectTransformBundle, SurfaceBundle, TextVisualBundle, ToggleableBundle, WidgetCoreBundle
-from ui.components.behavior import Enabled, Hoverable, Pressable, Toggleable, Toggled, Trigger
+from ui.components.behavior import Enabled, Hoverable, Toggleable, Toggled, Trigger
 from ui.components.content import Text
 from ui.components.layout import Parent, RenderLayer, Spacing, TextAlignment, HorizontalAlignment, Transform, VerticalAlignment
 from ui.components.rendering import Dirty
@@ -19,16 +19,13 @@ def test_default_toggle():
     toggleable = ToggleableBundle()
 
     toggle = ToggleBundle(core, text, transform, surface, pointer, activatable, toggleable)
-    toggle_components = list(toggle.components())
+    toggle_components = set([type(component) for component in toggle.components()])
 
-    expected_components = [Enabled, Dirty, Text, TextStyle, TextAlignment, Spacing, Transform, RenderLayer, Hoverable, Pressable, Trigger, Toggleable]
-    assert len(toggle_components) == len(expected_components)
-    for component in expected_components:
-        assert any(isinstance(obj, component) for obj in toggle_components)
+    expected_components = set([Enabled, Dirty, Text, TextStyle, TextAlignment, Spacing, Transform, RenderLayer, Hoverable, Trigger, Toggleable])
+    assert toggle_components == expected_components
 
-    non_existing_components = [Parent, Background, Frame]
-    for component in non_existing_components:
-        assert not any(isinstance(obj, component) for obj in toggle_components)
+    non_existing_components = set([Parent, Background, Frame])
+    assert non_existing_components.intersection(toggle_components) == set()
 
 
 def test_full_toggle():
@@ -41,9 +38,7 @@ def test_full_toggle():
     toggleable = ToggleableBundle(True)
 
     toggle = ToggleBundle(core, text, transform, surface, pointer, activatable, toggleable)
-    toggle_components = list(toggle.components())
+    toggle_components = set([type(component) for component in toggle.components()])
 
-    expected_components = [Enabled, Dirty, Text, TextStyle, TextAlignment, Spacing, Transform, RenderLayer, Parent, Background, Frame, Hoverable, Pressable, Trigger, Toggleable, Toggled]
-    assert len(toggle_components) == len(expected_components)
-    for component in expected_components:
-        assert any(isinstance(obj, component) for obj in toggle_components)
+    expected_components = set([Enabled, Dirty, Text, TextStyle, TextAlignment, Spacing, Transform, RenderLayer, Parent, Background, Frame, Hoverable, Trigger, Toggleable, Toggled])
+    assert toggle_components == expected_components

@@ -1,7 +1,7 @@
 from core.primitives import Color, Vec2
 from ui.bundles import PanelLayoutBundle, RectTransformBundle, SurfaceBundle, WidgetCoreBundle
 from ui.components.behavior import Enabled
-from ui.components.layout import Layout, Parent, RenderLayer, Transform
+from ui.components.layout import GridLayout, HorizontalLayout, Layout, Parent, RenderLayer, Transform, VerticalLayout
 from ui.components.rendering import Dirty
 from ui.components.style import Background, Frame
 from ui.types import FrameDescription, HorizontalLayoutDescription, InteractionColors
@@ -15,16 +15,13 @@ def test_default_panel():
     surface = SurfaceBundle()
 
     panel = PanelBundle(core, transform, layout, surface)
-    panel_components = list(panel.components())
+    panel_components = set([type(component) for component in panel.components()])
 
-    expected_components = [Enabled, Dirty, Transform, RenderLayer]
-    assert len(panel_components) == len(expected_components)
-    for component in expected_components:
-        assert any(isinstance(obj, component) for obj in panel_components)
+    expected_components = set([Enabled, Dirty, Transform, RenderLayer])
+    assert panel_components == expected_components
 
-    non_existing_components = [Parent, Background, Frame, Layout]
-    for component in non_existing_components:
-        assert not any(isinstance(obj, component) for obj in panel_components)
+    non_existing_components = set([Parent, Background, Frame, HorizontalLayout, VerticalLayout, GridLayout, Layout])
+    assert non_existing_components.intersection(panel_components) == set()
 
 
 def test_full_panel():
@@ -34,9 +31,10 @@ def test_full_panel():
     surface = SurfaceBundle(InteractionColors(normal=Color(20, 20, 20)), FrameDescription(3, InteractionColors(normal=Color(20, 20, 200))))
 
     panel = PanelBundle(core, transform, layout, surface)
-    panel_components = list(panel.components())
+    panel_components = set([type(component) for component in panel.components()])
 
-    expected_components = [Enabled, Dirty, Transform, RenderLayer, Parent, Layout, Background, Frame]
-    assert len(panel_components) == len(expected_components)
-    for component in expected_components:
-        assert any(isinstance(obj, component) for obj in panel_components)
+    expected_components = set([Enabled, Dirty, Transform, RenderLayer, Parent, HorizontalLayout, Background, Frame])
+    assert panel_components == expected_components
+
+    non_existing_components = set([VerticalLayout, GridLayout])
+    assert non_existing_components.intersection(panel_components) == set()

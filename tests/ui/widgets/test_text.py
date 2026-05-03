@@ -16,16 +16,13 @@ def test_default_text():
     surface = SurfaceBundle()
 
     text = TextBundle(core, text, transform, surface)
-    text_components = list(text.components())
+    text_components = set([type(component) for component in text.components()])
 
-    expected_components = [Enabled, Dirty, Text, TextStyle, TextAlignment, Spacing, Transform, RenderLayer]
-    assert len(text_components) == len(expected_components)
-    for component in expected_components:
-        assert any(isinstance(obj, component) for obj in text_components)
+    expected_components = set([Enabled, Dirty, Text, TextStyle, TextAlignment, Spacing, Transform, RenderLayer])
+    assert text_components == expected_components
 
-    non_existing_components = [Parent, Background, Frame]
-    for component in non_existing_components:
-        assert not any(isinstance(obj, component) for obj in text_components)
+    non_existing_components = set([Parent, Background, Frame])
+    assert non_existing_components.intersection(text_components) == set()
 
 
 def test_full_text():
@@ -35,9 +32,7 @@ def test_full_text():
     surface = SurfaceBundle(InteractionColors(normal=Color(20, 20, 20)), FrameDescription(3, InteractionColors(normal=Color(20, 20, 200))))
 
     text = TextBundle(core, text, transform, surface)
-    text_components = list(text.components())
+    text_components = set([type(component) for component in text.components()])
 
-    expected_components = [Enabled, Dirty, Text, TextStyle, TextAlignment, Spacing, Transform, RenderLayer, Parent, Background, Frame]
-    assert len(text_components) == len(expected_components)
-    for component in expected_components:
-        assert any(isinstance(obj, component) for obj in text_components)
+    expected_components = set([Enabled, Dirty, Text, TextStyle, TextAlignment, Spacing, Transform, RenderLayer, Parent, Background, Frame])
+    assert text_components == expected_components

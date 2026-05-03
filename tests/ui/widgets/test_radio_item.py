@@ -1,6 +1,6 @@
 from core.primitives import Color, Vec2
 from ui.bundles import PointerBundle, RectTransformBundle, SelectableBundle, SurfaceBundle, TextVisualBundle, WidgetCoreBundle
-from ui.components.behavior import Enabled, Hoverable, Pressable, Selectable, Selected, SelectionGroup
+from ui.components.behavior import Enabled, Hoverable, Pressable, Pressable, Selectable, Selected, SelectionGroup
 from ui.components.content import Text
 from ui.components.layout import Parent, RenderLayer, Spacing, TextAlignment, HorizontalAlignment, Transform, VerticalAlignment
 from ui.components.rendering import Dirty
@@ -18,16 +18,13 @@ def test_default_radio_item():
     selectable = SelectableBundle('group')
 
     radio_button = RadioButtonBundle(core, text, transform, surface, pointer, selectable)
-    radio_button_components = list(radio_button.components())
+    radio_button_components = set([type(component) for component in radio_button.components()])
 
-    expected_components = [Enabled, Dirty, Text, TextStyle, TextAlignment, Spacing, Transform, RenderLayer, Hoverable, Pressable, SelectionGroup, Selectable]
-    assert len(radio_button_components) == len(expected_components)
-    for component in expected_components:
-        assert any(isinstance(obj, component) for obj in radio_button_components)
+    expected_components = set([Enabled, Dirty, Text, TextStyle, TextAlignment, Spacing, Transform, RenderLayer, Hoverable, SelectionGroup, Selectable])
+    assert radio_button_components == expected_components
 
-    non_existing_components = [Parent, Background, Frame, Selected]
-    for component in non_existing_components:
-        assert not any(isinstance(obj, component) for obj in radio_button_components)
+    non_existing_components = set([Parent, Background, Frame, Selected])
+    assert non_existing_components.intersection(radio_button_components) == set()
 
 
 def test_full_toggle():
@@ -39,9 +36,7 @@ def test_full_toggle():
     selectable = SelectableBundle('group', True)
 
     radio_button = RadioButtonBundle(core, text, transform, surface, pointer, selectable)
-    radio_button_components = list(radio_button.components())
+    radio_button_components = set([type(component) for component in radio_button.components()])
 
-    expected_components = [Enabled, Dirty, Text, TextStyle, TextAlignment, Spacing, Transform, RenderLayer, Parent, Background, Frame, Hoverable, Pressable, SelectionGroup, Selectable, Selected]
-    assert len(radio_button_components) == len(expected_components)
-    for component in expected_components:
-        assert any(isinstance(obj, component) for obj in radio_button_components)
+    expected_components = set([Enabled, Dirty, Text, TextStyle, TextAlignment, Spacing, Transform, RenderLayer, Parent, Background, Frame, Hoverable, SelectionGroup, Selectable, Selected])
+    assert radio_button_components == expected_components

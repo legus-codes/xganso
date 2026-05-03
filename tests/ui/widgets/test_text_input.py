@@ -1,6 +1,6 @@
 from core.primitives import Color, Vec2
 from ui.bundles import InputBundle, PointerBundle, RectTransformBundle, SurfaceBundle, TextVisualBundle, WidgetCoreBundle
-from ui.components.behavior import Enabled, Focusable, Hoverable, InputFilter, Pressable
+from ui.components.behavior import Enabled, Focusable, Hoverable, Pressable, InputFilter, Pressable
 from ui.components.content import InputValue, Text
 from ui.components.layout import Parent, RenderLayer, Spacing, TextAlignment, HorizontalAlignment, Transform, VerticalAlignment
 from ui.components.rendering import Dirty
@@ -18,16 +18,13 @@ def test_default_text_input():
     inputable = InputBundle('value', {'a'})
     
     text_input = TextInputBundle(core, text, transform, surface, pointer, inputable)
-    text_input_components = list(text_input.components())
+    text_input_components = set([type(component) for component in text_input.components()])
 
-    expected_components = [Enabled, Dirty, Text, TextStyle, TextAlignment, Spacing, Transform, RenderLayer, Hoverable, Pressable, Focusable, InputValue, InputFilter]
-    assert len(text_input_components) == len(expected_components)
-    for component in expected_components:
-        assert any(isinstance(obj, component) for obj in text_input_components)
+    expected_components = set([Enabled, Dirty, Text, TextStyle, TextAlignment, Spacing, Transform, RenderLayer, Hoverable, Focusable, InputValue, InputFilter])
+    assert text_input_components == expected_components
 
-    non_existing_components = [Parent, Background, Frame]
-    for component in non_existing_components:
-        assert not any(isinstance(obj, component) for obj in text_input_components)
+    non_existing_components = set([Parent, Background, Frame])
+    assert non_existing_components.intersection(text_input_components) == set()
 
 
 def test_full_text_input():
@@ -39,9 +36,7 @@ def test_full_text_input():
     inputable = InputBundle('value', {'a'})
 
     text_input = TextInputBundle(core, text, transform, surface, pointer, inputable)
-    text_input_components = list(text_input.components())
+    text_input_components = set([type(component) for component in text_input.components()])
 
-    expected_components = [Enabled, Dirty, Text, TextStyle, TextAlignment, Spacing, Transform, RenderLayer, Parent, Background, Frame, Hoverable, Pressable, Focusable, InputValue, InputFilter]
-    assert len(text_input_components) == len(expected_components)
-    for component in expected_components:
-        assert any(isinstance(obj, component) for obj in text_input_components)
+    expected_components = set([Enabled, Dirty, Text, TextStyle, TextAlignment, Spacing, Transform, RenderLayer, Parent, Background, Frame, Hoverable, Focusable, InputValue, InputFilter])
+    assert text_input_components == expected_components
