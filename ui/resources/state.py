@@ -11,7 +11,6 @@ class PointerState(Resource):
     buttons_down: set[MouseButton] = field(default_factory=set)
     buttons_pressed: set[MouseButton] = field(default_factory=set)
     buttons_released: set[MouseButton] = field(default_factory=set)
-    hovered_entities: set[EntityId] = field(default_factory=set)
 
     def is_down(self, button: MouseButton) -> bool:
         return button in self.buttons_down
@@ -25,6 +24,12 @@ class PointerState(Resource):
     def reset(self) -> None:
         self.buttons_pressed.clear()
         self.buttons_released.clear()
+
+
+@dataclass(slots=True)
+class WidgetState(Resource):
+    hovered_entities: set[EntityId] = field(default_factory=set)
+    active_entities: set[EntityId] = field(default_factory=set)
 
 
 @dataclass(slots=True)
