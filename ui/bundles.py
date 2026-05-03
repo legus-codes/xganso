@@ -7,7 +7,7 @@ from ui.components.content import Text, InputValue
 from ui.components.style import Background, Frame, TextStyle
 from ui.components.layout import HorizontalAlignment, GridLayout, HorizontalLayout, RenderLayer, Spacing, TextAlignment, Transform, Parent, VerticalAlignment, VerticalLayout
 from ui.components.rendering import Dirty
-from ui.components.behavior import Enabled, Focusable, Hoverable, Pressable, Selectable, Selected, SelectionGroup, Toggleable, Toggled, Trigger, InputFilter
+from ui.components.behavior import Enabled, Focusable, Hoverable, Pressable, Pressable, Selectable, Selected, SelectionGroup, Toggleable, Toggled, Trigger, InputFilter
 from ui.types import FrameDescription, GridLayoutDescription, HorizontalLayoutDescription, InteractionColors, LayoutDescription, TextStyleDescription, VerticalLayoutDescription
 
 
@@ -81,6 +81,12 @@ class PointerBundle(Bundle):
 
     def components(self) -> Iterable[Component]:
         yield Hoverable()
+
+
+@dataclass
+class PressableBundle(Bundle):
+
+    def components(self) -> Iterable[Component]:
         yield Pressable()
 
 

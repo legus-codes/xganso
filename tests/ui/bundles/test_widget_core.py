@@ -5,26 +5,21 @@ from ui.components.rendering import Dirty
 
 def test_default_widget_core():
     core = WidgetCoreBundle()
-    core_components = list(core.components())
+    core_components = set([type(component) for component in core.components()])
 
-    expected_components = [Enabled, Dirty]
-    assert len(core_components) == len(expected_components)
-    for component in expected_components:
-        assert any(isinstance(obj, component) for obj in core_components)
+    expected_components = set([Enabled, Dirty])
+    assert core_components == expected_components
 
 
 def test_disabled_widget_core():
     core = WidgetCoreBundle(False)
-    core_components = list(core.components())
+    core_components = set([type(component) for component in core.components()])
 
-    expected_components = [Dirty]
-    assert len(core_components) == len(expected_components)
-    for component in expected_components:
-        assert any(isinstance(obj, component) for obj in core_components)
+    expected_components = set([Dirty])
+    assert core_components == expected_components
 
-    non_existing_components = [Enabled]
-    for component in non_existing_components:
-        assert not any(isinstance(obj, component) for obj in core_components)
+    non_existing_components = set([Enabled])
+    assert non_existing_components.intersection(core_components) == set()
 
 
 def test_multiple_instances():
