@@ -1,57 +1,56 @@
-from omniecs.world import WorldFactory
-from ui.components.behavior import Enabled, HoverIntention, Hovered
-from ui.resources.state import PointerState
+from omniecs.world import World, WorldFactory
+from ui.components.behavior import Enabled, HoverIntent, Hovered
+from ui.resources.state import WidgetState
 from ui.systems.behaviour_system import HoverSystem
 
-
-def test_no_hover_intention_or_hovered():
+def create_world() -> World:
     world = WorldFactory.create_world()
     world.register_system(HoverSystem())
-    world.set_resource(PointerState())
+    world.set_resource(WidgetState())
+    return world
+
+def test_no_hover_intention_or_hovered():
+    world = create_world()
 
     world.spawn(Enabled())
     world.execute()
 
-    pointer = world.get_resource(PointerState)
-    assert pointer.hovered_entities == set()
+    widgets = world.get_resource(WidgetState)
+    assert widgets.hovered_entities == set()
     assert world.query_entities(all_of=(Hovered,)) == set()
 
 def test_adding_hover_intentions():
-    world = WorldFactory.create_world()
-    world.register_system(HoverSystem())
-    world.set_resource(PointerState())
+    world = create_world()
 
-    entity_id1 = world.spawn(HoverIntention())
-    entity_id2 = world.spawn(HoverIntention())
+    entity_id1 = world.spawn(HoverIntent())
+    entity_id2 = world.spawn(HoverIntent())
     world.execute()
 
-    pointer = world.get_resource(PointerState)
-    assert pointer.hovered_entities == set([entity_id1, entity_id2])
+    widgets = world.get_resource(WidgetState)
+    assert widgets.hovered_entities == set([entity_id1, entity_id2])
     assert world.query_entities(all_of=(Hovered,)) == set([entity_id1, entity_id2])
 
 def test_removing_hovered():
-    world = WorldFactory.create_world()
-    world.register_system(HoverSystem())
+    world = create_world()
 
     entity_id1 = world.spawn(Enabled())
     entity_id2 = world.spawn(Enabled())
-    world.set_resource(PointerState(hovered_entities=set([entity_id1, entity_id2])))
+    world.set_resource(WidgetState(hovered_entities=set([entity_id1, entity_id2])))
     world.execute()
 
-    pointer = world.get_resource(PointerState)
-    assert pointer.hovered_entities == set([])
+    widgets = world.get_resource(WidgetState)
+    assert widgets.hovered_entities == set([])
     assert world.query_entities(all_of=(Hovered,)) == set([])
 
 def test_changing_hovered():
-    world = WorldFactory.create_world()
-    world.register_system(HoverSystem())
+    world = create_world()
 
     entity_id1 = world.spawn(Enabled())
     world.spawn(Enabled())
-    entity_id3 = world.spawn(HoverIntention())
-    world.set_resource(PointerState(hovered_entities=set([entity_id1])))
+    entity_id3 = world.spawn(HoverIntent())
+    world.set_resource(WidgetState(hovered_entities=set([entity_id1])))
     world.execute()
 
-    pointer = world.get_resource(PointerState)
-    assert pointer.hovered_entities == set([entity_id3])
+    widgets = world.get_resource(WidgetState)
+    assert widgets.hovered_entities == set([entity_id3])
     assert world.query_entities(all_of=(Hovered,)) == set([entity_id3])

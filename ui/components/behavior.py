@@ -12,6 +12,10 @@ class Hoverable(Component): ...
 
 
 @dataclass(slots=True)
+class HoverIntent(Component): ...
+
+
+@dataclass(slots=True)
 class Hovered(Component): ...
 
 
@@ -20,7 +24,24 @@ class Pressable(Component): ...
 
 
 @dataclass(slots=True)
+class PressIntent(Component): ...
+
+
+@dataclass(slots=True)
 class Pressed(Component): ...
+
+
+@dataclass(slots=True)
+class Trigger(Component):
+    component: Component
+
+
+@dataclass(slots=True)
+class ActivateIntent(Component): ...
+
+
+@dataclass(slots=True)
+class Triggered(Component): ...
 
 
 @dataclass(slots=True)
@@ -53,26 +74,5 @@ class SelectionGroup(Component):
 
 
 @dataclass(slots=True)
-class Trigger(Component):
-    component: Component
-
-
-@dataclass(slots=True)
-class Triggered(Component): ...
-
-
-@dataclass(slots=True)
 class InputFilter(Component):
     allowed_chars: set[str]
-
-
-@dataclass(slots=True)
-class HoverIntention(Component): ...
-
-
-@dataclass(slots=True)
-class PressIntent(Component): ...
-
-
-@dataclass(slots=True)
-class ActivateIntent(Component): ...

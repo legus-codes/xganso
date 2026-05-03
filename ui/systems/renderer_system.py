@@ -1,12 +1,14 @@
 from adapters.render.commands import DrawFrame, DrawInput, DrawRectangle, DrawText
-from core.primitives import IVec2
+from core.primitives import Color, IVec2
 from omniecs.system import System
+from omniecs.types import EntityId
 
-from ui.components.behavior import Enabled
+from ui.components.behavior import Enabled, Focused, Hovered, Pressed
 from ui.components.content import InputValue, Text
 from ui.components.layout import RenderLayer, Spacing, TextAlignment, WorldTransform
 from ui.components.rendering import Dirty
 from ui.components.style import Background, Frame, TextStyle
+from ui.types import InteractionColors
 
 
 class BaseRendererSystem(System):
@@ -18,18 +20,29 @@ class BaseRendererSystem(System):
 class BackgroundRendererSystem(BaseRendererSystem):
 
     def execute(self, _: float) -> None:
-        for (_, (background, world_transform, layer)) in self.world.query(Background, WorldTransform, RenderLayer, all_of=(Enabled, Dirty)):
-            command = DrawRectangle(global_layer=layer.layer, local_layer=0, position=world_transform.position, size=world_transform.size, color=background.color.normal)
+        for (entity_id, (background, world_transform, layer)) in self.world.query(Background, WorldTransform, RenderLayer, all_of=(Enabled, Dirty)):
+            command = DrawRectangle(global_layer=layer.layer, local_layer=0, position=world_transform.position, size=world_transform.size, color=self._get_color(entity_id, background.color))
             self.world.add_draw_command(command)
+
+    def _get_color(self, entity_id: EntityId, colors: InteractionColors) -> Color:
+        if self.world.get_component(entity_id, Pressed):
+            return colors.pressed
+        return colors.normal
 
 
 class FrameRendererSystem(BaseRendererSystem):
 
     def execute(self, _: float) -> None:
-        for (_, (frame, world_transform, layer)) in self.world.query(Frame, WorldTransform, RenderLayer, all_of=(Enabled, Dirty)):
-            command = DrawFrame(global_layer=layer.layer, local_layer=1, position=world_transform.position, size=world_transform.size, color=frame.color.normal, width=frame.width)
+        for (entity_id, (frame, world_transform, layer)) in self.world.query(Frame, WorldTransform, RenderLayer, all_of=(Enabled, Dirty)):
+            command = DrawFrame(global_layer=layer.layer, local_layer=1, position=world_transform.position, size=world_transform.size, color=self._get_color(entity_id, frame.color), width=frame.width)
             self.world.add_draw_command(command)
 
+    def _get_color(self, entity_id: EntityId, colors: InteractionColors) -> Color:
+        if self.world.get_component(entity_id, Focused):
+            return colors.focused
+        if self.world.get_component(entity_id, Hovered):
+            return colors.hovered
+        return colors.normal
 
 class TextRendererSystem(BaseRendererSystem):
 

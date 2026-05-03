@@ -1,4 +1,4 @@
-from omniecs.world import WorldFactory
+from omniecs.world import World, WorldFactory
 
 from adapters.render.commands import DrawRectangle
 from core.primitives import Color, Vec2
@@ -19,11 +19,15 @@ render_layer = RenderLayer(3)
 enabled = Enabled()
 dirty = Dirty()
 
+def create_world() -> World:
+    world = WorldFactory.create_world()
+    world.register_system(BackgroundRendererSystem())
+    return world
+
 
 def test_render_background():
-    world = WorldFactory.create_world()
+    world = create_world()
     world.spawn(background, transform, render_layer, enabled, dirty)
-    world.register_system(BackgroundRendererSystem())
 
     world.execute()
     assert world.query_entities(all_of=(Dirty,)) == set()
@@ -69,45 +73,40 @@ def test_render_panel_bundle():
 
 
 def test_render_background_no_background():
-    world = WorldFactory.create_world()
+    world = create_world()
     world.spawn(transform, render_layer, enabled, dirty)
-    world.register_system(BackgroundRendererSystem())
 
     world.execute()
 
     assert world.get_draw_commands() == []
 
 def test_render_background_no_transform():
-    world = WorldFactory.create_world()
+    world = create_world()
     world.spawn(background, render_layer, enabled, dirty)
-    world.register_system(BackgroundRendererSystem())
 
     world.execute()
 
     assert world.get_draw_commands() == []
 
 def test_render_background_no_render_layer():
-    world = WorldFactory.create_world()
+    world = create_world()
     world.spawn(background, transform, enabled, dirty)
-    world.register_system(BackgroundRendererSystem())
 
     world.execute()
 
     assert world.get_draw_commands() == []
 
 def test_render_background_no_enabled():
-    world = WorldFactory.create_world()
+    world = create_world()
     world.spawn(background, transform, render_layer, dirty)
-    world.register_system(BackgroundRendererSystem())
 
     world.execute()
 
     assert world.get_draw_commands() == []
 
 def test_render_background_no_dirty():
-    world = WorldFactory.create_world()
+    world = create_world()
     world.spawn(background, transform, render_layer, enabled)
-    world.register_system(BackgroundRendererSystem())
 
     world.execute()
 

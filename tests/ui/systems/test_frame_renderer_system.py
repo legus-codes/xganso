@@ -1,4 +1,4 @@
-from omniecs.world import WorldFactory
+from omniecs.world import World, WorldFactory
 
 from adapters.render.commands import DrawFrame
 from core.primitives import Color, Vec2
@@ -19,11 +19,15 @@ render_layer = RenderLayer(3)
 enabled = Enabled()
 dirty = Dirty()
 
+def create_world() -> World:
+    world = WorldFactory.create_world()
+    world.register_system(FrameRendererSystem())
+    return world
+
 
 def test_render_frame():
-    world = WorldFactory.create_world()
+    world = create_world()
     world.spawn(frame, transform, render_layer, enabled, dirty)
-    world.register_system(FrameRendererSystem())
 
     world.execute()
     assert world.query_entities(all_of=(Dirty,)) == set()
@@ -71,45 +75,40 @@ def test_render_panel_bundle():
 
 
 def test_render_frame_no_frame():
-    world = WorldFactory.create_world()
+    world = create_world()
     world.spawn(transform, render_layer, enabled, dirty)
-    world.register_system(FrameRendererSystem())
 
     world.execute()
 
     assert world.get_draw_commands() == []
 
 def test_render_frame_no_transform():
-    world = WorldFactory.create_world()
+    world = create_world()
     world.spawn(frame, render_layer, enabled, dirty)
-    world.register_system(FrameRendererSystem())
 
     world.execute()
 
     assert world.get_draw_commands() == []
 
 def test_render_frame_no_render_layer():
-    world = WorldFactory.create_world()
+    world = create_world()
     world.spawn(frame, transform, enabled, dirty)
-    world.register_system(FrameRendererSystem())
 
     world.execute()
 
     assert world.get_draw_commands() == []
 
 def test_render_frame_no_enabled():
-    world = WorldFactory.create_world()
+    world = create_world()
     world.spawn(frame, transform, render_layer, dirty)
-    world.register_system(FrameRendererSystem())
 
     world.execute()
 
     assert world.get_draw_commands() == []
 
 def test_render_frame_no_dirty():
-    world = WorldFactory.create_world()
+    world = create_world()
     world.spawn(frame, transform, render_layer, enabled)
-    world.register_system(FrameRendererSystem())
 
     world.execute()
 

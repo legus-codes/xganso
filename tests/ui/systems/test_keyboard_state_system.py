@@ -1,14 +1,17 @@
 from adapters.input.events import Key, KeyDown, KeyUp, MouseMove, TextInput
 from core.primitives import IVec2
-from omniecs.world import WorldFactory
+from omniecs.world import World, WorldFactory
 from ui.resources.state import KeyboardState
 from ui.systems.input_system import KeyboardStateSystem
 
-
-def test_unrelated_event():
+def create_world() -> World:
     world = WorldFactory.create_world()
     world.register_system(KeyboardStateSystem())
     world.set_resource(KeyboardState())
+    return world
+
+def test_unrelated_event():
+    world = create_world()
 
     world.push_event(MouseMove(IVec2(5, 5)))
     world.execute()
@@ -20,9 +23,7 @@ def test_unrelated_event():
     assert keyboard_state.text_input == []
 
 def test_key_down_event():
-    world = WorldFactory.create_world()
-    world.register_system(KeyboardStateSystem())
-    world.set_resource(KeyboardState())
+    world = create_world()
 
     world.push_event(KeyDown(Key.DELETE))
     world.execute()
@@ -34,9 +35,7 @@ def test_key_down_event():
     assert keyboard_state.text_input == []
 
 def test_key_up_event():
-    world = WorldFactory.create_world()
-    world.register_system(KeyboardStateSystem())
-    world.set_resource(KeyboardState())
+    world = create_world()
 
     world.push_event(KeyUp(Key.ENTER))
     world.execute()
@@ -48,9 +47,7 @@ def test_key_up_event():
     assert keyboard_state.text_input == []
 
 def test_keyboard_click():
-    world = WorldFactory.create_world()
-    world.register_system(KeyboardStateSystem())
-    world.set_resource(KeyboardState())
+    world = create_world()
 
     world.push_event(KeyDown(Key.DELETE))
     world.execute()
@@ -79,9 +76,7 @@ def test_keyboard_click():
     assert keyboard_state.text_input == []
 
 def test_text_input_event():
-    world = WorldFactory.create_world()
-    world.register_system(KeyboardStateSystem())
-    world.set_resource(KeyboardState())
+    world = create_world()
 
     world.push_event(TextInput('text'))
     world.execute()

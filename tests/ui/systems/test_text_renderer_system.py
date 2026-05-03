@@ -1,4 +1,4 @@
-from omniecs.world import WorldFactory
+from omniecs.world import World, WorldFactory
 
 from adapters.render.commands import DrawText
 from core.primitives import Color, IVec2, Vec2
@@ -23,11 +23,15 @@ render_layer = RenderLayer(3)
 enabled = Enabled()
 dirty = Dirty()
 
+def create_world() -> World:
+    world = WorldFactory.create_world()
+    world.register_system(TextRendererSystem())
+    return world
+
 
 def test_render_text():
-    world = WorldFactory.create_world()
+    world = create_world()
     world.spawn(text, text_style, text_alignment, spacing, transform, render_layer, enabled, dirty)
-    world.register_system(TextRendererSystem())
 
     world.execute()
     assert world.query_entities(all_of=(Dirty,)) == set()
@@ -85,9 +89,8 @@ def test_render_text_bundle():
 
 
 def test_render_text_no_text():
-    world = WorldFactory.create_world()
+    world = create_world()
     world.spawn(text_style, text_alignment, spacing, transform, render_layer, enabled, dirty)
-    world.register_system(TextRendererSystem())
 
     world.execute()
 
@@ -95,9 +98,8 @@ def test_render_text_no_text():
 
 
 def test_render_text_no_text_style():
-    world = WorldFactory.create_world()
+    world = create_world()
     world.spawn(text, text_alignment, spacing, transform, render_layer, enabled, dirty)
-    world.register_system(TextRendererSystem())
 
     world.execute()
 
@@ -105,9 +107,8 @@ def test_render_text_no_text_style():
 
 
 def test_render_text_no_text_alignment():
-    world = WorldFactory.create_world()
+    world = create_world()
     world.spawn(text, text_style, spacing, transform, render_layer, enabled, dirty)
-    world.register_system(TextRendererSystem())
 
     world.execute()
 
@@ -115,9 +116,8 @@ def test_render_text_no_text_alignment():
 
 
 def test_render_text_no_spacing():
-    world = WorldFactory.create_world()
+    world = create_world()
     world.spawn(text, text_style, text_alignment, transform, render_layer, enabled, dirty)
-    world.register_system(TextRendererSystem())
 
     world.execute()
 
@@ -125,9 +125,8 @@ def test_render_text_no_spacing():
 
 
 def test_render_text_no_transform():
-    world = WorldFactory.create_world()
+    world = create_world()
     world.spawn(text, text_style, text_alignment, spacing, render_layer, enabled, dirty)
-    world.register_system(TextRendererSystem())
 
     world.execute()
 
@@ -135,9 +134,8 @@ def test_render_text_no_transform():
 
 
 def test_render_text_no_render_layer():
-    world = WorldFactory.create_world()
+    world = create_world()
     world.spawn(text, text_style, text_alignment, spacing, transform, enabled, dirty)
-    world.register_system(TextRendererSystem())
 
     world.execute()
 
@@ -145,9 +143,8 @@ def test_render_text_no_render_layer():
 
 
 def test_render_text_no_enabled():
-    world = WorldFactory.create_world()
+    world = create_world()
     world.spawn(text, text_style, text_alignment, spacing, transform, render_layer, dirty)
-    world.register_system(TextRendererSystem())
 
     world.execute()
 
@@ -155,9 +152,8 @@ def test_render_text_no_enabled():
 
 
 def test_render_text_no_dirty():
-    world = WorldFactory.create_world()
+    world = create_world()
     world.spawn(text, text_style, text_alignment, spacing, transform, render_layer, enabled)
-    world.register_system(TextRendererSystem())
 
     world.execute()
 
