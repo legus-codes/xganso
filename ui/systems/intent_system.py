@@ -2,7 +2,7 @@ from adapters.input.events import MouseButton
 from omniecs.system import System
 from omniecs.types import EntityId
 from core.primitives import Rect
-from ui.components.behavior import ActivateIntent, Enabled, HoverIntent, Pressable, Hovered, PressIntent, Pressed
+from ui.components.behavior import ActivateIntent, Enabled, HoverIntent, Hoverable, Hovered, PressIntent, Pressed
 from ui.components.layout import RenderLayer, WorldTransform
 from ui.resources.state import PointerState
 
@@ -15,7 +15,7 @@ class PointerHitTestSystem(System):
     def execute(self, _: float) -> None:
         pointer = self.world.get_resource(PointerState)
 
-        elements: list[tuple[EntityId, tuple[WorldTransform, RenderLayer]]] = list(self.world.query(WorldTransform, RenderLayer, all_of=(Enabled, Pressable)))
+        elements: list[tuple[EntityId, tuple[WorldTransform, RenderLayer]]] = list(self.world.query(WorldTransform, RenderLayer, all_of=(Enabled, Hoverable)))
         elements.sort(key=lambda x: x[1][1].layer, reverse=True)
 
         for entity_id, (transform, _) in elements:
