@@ -3,7 +3,7 @@ from core.primitives import Color, IVec2
 from omniecs.system import System
 from omniecs.types import EntityId
 
-from ui.components.behavior import Enabled, Focused, Hovered, Pressed
+from ui.components.behavior import Enabled, Focused, Hovered, Pressed, Selected
 from ui.components.content import InputValue, Text
 from ui.components.layout import RenderLayer, Spacing, TextAlignment, WorldTransform
 from ui.components.rendering import Dirty
@@ -17,6 +17,7 @@ class BaseRendererSystem(System):
         self.world.register_temporary_component(Dirty)
 
 
+#TODO test
 class BackgroundRendererSystem(BaseRendererSystem):
 
     def execute(self, _: float) -> None:
@@ -27,9 +28,12 @@ class BackgroundRendererSystem(BaseRendererSystem):
     def _get_color(self, entity_id: EntityId, colors: InteractionColors) -> Color:
         if self.world.get_component(entity_id, Pressed):
             return colors.pressed
+        if self.world.get_component(entity_id, Selected):
+            return colors.selected
         return colors.normal
 
 
+#TODO test
 class FrameRendererSystem(BaseRendererSystem):
 
     def execute(self, _: float) -> None:
@@ -44,6 +48,8 @@ class FrameRendererSystem(BaseRendererSystem):
             return colors.hovered
         return colors.normal
 
+
+#TODO test
 class TextRendererSystem(BaseRendererSystem):
 
     def execute(self, _: float) -> None:

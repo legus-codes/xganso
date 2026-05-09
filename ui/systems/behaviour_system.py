@@ -1,6 +1,7 @@
 from omniecs.system import System
-from ui.components.behavior import ActivateIntent, HoverIntent, Hovered, PressIntent, Pressable, Pressed, Trigger, Triggered
+from ui.components.behavior import ActivateIntent, HoverIntent, Hovered, PressIntent, Pressable, Pressed, Selectable, Selected, SelectionGroup, Trigger, Triggered
 from ui.components.rendering import Dirty
+from ui.events.events import DeselectItemEvent
 from ui.resources.state import WidgetState
 
 
@@ -60,3 +61,49 @@ class ActivateSystem(System):
             widgets.active_entities.clear()
             self.world.set_resource(widgets)
 
+
+class SelectSystem(System):
+
+    def execute(self, _: float) -> None:
+        for entity_id in self.world.query_entities(all_of=(PressIntent, Selectable)):
+            self.world.add_component(entity_id, Selected())
+            self.world.add_component(entity_id, Dirty())
+
+            selection_group: SelectionGroup = self.world.get_component(entity_id, SelectionGroup)
+            if selection_group is None:
+                continue
+            
+            self.world.push_event(DeselectItemEvent(radio_group=selection_group.group, selected_item=entity_id))
+
+
+class DeselectSystem(System):
+
+    def execute(self, _: float) -> None:
+        for event in self.world.get_events():
+            if not isinstance(event, DeselectItemEvent):
+                continue
+
+            for (entity_id, (selection_group,)) in self.world.query(SelectionGroup, all_of=(Selected,)):
+                if entity_id == event.selected_item or selection_group.group != event.radio_group:
+                    continue
+
+                self.world.remove_component(entity_id, Selected)
+                self.world.add_component(entity_id, Dirty())
+
+
+class ToggleSystem(System):
+
+    def execute(self, _: float) -> None:
+        ...
+        
+
+class RadioGroupSystem(System):
+
+    def execute(self, _: float) -> None:
+        ...
+        
+
+class TextInputSystem(System):
+
+    def execute(self, _: float) -> None:
+        ...
