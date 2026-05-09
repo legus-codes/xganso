@@ -1,5 +1,5 @@
 from omniecs.system import System
-from ui.components.behavior import ActivateIntent, HoverIntent, Hovered, PressIntent, Pressable, Pressed, Selectable, Selected, SelectionGroup, Trigger, Triggered
+from ui.components.behavior import ActivateIntent, Focusable, Focused, HoverIntent, Hovered, PressIntent, Pressable, Pressed, Selectable, Selected, SelectionGroup, Toggleable, Toggled, Trigger, Triggered
 from ui.components.rendering import Dirty
 from ui.events.events import DeselectItemEvent
 from ui.resources.state import WidgetState
@@ -94,16 +94,9 @@ class DeselectSystem(System):
 class ToggleSystem(System):
 
     def execute(self, _: float) -> None:
-        ...
-        
-
-class RadioGroupSystem(System):
-
-    def execute(self, _: float) -> None:
-        ...
-        
-
-class TextInputSystem(System):
-
-    def execute(self, _: float) -> None:
-        ...
+        for entity_id in self.world.query_entities(all_of=(PressIntent, Toggleable)):
+            if self.world.get_component(entity_id, Toggled):
+                self.world.remove_component(entity_id, Toggled)
+            else:
+                self.world.add_component(entity_id, Toggled())
+            self.world.add_component(entity_id, Dirty())
