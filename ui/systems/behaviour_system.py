@@ -1,5 +1,7 @@
 from omniecs.system import System
-from ui.components.behavior import ActivateIntent, Focusable, Focused, HoverIntent, Hovered, PressIntent, Pressable, Pressed, Selectable, Selected, SelectionGroup, Toggleable, Toggled, Trigger, Triggered
+from ui.components.behavior import Focusable, Focused, Hovered, InputFilter, Pressable, Pressed, Selectable, Selected, SelectionGroup, Toggleable, Toggled, Trigger, Triggered
+from ui.components.content import InputValue
+from ui.components.intent import ActivateIntent, DeleteKeyIntent, EnterKeyIntent, HoverIntent, PressIntent, TextIntent
 from ui.components.rendering import Dirty
 from ui.events.events import DeselectItemEvent
 from ui.resources.state import WidgetState
@@ -99,4 +101,44 @@ class ToggleSystem(System):
                 self.world.remove_component(entity_id, Toggled)
             else:
                 self.world.add_component(entity_id, Toggled())
+            self.world.add_component(entity_id, Dirty())
+        
+
+class FocusSystem(System):
+
+    def execute(self, _: float) -> None:
+        for entity_id in self.world.query_entities(all_of=(PressIntent,)):
+            if self.world.get_component(entity_id, Focusable):
+                self.world.add_component(entity_id, Focused())
+                self.world.add_component(entity_id, Dirty())
+
+            for other_entity_id in self.world.query_entities(all_of=(Focused,), none_of=(PressIntent,)):
+                self.world.remove_component(other_entity_id, Focused)
+                self.world.add_component(other_entity_id, Dirty())
+
+
+class TextInputSystem(System):
+
+    def execute(self, _: float) -> None:
+        for (entity_id, (text_input, input_value, input_filter)) in self.world.query(TextIntent, InputValue, InputFilter):
+            filtered_text = [char for char in text_input.text if char in input_filter.allowed_chars]
+
+            if filtered_text:
+                input_value.value += ''.join(filtered_text)
+                self.world.add_component(entity_id, Dirty())
+
+
+class EnterKeySystem(System):
+
+    def execute(self, _: float) -> None:
+        for entity_id in self.world.query_entities(all_of=(Focused, EnterKeyIntent,)):
+            self.world.remove_component(entity_id, Focused)
+            self.world.add_component(entity_id, Dirty())
+
+
+class DeleteKeySystem(System):
+
+    def execute(self, _: float) -> None:
+        for (entity_id, (input_value,)) in self.world.query(InputValue, all_of=(DeleteKeyIntent,)):
+            input_value.value = input_value.value[:-1]
             self.world.add_component(entity_id, Dirty())

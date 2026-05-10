@@ -59,9 +59,10 @@ class TextRendererSystem(BaseRendererSystem):
             input_value = self.world.get_component(entity_id, InputValue)
 
             if input_value:
+                focused = True if self.world.get_component(entity_id, Focused) else False
                 command = DrawInput(global_layer=layer.layer, local_layer=2, position=world_transform.position, size=world_transform.size, color=text_style.color.normal, 
                                     text=text.text, font_id=text_style.font, font_size=text_style.size, horizontal_alignment=text_alignment.horizontal,
-                                    vertical_alignment=text_alignment.vertical, spacing=IVec2(spacing.horizontal, spacing.vertical), value=input_value.value)
+                                    vertical_alignment=text_alignment.vertical, spacing=IVec2(spacing.horizontal, spacing.vertical), value=input_value.value, focused=focused)
             else:
                 command = DrawText(global_layer=layer.layer, local_layer=2, position=world_transform.position, size=world_transform.size, color=text_style.color.normal,
                                    text=text.text, font_id=text_style.font, font_size=text_style.size, horizontal_alignment=text_alignment.horizontal,

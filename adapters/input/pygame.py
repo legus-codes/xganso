@@ -2,7 +2,7 @@ import pygame
 from typing import Iterable
 
 from core.primitives import IVec2
-from adapters.input.events import KeyDown, MouseButton, MouseButtonDown, MouseMove, MouseButtonUp, QuitRequested, TextInput
+from adapters.input.events import Key, KeyDown, KeyUp, MouseButton, MouseButtonDown, MouseMove, MouseButtonUp, QuitRequested, TextInput
 from omniecs.types import Event
 
 
@@ -22,13 +22,23 @@ class PygameEventConverter:
                     yield MouseButtonUp(IVec2(*event.pos), MouseButton.left)
 
             elif event.type == pygame.KEYDOWN:
-                yield KeyDown(event.key)
+                key = self.get_key(event.key)
+                if key:
+                    yield KeyDown(key)
 
             elif event.type == pygame.KEYUP:
-                yield KeyDown(event.key)
+                key = self.get_key(event.key)
+                if key:
+                    yield KeyUp(key)
 
             elif event.type == pygame.TEXTINPUT:
                 yield TextInput(event.text)
 
             if event.type == pygame.QUIT:
                 yield QuitRequested()
+
+    def get_key(key: int) -> Key | None:
+        try:
+            return Key(key)
+        except ValueError:
+            return None

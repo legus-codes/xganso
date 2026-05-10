@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 
 from core.primitives import IVec2
 from omniecs.types import EntityId, Resource
-from adapters.input.events import MouseButton
+from adapters.input.events import Key, MouseButton
 
 
 @dataclass(slots=True)
@@ -34,18 +34,18 @@ class WidgetState(Resource):
 
 @dataclass(slots=True)
 class KeyboardState(Resource):
-    keys_down: set[int] = field(default_factory=set)
-    keys_pressed: set[int] = field(default_factory=set)
-    keys_released: set[int] = field(default_factory=set)
+    keys_down: set[Key] = field(default_factory=set)
+    keys_pressed: set[Key] = field(default_factory=set)
+    keys_released: set[Key] = field(default_factory=set)
     text_input: list[str] = field(default_factory=list)
 
-    def is_down(self, key: int) -> bool:
+    def is_down(self, key: Key) -> bool:
         return key in self.keys_down
 
-    def was_pressed(self, key: int) -> bool:
+    def was_pressed(self, key: Key) -> bool:
         return key in self.keys_pressed
 
-    def was_released(self, key: int) -> bool:
+    def was_released(self, key: Key) -> bool:
         return key in self.keys_released
 
     def reset(self) -> None:

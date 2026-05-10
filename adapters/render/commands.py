@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from core.primitives import Color, IVec2, Rect
+from core.primitives import Color, IVec2
 from omniecs.types import DrawCommand
 
 from ui.components.layout import HorizontalAlignment, VerticalAlignment
@@ -31,3 +31,4 @@ class DrawText(DrawRectangle):
 @dataclass(kw_only=True)
 class DrawInput(DrawText):
     value: str
+    focused: bool

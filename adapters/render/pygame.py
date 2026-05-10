@@ -22,16 +22,23 @@ class PygameRenderer:
         match draw_command:
             case DrawInput():
                 draw_command: DrawInput
+                self.screen.set_clip(pygame.Rect(*draw_command.position.tuple, *draw_command.size.tuple))
                 color = pygame.Color(*draw_command.color.tuple)
                 font = pygame.font.SysFont(draw_command.font_id, draw_command.font_size)
                 surface = font.render(draw_command.text + draw_command.value, True, color)
                 spacing = draw_command.spacing
                 offset = self._get_text_offset(draw_command.size, IVec2(*surface.get_size()), draw_command.horizontal_alignment, draw_command.vertical_alignment)
-                position = draw_command.position + offset + spacing
+                position: IVec2 = draw_command.position + offset + spacing
                 self.screen.blit(surface, position.tuple)
+                if draw_command.focused:
+                    start_positon: IVec2 = position + IVec2(surface.get_width() + 2, 0)
+                    end_position: IVec2 = start_positon + IVec2(0, surface.get_height())
+                    pygame.draw.line(self.screen, color, start_positon.tuple, end_position.tuple)
+                self.screen.set_clip(None)
 
             case DrawText():
                 draw_command: DrawText
+                self.screen.set_clip(pygame.Rect(*draw_command.position.tuple, *draw_command.size.tuple))
                 color = pygame.Color(*draw_command.color.tuple)
                 font = pygame.font.SysFont(draw_command.font_id, draw_command.font_size)
                 surface = font.render(draw_command.text, True, color)
@@ -39,6 +46,7 @@ class PygameRenderer:
                 offset = self._get_text_offset(draw_command.size, IVec2(*surface.get_size()), draw_command.horizontal_alignment, draw_command.vertical_alignment)
                 position = draw_command.position + offset + spacing
                 self.screen.blit(surface, position.tuple)
+                self.screen.set_clip(None)
 
             case DrawFrame():
                 draw_command: DrawFrame

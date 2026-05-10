@@ -12,19 +12,11 @@ class Hoverable(Component): ...
 
 
 @dataclass(slots=True)
-class HoverIntent(Component): ...
-
-
-@dataclass(slots=True)
 class Hovered(Component): ...
 
 
 @dataclass(slots=True)
 class Pressable(Component): ...
-
-
-@dataclass(slots=True)
-class PressIntent(Component): ...
 
 
 @dataclass(slots=True)
@@ -34,10 +26,6 @@ class Pressed(Component): ...
 @dataclass(slots=True)
 class Trigger(Component):
     component: Component
-
-
-@dataclass(slots=True)
-class ActivateIntent(Component): ...
 
 
 @dataclass(slots=True)
