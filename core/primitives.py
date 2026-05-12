@@ -36,6 +36,9 @@ class IVec2:
     def tuple(self) -> tuple[int, int]:
         return (self.x, self.y)
 
+    def __mul__(self, factor: int) -> Self:
+        return IVec2(self.x * factor, self.y * factor)
+
 
 @dataclass(slots=True)
 class Rect:

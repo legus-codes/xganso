@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 
 from omniecs.types import Component, EntityId
-from core.primitives import Vec2
+from core.primitives import IVec2, Vec2
 
 
 @dataclass(slots=True)
@@ -53,19 +53,27 @@ class Layout(Component): ...
 @dataclass(slots=True)
 class HorizontalLayout(Layout):
     spacing: int
+    padding: IVec2
 
 
 @dataclass(slots=True)
 class VerticalLayout(Layout):
     spacing: int
+    padding: IVec2
 
 
 @dataclass(slots=True)
 class GridLayout(Layout):
     rows: int
     cols: int
-    h_spacing: int
-    v_spacing: int
+    spacing: IVec2
+    padding: IVec2
+
+
+@dataclass
+class FixedItemSize:
+    width: int
+    height: int
 
 
 @dataclass(slots=True)

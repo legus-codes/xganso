@@ -1,10 +1,12 @@
 from omniecs.system import System
 from omniecs.types import EntityId
 
-from ui.components.layout import Children, Parent, Transform, WorldTransform
+from core.primitives import IVec2, Vec2
+from ui.components.layout import Children, FixedItemSize, HorizontalLayout, Parent, Transform, WorldTransform
 from ui.components.rendering import Dirty
 
 
+#TODO test
 class LayoutHierarchySystem(System):
 
     def execute(self, _: float) -> None:
@@ -37,6 +39,31 @@ class LayoutHierarchySystem(System):
                 self.world.add_component(entity_id, Dirty())
 
 
+class HorizontalLayoutSystem(System):
+
+    def execute(self, _: float) -> None:
+        for entity_id, (children, transform, horizontal_layout) in self.world.query(Children, Transform, HorizontalLayout, none_of=(Parent,)):
+            area_size = transform.size
+            number_of_children = len(children.entities)
+            total_spacing = horizontal_layout.spacing * (number_of_children - 1)
+            total_padding: IVec2 = horizontal_layout.padding * 2
+
+            fixed_item_size: FixedItemSize = self.world.get_component(entity_id, FixedItemSize)
+            if fixed_item_size is not None:
+                item_width = fixed_item_size.width
+                item_height = fixed_item_size.height
+            else:
+                item_width = (area_size.x - total_spacing - total_padding.x) / number_of_children
+                item_height = area_size.y - total_padding.y
+
+            item_y_position = (area_size.y - item_height) / 2
+            for index, child_entity in enumerate(children.entities):
+                child_transform: Transform = self.world.get_component(child_entity, Transform)
+                child_transform.position = Vec2((item_width + horizontal_layout.spacing) * index + horizontal_layout.padding.x, item_y_position)
+                child_transform.size = Vec2(item_width, item_height)
+
+
+#TODO test
 class WorldTransformationSystem(System):
 
     def execute(self, _: float) -> None:
