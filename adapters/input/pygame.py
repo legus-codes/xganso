@@ -37,7 +37,7 @@ class PygameEventConverter:
             if event.type == pygame.QUIT:
                 yield QuitRequested()
 
-    def get_key(key: int) -> Key | None:
+    def get_key(self, key: int) -> Key | None:
         try:
             return Key(key)
         except ValueError:
