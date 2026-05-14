@@ -27,12 +27,6 @@ class PointerState(Resource):
 
 
 @dataclass(slots=True)
-class WidgetState(Resource):
-    hovered_entities: set[EntityId] = field(default_factory=set)
-    active_entities: set[EntityId] = field(default_factory=set)
-
-
-@dataclass(slots=True)
 class KeyboardState(Resource):
     keys_down: set[Key] = field(default_factory=set)
     keys_pressed: set[Key] = field(default_factory=set)
