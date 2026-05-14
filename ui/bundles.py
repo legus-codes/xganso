@@ -91,17 +91,19 @@ class HoverableBundle(Bundle):
 
 @dataclass
 class PressableBundle(Bundle):
+    enter: list[UICommand] = field(default_factory=list)
+    exit: list[UICommand] = field(default_factory=list)
 
     def components(self) -> Iterable[Component]:
-        yield Pressable()
+        yield Pressable(enter=self.enter, exit=self.exit)
 
 
 @dataclass
 class ActivatableBundle(Bundle):
-    trigger: Component
+    commands: list[UICommand] = field(default_factory=list)
 
     def components(self) -> Iterable[Component]:
-        yield Trigger(self.trigger)
+        yield Trigger(self.commands)
 
 
 @dataclass

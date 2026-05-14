@@ -12,13 +12,11 @@ class HoverSystem(System):
     def execute(self, _: float) -> None:
         for (entity_id, (hoverable,)) in self.world.query(Hoverable, all_of=(Hovered,), none_of=(HoverIntent,)):
             self.world.remove_component(entity_id, Hovered)
-            self.world.add_component(entity_id, Dirty())
             for command in hoverable.exit:
                 self.world.add_component(entity_id, command)
 
         for (entity_id, (hoverable,)) in self.world.query(Hoverable, all_of=(HoverIntent,), none_of=(Hovered,)):
             self.world.add_component(entity_id, Hovered())
-            self.world.add_component(entity_id, Dirty())
             for command in hoverable.enter:
                 self.world.add_component(entity_id, command)
 
@@ -26,23 +24,15 @@ class HoverSystem(System):
 class PressSystem(System):
 
     def execute(self, _: float) -> None:
-        widgets = self.world.get_resource(WidgetState)
-
-        for entity_id in self.world.query_entities(all_of=(PressIntent, Pressable)):
+        for (entity_id, (pressable,)) in self.world.query(Pressable, all_of=(PressIntent,)):
             self.world.add_component(entity_id, Pressed())
-            self.world.add_component(entity_id, Dirty())
-            widgets.active_entities.add(entity_id)
+            for command in pressable.enter:
+                self.world.add_component(entity_id, command)
 
-        for entity_id in self.world.query_entities(all_of=(Pressed,), none_of=(Hovered,)):
+        for (entity_id, (pressable,)) in self.world.query(Pressable, all_of=(Pressed,), none_of=(Hovered,)):
             self.world.remove_component(entity_id, Pressed)
-            self.world.add_component(entity_id, Dirty())
-
-        for entity_id in self.world.query_entities(all_of=(Hovered, Pressable), none_of=(Pressed,)):
-            if entity_id in widgets.active_entities:
-                self.world.add_component(entity_id, Pressed())
-                self.world.add_component(entity_id, Dirty())
-
-        self.world.set_resource(widgets)
+            for command in pressable.exit:
+                self.world.add_component(entity_id, command)
 
 
 class ActivateSystem(System):
@@ -51,14 +41,15 @@ class ActivateSystem(System):
         self.world.register_temporary_component(Triggered)
 
     def execute(self, _: float) -> None:
-        widgets = self.world.get_resource(WidgetState)
 
-        for entity_id in self.world.query_entities(all_of=(ActivateIntent, Trigger)):
+        for (entity_id, (pressable, trigger)) in self.world.query(Pressable, Trigger, all_of=(ActivateIntent,)):
             self.world.remove_component(entity_id, Pressed)
+            for command in pressable.exit:
+                self.world.add_component(entity_id, command)
+                
             self.world.add_component(entity_id, Triggered())
-            self.world.add_component(entity_id, Dirty())
-            widgets.active_entities.clear()
-            self.world.set_resource(widgets)
+            for command in trigger.commands:
+                self.world.add_component(entity_id, command)
 
 
 class SelectSystem(System):

@@ -1,23 +1,13 @@
 from dataclasses import dataclass
 import string
 
-from core.primitives import Color
-
-
-@dataclass(slots=True, frozen=True)
-class InteractionColors:
-    normal: Color | None = None
-    hovered: Color | None = None
-    pressed: Color | None = None
-    focused: Color | None = None
-    selected: Color | None = None
-    disabled: Color | None = None
+from core.primitives import Color, IVec2
 
 
 @dataclass
-class FrameDescription:
+class ItemSizeDescription:
     width: int
-    colors: InteractionColors | None
+    height: int
 
 
 @dataclass
@@ -27,26 +17,31 @@ class LayoutDescription: ...
 @dataclass
 class HorizontalLayoutDescription(LayoutDescription):
     spacing: int
+    padding: IVec2
+    item_size: ItemSizeDescription | None = None
 
 
 @dataclass
 class VerticalLayoutDescription(LayoutDescription):
     spacing: int
+    padding: IVec2
+    item_size: ItemSizeDescription | None = None
 
 
 @dataclass
 class GridLayoutDescription(LayoutDescription):
     rows: int
     cols: int
-    h_spacing: int
-    v_spacing: int
+    spacing: IVec2
+    padding: IVec2
+    item_size: ItemSizeDescription | None = None
 
 
 @dataclass
 class TextStyleDescription:
     font: str
     size: int
-    color: InteractionColors | None
+    color: Color | None
 
 
 class InputFilters:

@@ -12,3 +12,8 @@ class UICommand(Component): ...
 @dataclass
 class SetFrameColorCommand(UICommand):
     color: Color
+
+
+@dataclass
+class SetBackgroundColorCommand(UICommand):
+    color: Color

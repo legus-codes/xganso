@@ -20,7 +20,9 @@ class Hovered(Component): ...
 
 
 @dataclass(slots=True)
-class Pressable(Component): ...
+class Pressable(Component):
+    enter: list[UICommand] = field(default_factory=list)
+    exit: list[UICommand] = field(default_factory=list)
 
 
 @dataclass(slots=True)
@@ -29,7 +31,7 @@ class Pressed(Component): ...
 
 @dataclass(slots=True)
 class Trigger(Component):
-    component: Component
+    commands: list[UICommand] = field(default_factory=list)
 
 
 @dataclass(slots=True)
