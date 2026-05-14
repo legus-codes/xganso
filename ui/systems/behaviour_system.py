@@ -1,5 +1,5 @@
 from omniecs.system import System
-from ui.components.behavior import Focusable, Focused, Hovered, InputFilter, Pressable, Pressed, Selectable, Selected, SelectionGroup, Toggleable, Toggled, Trigger, Triggered
+from ui.components.behavior import Focusable, Focused, Hoverable, Hovered, InputFilter, Pressable, Pressed, Selectable, Selected, SelectionGroup, Toggleable, Toggled, Trigger, Triggered
 from ui.components.content import InputValue
 from ui.components.intent import ActivateIntent, DeleteKeyIntent, EnterKeyIntent, HoverIntent, PressIntent, TextIntent
 from ui.components.rendering import Dirty
@@ -10,20 +10,17 @@ from ui.resources.state import WidgetState
 class HoverSystem(System):
 
     def execute(self, _: float) -> None:
-        widgets = self.world.get_resource(WidgetState)
-        current_targets = self.world.query_entities(all_of=(HoverIntent,))
-        
-        for entity_id in widgets.hovered_entities.difference(current_targets):
+        for (entity_id, (hoverable,)) in self.world.query(Hoverable, all_of=(Hovered,), none_of=(HoverIntent,)):
             self.world.remove_component(entity_id, Hovered)
             self.world.add_component(entity_id, Dirty())
-            widgets.hovered_entities.discard(entity_id)
+            for command in hoverable.exit:
+                self.world.add_component(entity_id, command)
 
-        for entity_id in current_targets.difference(widgets.hovered_entities):
+        for (entity_id, (hoverable,)) in self.world.query(Hoverable, all_of=(HoverIntent,), none_of=(Hovered,)):
             self.world.add_component(entity_id, Hovered())
             self.world.add_component(entity_id, Dirty())
-            widgets.hovered_entities.add(entity_id)
-
-        self.world.set_resource(widgets)
+            for command in hoverable.enter:
+                self.world.add_component(entity_id, command)
 
 
 class PressSystem(System):

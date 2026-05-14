@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Iterable
 
 from omniecs.types import Bundle, Component
-from ui.bundles import ActivatableBundle, InputBundle, PanelLayoutBundle, PointerBundle, PressableBundle, RectTransformBundle, SelectableBundle, SurfaceBundle, TextVisualBundle, ToggleableBundle, WidgetCoreBundle
+from ui.bundles import ActivatableBundle, InputBundle, PanelLayoutBundle, HoverableBundle, PressableBundle, RectTransformBundle, SelectableBundle, SurfaceBundle, TextVisualBundle, ToggleableBundle, WidgetCoreBundle
 
 
 @dataclass
@@ -39,7 +39,7 @@ class ButtonBundle(Bundle):
     text: TextVisualBundle
     transform: RectTransformBundle
     surface: SurfaceBundle
-    pointer: PointerBundle
+    hoverable: HoverableBundle
     pressable: PressableBundle
     activatable: ActivatableBundle
     
@@ -48,7 +48,7 @@ class ButtonBundle(Bundle):
         yield from self.text.components()
         yield from self.transform.components()
         yield from self.surface.components()
-        yield from self.pointer.components()
+        yield from self.hoverable.components()
         yield from self.pressable.components()
         yield from self.activatable.components()
 
@@ -59,7 +59,7 @@ class ToggleBundle(Bundle):
     text: TextVisualBundle
     transform: RectTransformBundle
     surface: SurfaceBundle
-    pointer: PointerBundle
+    hoverable: HoverableBundle
     activatable: ActivatableBundle
     toggleable: ToggleableBundle
     
@@ -68,7 +68,7 @@ class ToggleBundle(Bundle):
         yield from self.text.components()
         yield from self.transform.components()
         yield from self.surface.components()
-        yield from self.pointer.components()
+        yield from self.hoverable.components()
         yield from self.activatable.components()
         yield from self.toggleable.components()
 
@@ -79,7 +79,7 @@ class TextInputBundle(Bundle):
     text: TextVisualBundle
     transform: RectTransformBundle
     surface: SurfaceBundle
-    pointer: PointerBundle
+    hoverable: HoverableBundle
     inputable: InputBundle
     
     def components(self) -> Iterable[Component]:
@@ -87,7 +87,7 @@ class TextInputBundle(Bundle):
         yield from self.text.components()
         yield from self.transform.components()
         yield from self.surface.components()
-        yield from self.pointer.components()
+        yield from self.hoverable.components()
         yield from self.inputable.components()
     
 
@@ -97,7 +97,7 @@ class RadioButtonBundle(Bundle):
     text: TextVisualBundle
     transform: RectTransformBundle
     surface: SurfaceBundle
-    pointer: PointerBundle
+    hoverable: HoverableBundle
     selectable: SelectableBundle
     
     def components(self) -> Iterable[Component]:
@@ -105,17 +105,23 @@ class RadioButtonBundle(Bundle):
         yield from self.text.components()
         yield from self.transform.components()
         yield from self.surface.components()
-        yield from self.pointer.components()
+        yield from self.hoverable.components()
         yield from self.selectable.components()
 
 
+@dataclass
+class MenuCategoryBundle(Bundle):
+    core: WidgetCoreBundle
+    text: TextVisualBundle
+    transform: RectTransformBundle
+    surface: SurfaceBundle
+    hoverable: HoverableBundle
+    selectable: SelectableBundle      
 
-# def create_radio_button(world: ECS, label: str, radio_group: str, rect: pygame.Rect, parent: Optional[int] = None, trigger: Optional[Component] = None) -> int:
-#     entity = create_button(world, label, rect, trigger, parent)
-#     world.add_component(entity, Selectable())
-#     world.add_component(entity, RadioItem(radio_group))
-#     return entity
 
+@dataclass
+class MenuItemBundle(Bundle):
+    core: WidgetCoreBundle
 
 
 # # def create_list

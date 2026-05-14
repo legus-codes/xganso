@@ -1,14 +1,15 @@
 from dataclasses import dataclass, field
 from typing import Iterable
 
-from core.primitives import Vec2
+from core.primitives import Color, Vec2
 from omniecs.types import Bundle, Component, EntityId
+from ui.components.command import UICommand
 from ui.components.content import Text, InputValue
 from ui.components.style import Background, Frame, TextStyle
-from ui.components.layout import HorizontalAlignment, GridLayout, HorizontalLayout, RenderLayer, Spacing, TextAlignment, Transform, Parent, VerticalAlignment, VerticalLayout
+from ui.components.layout import FixedItemSize, HorizontalAlignment, GridLayout, HorizontalLayout, RenderLayer, Spacing, TextAlignment, Transform, Parent, VerticalAlignment, VerticalLayout
 from ui.components.rendering import Dirty
 from ui.components.behavior import Enabled, Focusable, Hoverable, Pressable, Pressable, Selectable, Selected, SelectionGroup, Toggleable, Toggled, Trigger, InputFilter
-from ui.types import FrameDescription, GridLayoutDescription, HorizontalLayoutDescription, InteractionColors, LayoutDescription, TextStyleDescription, VerticalLayoutDescription
+from ui.types import GridLayoutDescription, HorizontalLayoutDescription, LayoutDescription, TextStyleDescription, VerticalLayoutDescription
 
 
 @dataclass
@@ -57,30 +58,35 @@ class PanelLayoutBundle(Bundle):
 
     def components(self) -> Iterable[Component]:
         if isinstance(self.layout, HorizontalLayoutDescription):
-            yield HorizontalLayout(self.layout.spacing)
+            yield HorizontalLayout(self.layout.spacing, self.layout.padding)
         elif isinstance(self.layout, VerticalLayoutDescription):
-            yield VerticalLayout(self.layout.spacing)
+            yield VerticalLayout(self.layout.spacing, self.layout.padding)
         elif isinstance(self.layout, GridLayoutDescription):
-            yield GridLayout(self.layout.rows, self.layout.rows, self.layout.h_spacing, self.layout.v_spacing)
+            yield GridLayout(self.layout.rows, self.layout.rows, self.layout.spacing, self.layout.padding)
+        if self.layout is not None and self.layout.item_size is not None:
+            yield FixedItemSize(self.layout.item_size.width, self.layout.item_size.height)
 
 
 @dataclass
 class SurfaceBundle(Bundle):
-    background_colors: InteractionColors | None = None
-    frame: FrameDescription | None = None
+    background_color: Color
+    frame_color: Color | None = None
+    frame_width: int = 0
 
     def components(self) -> Iterable[Component]:
-        if self.background_colors is not None:
-            yield Background(self.background_colors)
-        if self.frame is not None and self.frame.width > 0:
-            yield Frame(self.frame.colors, self.frame.width)
+        if self.background_color is not None:
+            yield Background(self.background_color)
+        if self.frame_color is not None and self.frame_width > 0:
+            yield Frame(self.frame_color, self.frame_width)
 
 
 @dataclass
-class PointerBundle(Bundle):
+class HoverableBundle(Bundle):
+    enter: list[UICommand] = field(default_factory=list)
+    exit: list[UICommand] = field(default_factory=list)
 
     def components(self) -> Iterable[Component]:
-        yield Hoverable()
+        yield Hoverable(enter=self.enter, exit=self.exit)
 
 
 @dataclass
@@ -110,6 +116,7 @@ class ToggleableBundle(Bundle):
 
 @dataclass
 class InputBundle(Bundle):
+    #TODO: icha said to put character limit because the user is an idiot
     input_value: str
     input_filter: set[str]
 

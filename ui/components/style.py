@@ -1,17 +1,17 @@
 from dataclasses import dataclass
 
 from omniecs.types import Component
-from ui.types import InteractionColors
+from core.primitives import Color
 
 
 @dataclass(slots=True)
 class Background(Component):
-    color: InteractionColors
+    color: Color
 
 
 @dataclass(slots=True)
 class Frame(Component):
-    color: InteractionColors
+    color: Color
     width: int
 
 
@@ -19,4 +19,4 @@ class Frame(Component):
 class TextStyle(Component):
     font: str
     size: int
-    color: InteractionColors
+    color: Color

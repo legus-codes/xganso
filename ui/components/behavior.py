@@ -1,6 +1,8 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from omniecs.types import Component
+
+from ui.components.command import UICommand
 
 
 @dataclass(slots=True)
@@ -8,7 +10,9 @@ class Enabled(Component): ...
 
 
 @dataclass(slots=True)
-class Hoverable(Component): ...
+class Hoverable(Component):
+    enter: list[UICommand] = field(default_factory=list)
+    exit: list[UICommand] = field(default_factory=list)
 
 
 @dataclass(slots=True)
