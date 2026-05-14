@@ -1,6 +1,7 @@
-from adapters.input.events import Key, MouseButton
 from omniecs.system import System
 from omniecs.types import EntityId
+
+from adapters.input.events import Key, MouseButton
 from core.primitives import Rect
 from ui.components.behavior import Enabled, Focused, Hoverable, Hovered, Pressed
 from ui.components.intent import ActivateIntent, DeleteKeyIntent, EnterKeyIntent, HoverIntent, PressIntent, TextIntent

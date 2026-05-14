@@ -1,6 +1,8 @@
-from adapters.input.events import MouseButton
 from omniecs.world import World, WorldFactory
-from ui.components.behavior import Hovered, PressIntent
+
+from adapters.input.events import MouseButton
+from ui.components.behavior import Hovered
+from ui.components.intent import PressIntent
 from ui.resources.state import PointerState
 from ui.systems.intent_system import PressIntentSystem
 
@@ -13,6 +15,14 @@ def create_world(pointer_state: PointerState) -> World:
 
 def test_no_press_intent():
     world = create_world(PointerState())
+
+    world.spawn(Hovered())
+    world.execute()
+
+    assert world.query_entities(all_of=(PressIntent,)) == set()
+
+def test_right_button_press_intent():
+    world = create_world(PointerState(buttons_pressed=set([MouseButton.right])))
 
     world.spawn(Hovered())
     world.execute()

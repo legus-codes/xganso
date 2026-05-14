@@ -1,7 +1,8 @@
 from collections import defaultdict
 
-from adapters.input.events import Key, KeyDown, KeyUp, MouseButtonDown, MouseButtonUp, MouseMove, QuitRequested, TextInput
 from omniecs.system import System
+
+from adapters.input.events import Key, KeyDown, KeyUp, MouseButtonDown, MouseButtonUp, MouseMove, QuitRequested, TextInput
 from ui.resources.state import KeyboardState, PointerState
 
 
