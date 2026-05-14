@@ -1,6 +1,7 @@
+from omniecs.world import World, WorldFactory
+
 from adapters.input.events import Key, KeyDown, MouseButton, MouseButtonDown, MouseButtonUp, MouseMove
 from core.primitives import IVec2
-from omniecs.world import World, WorldFactory
 from ui.resources.state import PointerState
 from ui.systems.input_system import PointerStateSystem
 
