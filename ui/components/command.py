@@ -13,7 +13,22 @@ class UICommand(Component): ...
 class SetFrameColorCommand(UICommand):
     color: Color
 
+@dataclass
+class UnsetFrameColorCommand(UICommand):
+    color: Color
 
 @dataclass
 class SetBackgroundColorCommand(UICommand):
+    color: Color
+
+@dataclass
+class UnsetBackgroundColorCommand(UICommand):
+    color: Color
+
+@dataclass
+class SetTextColorCommand(UICommand):
+    color: Color
+
+@dataclass
+class UnsetTextColorCommand(UICommand):
     color: Color

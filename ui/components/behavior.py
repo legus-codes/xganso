@@ -55,7 +55,9 @@ class Toggled(Component): ...
 
 
 @dataclass(slots=True)
-class Selectable(Component): ...
+class Selectable(Component):
+    enter: list[UICommand] = field(default_factory=list)
+    exit: list[UICommand] = field(default_factory=list)
 
 
 @dataclass(slots=True)

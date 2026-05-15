@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Iterable
 
-from core.primitives import Color, Vec2
+from core.primitives import Color, ColorStack, Vec2
 from omniecs.types import Bundle, Component, EntityId
 from ui.components.command import UICommand
 from ui.components.content import Text, InputValue
@@ -33,7 +33,7 @@ class TextVisualBundle(Bundle):
 
     def components(self) -> Iterable[Component]:
         yield Text(self.text)
-        yield TextStyle(self.style.font, self.style.size, self.style.color)
+        yield TextStyle(self.style.font, self.style.size, ColorStack(self.style.color))
         yield TextAlignment(self.horizontal_alignment, self.vertical_alignment)
         yield Spacing(self.horizontal_spacing, self.vertical_spacing)
 
@@ -75,9 +75,9 @@ class SurfaceBundle(Bundle):
 
     def components(self) -> Iterable[Component]:
         if self.background_color is not None:
-            yield Background(self.background_color)
+            yield Background(ColorStack(self.background_color))
         if self.frame_color is not None and self.frame_width > 0:
-            yield Frame(self.frame_color, self.frame_width)
+            yield Frame(ColorStack(self.frame_color), self.frame_width)
 
 
 @dataclass
@@ -130,11 +130,13 @@ class InputBundle(Bundle):
 
 @dataclass
 class SelectableBundle(Bundle):
-    radio_group: str
+    group: str
+    enter: list[UICommand] = field(default_factory=list)
+    exit: list[UICommand] = field(default_factory=list)
     active: bool = False
 
     def components(self) -> Iterable[Component]:
-        yield SelectionGroup(self.radio_group)
-        yield Selectable()
+        yield SelectionGroup(self.group)
+        yield Selectable(enter=self.enter, exit=self.exit)
         if self.active:
             yield Selected()

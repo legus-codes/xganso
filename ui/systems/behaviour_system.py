@@ -4,7 +4,7 @@ from ui.components.behavior import Focusable, Focused, Hoverable, Hovered, Input
 from ui.components.content import InputValue
 from ui.components.intent import ActivateIntent, DeleteKeyIntent, EnterKeyIntent, HoverIntent, PressIntent, TextIntent
 from ui.components.rendering import Dirty
-from ui.events.events import DeselectItemEvent
+from ui.events.events import DeselectGroupEvent
 
 
 class HoverSystem(System):
@@ -41,7 +41,6 @@ class ActivateSystem(System):
         self.world.register_temporary_component(Triggered)
 
     def execute(self, _: float) -> None:
-
         for (entity_id, (pressable, trigger)) in self.world.query(Pressable, Trigger, all_of=(ActivateIntent,)):
             self.world.remove_component(entity_id, Pressed)
             for command in pressable.exit:
@@ -55,30 +54,30 @@ class ActivateSystem(System):
 class SelectSystem(System):
 
     def execute(self, _: float) -> None:
-        for entity_id in self.world.query_entities(all_of=(PressIntent, Selectable)):
+        for (entity_id, (selectable,)) in self.world.query(Selectable, all_of=(PressIntent,)):
             self.world.add_component(entity_id, Selected())
-            self.world.add_component(entity_id, Dirty())
+            for command in selectable.enter:
+                self.world.add_component(entity_id, command)
 
             selection_group: SelectionGroup = self.world.get_component(entity_id, SelectionGroup)
-            if selection_group is None:
-                continue
-            
-            self.world.push_event(DeselectItemEvent(radio_group=selection_group.group, selected_item=entity_id))
+            if selection_group:
+                self.world.push_event(DeselectGroupEvent(group=selection_group.group, selected=entity_id))
 
 
 class DeselectSystem(System):
 
     def execute(self, _: float) -> None:
         for event in self.world.get_events():
-            if not isinstance(event, DeselectItemEvent):
+            if not isinstance(event, DeselectGroupEvent):
                 continue
 
-            for (entity_id, (selection_group,)) in self.world.query(SelectionGroup, all_of=(Selected,)):
-                if entity_id == event.selected_item or selection_group.group != event.radio_group:
+            for (entity_id, (selectable, selection_group)) in self.world.query(Selectable, SelectionGroup, all_of=(Selected,)):
+                if entity_id == event.selected or selection_group.group != event.group:
                     continue
 
                 self.world.remove_component(entity_id, Selected)
-                self.world.add_component(entity_id, Dirty())
+                for command in selectable.exit:
+                    self.world.add_component(entity_id, command)
 
 
 class ToggleSystem(System):

@@ -1,22 +1,33 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from omniecs.types import Component
-from core.primitives import Color
+from core.primitives import Color, ColorStack
 
 
 @dataclass(slots=True)
 class Background(Component):
-    color: Color
+    colors: ColorStack
 
+    @property
+    def color(self) -> Color:
+        return self.colors.color
 
 @dataclass(slots=True)
 class Frame(Component):
-    color: Color
+    colors: ColorStack
     width: int
+
+    @property
+    def color(self) -> Color:
+        return self.colors.color
 
 
 @dataclass(slots=True)
 class TextStyle(Component):
     font: str
     size: int
-    color: Color
+    colors: ColorStack
+
+    @property
+    def color(self) -> Color:
+        return self.colors.color
