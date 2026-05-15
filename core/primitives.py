@@ -14,6 +14,24 @@ class Color:
         return (self.r, self.g, self.b, self.a)
 
 
+class ColorStack:
+    
+    def __init__(self, color: Color):
+        self.colors: list[Color] = [color]
+
+    def add(self, color: Color) -> None:
+        if color not in self.colors:
+            self.colors.append(color)
+
+    def pop(self, color: Color) -> None:
+        if color in self.colors:
+            self.colors.remove(color)
+
+    @property
+    def color(self) -> Color:
+        return self.colors[-1]
+
+
 @dataclass(slots=True)
 class Vec2:
     x: float = 0
