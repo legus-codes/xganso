@@ -1,3 +1,4 @@
+from omniecs.components import Spawned
 from omniecs.system import System
 
 from ui.components.behavior import Focusable, Focused, Hoverable, Hovered, InputFilter, Pressable, Pressed, Selectable, Selected, SelectionGroup, Toggleable, Toggled, Trigger, Triggered
@@ -62,6 +63,10 @@ class SelectSystem(System):
             selection_group: SelectionGroup = self.world.get_component(entity_id, SelectionGroup)
             if selection_group:
                 self.world.push_event(DeselectGroupEvent(group=selection_group.group, selected=entity_id))
+
+        for (entity_id, (selectable,)) in self.world.query(Selectable, all_of=(Selected, Spawned)):
+            for command in selectable.enter:
+                self.world.add_component(entity_id, command)
 
 
 class DeselectSystem(System):
