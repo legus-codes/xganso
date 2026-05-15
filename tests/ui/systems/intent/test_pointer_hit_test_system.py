@@ -20,7 +20,7 @@ def test_pointer_hit_test():
     entity_id = world.spawn(WorldTransform(IVec2(5, 5), IVec2(10, 10)), RenderLayer(0), Enabled(), Hoverable())
     world.execute()
 
-    assert entity_id in world.query_entities(all_of=(HoverIntent,))
+    assert world.query_entities(all_of=(HoverIntent,)) == set([entity_id])
 
 def test_pointer_hit_miss_test():
     world = create_world()
@@ -28,7 +28,7 @@ def test_pointer_hit_miss_test():
     entity_id = world.spawn(WorldTransform(IVec2(15, 15), IVec2(10, 10)), RenderLayer(0), Enabled(), Hoverable())
     world.execute()
 
-    assert entity_id not in world.query_entities(all_of=(HoverIntent,))
+    assert world.query_entities(none_of=(HoverIntent,)) == set([entity_id])
 
 def test_pointer_hit_with_multiple_entities_test():
     world = create_world()
@@ -38,6 +38,5 @@ def test_pointer_hit_with_multiple_entities_test():
     entity_id_miss2 = world.spawn(WorldTransform(IVec2(5, 5), IVec2(10, 10)), RenderLayer(1), Enabled(), Hoverable())
     world.execute()
 
-    assert entity_id_hit in world.query_entities(all_of=(HoverIntent,))
-    assert entity_id_miss1 not in world.query_entities(all_of=(HoverIntent,))
-    assert entity_id_miss2 not in world.query_entities(all_of=(HoverIntent,))
+    assert world.query_entities(all_of=(HoverIntent,)) == set([entity_id_hit])
+    assert world.query_entities(none_of=(HoverIntent,)) == set([entity_id_miss1, entity_id_miss2])

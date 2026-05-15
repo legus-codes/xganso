@@ -1,10 +1,10 @@
 from omniecs.system import System
+
 from ui.components.behavior import Focusable, Focused, Hoverable, Hovered, InputFilter, Pressable, Pressed, Selectable, Selected, SelectionGroup, Toggleable, Toggled, Trigger, Triggered
 from ui.components.content import InputValue
 from ui.components.intent import ActivateIntent, DeleteKeyIntent, EnterKeyIntent, HoverIntent, PressIntent, TextIntent
 from ui.components.rendering import Dirty
 from ui.events.events import DeselectItemEvent
-from ui.resources.state import WidgetState
 
 
 class HoverSystem(System):

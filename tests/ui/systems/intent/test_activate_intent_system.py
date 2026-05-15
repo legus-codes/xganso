@@ -17,18 +17,18 @@ def create_world(pointer_state: PointerState) -> World:
 def test_no_activate_intent():
     world = create_world(PointerState())
 
-    world.spawn(Hovered(), Pressed())
+    entity_id = world.spawn(Hovered(), Pressed())
     world.execute()
 
-    assert world.query_entities(all_of=(ActivateIntent,)) == set()
+    assert world.query_entities(none_of=(ActivateIntent,)) == set([entity_id])
 
 def test_right_button_activate_intent():
     world = create_world(PointerState(buttons_released=set([MouseButton.right])))
 
-    world.spawn(Hovered(), Pressed())
+    entity_id = world.spawn(Hovered(), Pressed())
     world.execute()
 
-    assert world.query_entities(all_of=(ActivateIntent,)) == set()
+    assert world.query_entities(none_of=(ActivateIntent,)) == set([entity_id])
 
 def test_hovered_and_pressed_activate_intent():
     world = create_world(PointerState(buttons_released=set([MouseButton.left])))
@@ -36,20 +36,20 @@ def test_hovered_and_pressed_activate_intent():
     entity_id = world.spawn(Hovered(), Pressed())
     world.execute()
 
-    assert entity_id in world.query_entities(all_of=(ActivateIntent,))
+    assert world.query_entities(all_of=(ActivateIntent,)) == set([entity_id])
 
 def test_hovered_not_pressed_activated_intent():
     world = create_world(PointerState(buttons_released=set([MouseButton.left])))
 
-    world.spawn(Hovered())
+    entity_id = world.spawn(Hovered())
     world.execute()
 
-    assert world.query_entities(all_of=(ActivateIntent,)) == set()
+    assert world.query_entities(none_of=(ActivateIntent,)) == set([entity_id])
 
 def test_pressed_not_hovered_activated_intent():
     world = create_world(PointerState(buttons_released=set([MouseButton.left])))
 
-    world.spawn(Pressed())
+    entity_id = world.spawn(Pressed())
     world.execute()
 
-    assert world.query_entities(all_of=(ActivateIntent,)) == set()
+    assert world.query_entities(none_of=(ActivateIntent,)) == set([entity_id])
