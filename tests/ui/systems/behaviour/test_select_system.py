@@ -1,7 +1,7 @@
 from omniecs.world import World, WorldFactory
 
 from core.primitives import Color
-from ui.components.behavior import Enabled, Selectable, Selected, SelectionGroup
+from ui.components.behavior import Selectable, Selected, SelectionGroup
 from ui.components.command import SetTextColorCommand
 from ui.components.intent import PressIntent
 from ui.events.events import DeselectGroupEvent

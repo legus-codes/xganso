@@ -108,10 +108,12 @@ class ActivatableBundle(Bundle):
 
 @dataclass
 class ToggleableBundle(Bundle):
+    enter: list[UICommand] = field(default_factory=list)
+    exit: list[UICommand] = field(default_factory=list)
     active: bool = False
 
     def components(self) -> Iterable[Component]:
-        yield Toggleable()
+        yield Toggleable(enter=self.enter, exit=self.exit)
         if self.active:
             yield Toggled()
 

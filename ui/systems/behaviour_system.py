@@ -88,12 +88,19 @@ class DeselectSystem(System):
 class ToggleSystem(System):
 
     def execute(self, _: float) -> None:
-        for entity_id in self.world.query_entities(all_of=(PressIntent, Toggleable)):
+        for (entity_id, (toggleable,)) in self.world.query(Toggleable, all_of=(PressIntent,)):
             if self.world.get_component(entity_id, Toggled):
                 self.world.remove_component(entity_id, Toggled)
+                for command in toggleable.exit:
+                    self.world.add_component(entity_id, command)
             else:
                 self.world.add_component(entity_id, Toggled())
-            self.world.add_component(entity_id, Dirty())
+                for command in toggleable.enter:
+                    self.world.add_component(entity_id, command)
+
+        for (entity_id, (toggleable,)) in self.world.query(Toggleable, all_of=(Toggled, Spawned)):
+            for command in toggleable.enter:
+                self.world.add_component(entity_id, command)
         
 
 class FocusSystem(System):

@@ -4,7 +4,6 @@ from core.primitives import Color
 from ui.components.behavior import Enabled, Pressable, Pressed, Trigger, Triggered
 from ui.components.command import SetBackgroundColorCommand, SetFrameColorCommand
 from ui.components.intent import ActivateIntent
-from ui.components.rendering import Dirty
 from ui.systems.behaviour_system import ActivateSystem
 
 

@@ -47,7 +47,9 @@ class Focused(Component): ...
 
 
 @dataclass(slots=True)
-class Toggleable(Component): ...
+class Toggleable(Component):
+    enter: list[UICommand] = field(default_factory=list)
+    exit: list[UICommand] = field(default_factory=list)
 
 
 @dataclass(slots=True)
