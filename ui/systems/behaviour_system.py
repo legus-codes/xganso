@@ -5,7 +5,7 @@ from ui.components.behavior import Focusable, Focused, Hoverable, Hovered, Input
 from ui.components.content import InputValue
 from ui.components.intent import ActivateIntent, DeleteKeyIntent, EnterKeyIntent, HoverIntent, PressIntent, TextIntent
 from ui.components.rendering import Dirty
-from ui.events.events import DeselectGroupEvent
+from ui.events.events import DeselectGroupEvent, LoseFocusEvent
 
 
 class HoverSystem(System):
@@ -107,13 +107,35 @@ class FocusSystem(System):
 
     def execute(self, _: float) -> None:
         for entity_id in self.world.query_entities(all_of=(PressIntent,)):
-            if self.world.get_component(entity_id, Focusable):
+            focusable = self.world.get_component(entity_id, Focusable)
+            if focusable:
                 self.world.add_component(entity_id, Focused())
                 self.world.add_component(entity_id, Dirty())
+                for command in focusable.enter:
+                    self.world.add_component(entity_id, command)
 
-            for other_entity_id in self.world.query_entities(all_of=(Focused,), none_of=(PressIntent,)):
-                self.world.remove_component(other_entity_id, Focused)
-                self.world.add_component(other_entity_id, Dirty())
+            self.world.push_event(LoseFocusEvent(focused=entity_id))
+
+        for (entity_id, (focusable,)) in self.world.query(Focusable, all_of=(Focused, Spawned)):
+            for command in focusable.enter:
+                self.world.add_component(entity_id, command)
+
+
+class UnfocusSystem(System):
+
+    def execute(self, _: float) -> None:
+        for event in self.world.get_events():
+            if not isinstance(event, LoseFocusEvent):
+                continue
+
+            for (entity_id, (focusable,)) in self.world.query(Focusable, all_of=(Focused,)):
+                if entity_id == event.focused:
+                    continue
+
+                self.world.remove_component(entity_id, Focused)
+                self.world.add_component(entity_id, Dirty())
+                for command in focusable.exit:
+                    self.world.add_component(entity_id, command)
 
 
 class TextInputSystem(System):

@@ -7,3 +7,8 @@ from omniecs.types import Event, EntityId
 class DeselectGroupEvent(Event):
     group: str
     selected: EntityId
+
+
+@dataclass(slots=True)
+class LoseFocusEvent(Event):
+    focused: EntityId

@@ -1,7 +1,7 @@
 from omniecs.world import World, WorldFactory
 
 from core.primitives import Color
-from ui.components.behavior import SelectionGroup, Toggleable, Toggled
+from ui.components.behavior import Toggleable, Toggled
 from ui.components.command import SetTextColorCommand
 from ui.components.intent import PressIntent
 from ui.systems.behaviour_system import ToggleSystem

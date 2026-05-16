@@ -39,7 +39,9 @@ class Triggered(Component): ...
 
 
 @dataclass(slots=True)
-class Focusable(Component): ...
+class Focusable(Component):
+    enter: list[UICommand] = field(default_factory=list)
+    exit: list[UICommand] = field(default_factory=list)
 
 
 @dataclass(slots=True)
