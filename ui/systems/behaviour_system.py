@@ -107,6 +107,11 @@ class ToggleSystem(System):
 class FocusSystem(System):
 
     def execute(self, _: float) -> None:
+        for (entity_id, (focusable,)) in self.world.query(Focusable, all_of=(Focused, Spawned)):
+            for command in focusable.enter:
+                self.world.add_component(entity_id, command)
+            self.world.push_event(LoseFocusEvent(focused=entity_id))
+
         for entity_id in self.world.query_entities(all_of=(PressIntent,)):
             focusable = self.world.get_component(entity_id, Focusable)
             if focusable:
@@ -114,12 +119,7 @@ class FocusSystem(System):
                 self.world.add_component(entity_id, Dirty())
                 for command in focusable.enter:
                     self.world.add_component(entity_id, command)
-
             self.world.push_event(LoseFocusEvent(focused=entity_id))
-
-        for (entity_id, (focusable,)) in self.world.query(Focusable, all_of=(Focused, Spawned)):
-            for command in focusable.enter:
-                self.world.add_component(entity_id, command)
         
 
 class FocusBlinkSystem(System):
