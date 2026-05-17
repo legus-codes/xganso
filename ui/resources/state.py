@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 
 from core.primitives import IVec2
-from omniecs.types import EntityId, Resource
+from omniecs.types import Resource
 from adapters.input.events import Key, MouseButton
 
 

@@ -5,7 +5,7 @@ from core.primitives import Color, ColorStack, Vec2
 from omniecs.types import Bundle, Component, EntityId
 from ui.components.command import UICommand
 from ui.components.content import Text, InputValue
-from ui.components.style import Background, Frame, TextStyle
+from ui.components.style import Background, BlinkingEffect, Frame, TextStyle
 from ui.components.layout import FixedItemSize, HorizontalAlignment, GridLayout, HorizontalLayout, RenderLayer, Spacing, TextAlignment, Transform, Parent, VerticalAlignment, VerticalLayout
 from ui.components.rendering import Dirty
 from ui.components.behavior import Enabled, Focusable, Hoverable, Pressable, Pressable, Selectable, Selected, SelectionGroup, Toggleable, Toggled, Trigger, InputFilter
@@ -126,6 +126,7 @@ class InputBundle(Bundle):
 
     def components(self) -> Iterable[Component]:
         yield Focusable()
+        yield BlinkingEffect()
         yield InputValue(self.input_value)
         yield InputFilter(self.input_filter)
 

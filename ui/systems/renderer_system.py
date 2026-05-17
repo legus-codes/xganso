@@ -6,7 +6,7 @@ from ui.components.behavior import Enabled, Focused
 from ui.components.content import InputValue, Text
 from ui.components.layout import RenderLayer, Spacing, TextAlignment, WorldTransform
 from ui.components.rendering import Dirty
-from ui.components.style import Background, Frame, TextStyle
+from ui.components.style import Background, BlinkingEffect, Frame, TextStyle
 
 
 class BaseRendererSystem(System):
@@ -41,10 +41,12 @@ class TextRendererSystem(BaseRendererSystem):
             input_value = self.world.get_component(entity_id, InputValue)
 
             if input_value:
-                focused = True if self.world.get_component(entity_id, Focused) else False
+                focused: Focused = self.world.get_component(entity_id, Focused)
+                blinking: BlinkingEffect = self.world.get_component(entity_id, BlinkingEffect)
+                display_cursor = focused and (blinking is None or (blinking and blinking.visible))
                 command = DrawInput(global_layer=layer.layer, local_layer=2, position=world_transform.position, size=world_transform.size, color=text_style.color, 
                                     text=text.text, font_id=text_style.font, font_size=text_style.size, horizontal_alignment=text_alignment.horizontal,
-                                    vertical_alignment=text_alignment.vertical, spacing=IVec2(spacing.horizontal, spacing.vertical), value=input_value.value, focused=focused)
+                                    vertical_alignment=text_alignment.vertical, spacing=IVec2(spacing.horizontal, spacing.vertical), value=input_value.value, focused=display_cursor)
             else:
                 command = DrawText(global_layer=layer.layer, local_layer=2, position=world_transform.position, size=world_transform.size, color=text_style.color,
                                    text=text.text, font_id=text_style.font, font_size=text_style.size, horizontal_alignment=text_alignment.horizontal,

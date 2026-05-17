@@ -31,3 +31,10 @@ class TextStyle(Component):
     @property
     def color(self) -> Color:
         return self.colors.color
+
+
+@dataclass(slots=True)
+class BlinkingEffect(Component):
+    interval: int = 500
+    timer: float = 0.0
+    visible: bool = True

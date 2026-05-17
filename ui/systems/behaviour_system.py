@@ -5,6 +5,7 @@ from ui.components.behavior import Focusable, Focused, Hoverable, Hovered, Input
 from ui.components.content import InputValue
 from ui.components.intent import ActivateIntent, DeleteKeyIntent, EnterKeyIntent, HoverIntent, PressIntent, TextIntent
 from ui.components.rendering import Dirty
+from ui.components.style import BlinkingEffect
 from ui.events.events import DeselectGroupEvent, LoseFocusEvent
 
 
@@ -119,6 +120,17 @@ class FocusSystem(System):
         for (entity_id, (focusable,)) in self.world.query(Focusable, all_of=(Focused, Spawned)):
             for command in focusable.enter:
                 self.world.add_component(entity_id, command)
+        
+
+class FocusBlinkSystem(System):
+
+    def execute(self, delta_time: float) -> None:
+        for (entity_id, (blinking,)) in self.world.query(BlinkingEffect, all_of=(Focused,)):
+            blinking.timer += delta_time
+            if blinking.timer > blinking.interval:
+                blinking.timer -= blinking.interval
+                blinking.visible = not blinking.visible
+                self.world.add_component(entity_id, Dirty())
 
 
 class UnfocusSystem(System):
