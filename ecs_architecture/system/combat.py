@@ -1,11 +1,11 @@
 from ecs_architecture.component.combat import AttackCommand, AttackInstance, AttackTarget, AttackTargetDirty, CombatPreview, CombatPreviewDirty, IncomingDamage, MarkedForDeath
 from ecs_architecture.component.stats import HP, Attack, Defense
-from ecs_framework.ecs import ECS, SystemProtocol
+from omniecs.world import World, SystemProtocol
 
 
 class CombatSimulatorSystem(SystemProtocol):
 
-    def __init__(self, ecs: ECS):
+    def __init__(self, ecs: World):
         self.ecs = ecs
 
     def execute(self, delta_time: int):
@@ -24,7 +24,7 @@ class CombatSimulatorSystem(SystemProtocol):
 
 class CombatPreviewerSystem(SystemProtocol):
 
-    def __init__(self, ecs: ECS):
+    def __init__(self, ecs: World):
         self.ecs = ecs
 
     def execute(self, delta_time):
@@ -42,7 +42,7 @@ class CombatPreviewerSystem(SystemProtocol):
 
 class AttackTriggerSystem(SystemProtocol):
 
-    def __init__(self, ecs: ECS):
+    def __init__(self, ecs: World):
         self.ecs = ecs
 
     def execute(self, delta_time):
@@ -60,7 +60,7 @@ class AttackTriggerSystem(SystemProtocol):
 
 class AttackResolutionSystem(SystemProtocol):
 
-    def __init__(self, ecs: ECS):
+    def __init__(self, ecs: World):
         self.ecs = ecs
 
     def execute(self, delta_time):
@@ -76,7 +76,7 @@ class AttackResolutionSystem(SystemProtocol):
 
 class DamageApplicationSystem(SystemProtocol):
 
-    def __init__(self, ecs: ECS):
+    def __init__(self, ecs: World):
         self.ecs = ecs
 
     def execute(self, delta_time):
@@ -94,7 +94,7 @@ class DamageApplicationSystem(SystemProtocol):
 
 class DeathSystem(SystemProtocol):
 
-    def __init__(self, ecs: ECS):
+    def __init__(self, ecs: World):
         self.ecs = ecs
 
     def execute(self, delta_time):

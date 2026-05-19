@@ -29,7 +29,7 @@ class PointerStateSystem(System):
 
 class KeyboardStateSystem(System):
 
-    press_time: int = 150
+    press_time: int = 125
 
     def __init__(self):
         self._cooldown: dict[Key, float] = defaultdict(float)

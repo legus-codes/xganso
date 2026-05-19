@@ -1,20 +1,20 @@
 from core.primitives import Color, Vec2
-from ui.bundles import InputBundle, PointerBundle, RectTransformBundle, SurfaceBundle, TextVisualBundle, WidgetCoreBundle
+from ui.bundles import InputBundle, HoverableBundle, RectTransformBundle, SurfaceBundle, TextVisualBundle, WidgetCoreBundle
 from ui.components.behavior import Enabled, Focusable, Hoverable, Pressable, InputFilter, Pressable
 from ui.components.content import InputValue, Text
 from ui.components.layout import Parent, RenderLayer, Spacing, TextAlignment, HorizontalAlignment, Transform, VerticalAlignment
 from ui.components.rendering import Dirty
 from ui.components.style import Background, Frame, TextStyle
-from ui.types import FrameDescription, InteractionColors, TextStyleDescription
+from ui.types import TextStyleDescription
 from ui.widgets import TextInputBundle
 
 
 def test_default_text_input():
     core = WidgetCoreBundle()
-    text = TextVisualBundle('text', TextStyleDescription('couriernew', 16, InteractionColors(normal=Color(20, 20, 20))))
+    text = TextVisualBundle('text', TextStyleDescription('couriernew', 16, Color(20, 20, 20)))
     transform = RectTransformBundle(Vec2(x=50, y=50))
     surface = SurfaceBundle()
-    pointer = PointerBundle()
+    pointer = HoverableBundle()
     inputable = InputBundle('value', {'a'})
     
     text_input = TextInputBundle(core, text, transform, surface, pointer, inputable)
@@ -29,10 +29,10 @@ def test_default_text_input():
 
 def test_full_text_input():
     core = WidgetCoreBundle()
-    text = TextVisualBundle('text', TextStyleDescription('couriernew', 16, InteractionColors(normal=Color(20, 20, 20))), HorizontalAlignment.center, VerticalAlignment.middle, 6, 8)
+    text = TextVisualBundle('text', TextStyleDescription('couriernew', 16, Color(20, 20, 20)), HorizontalAlignment.center, VerticalAlignment.middle, 6, 8)
     transform = RectTransformBundle(Vec2(x=50, y=50), Vec2(x=50, y=50), 1, 1)
-    surface = SurfaceBundle(InteractionColors(normal=Color(20, 20, 20)), FrameDescription(3, InteractionColors(normal=Color(20, 20, 200))))
-    pointer = PointerBundle()
+    surface = SurfaceBundle(Color(20, 20, 20), Color(20, 20, 200), 3)
+    pointer = HoverableBundle()
     inputable = InputBundle('value', {'a'})
 
     text_input = TextInputBundle(core, text, transform, surface, pointer, inputable)

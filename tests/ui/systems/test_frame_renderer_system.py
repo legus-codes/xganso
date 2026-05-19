@@ -1,7 +1,7 @@
 from omniecs.world import World, WorldFactory
 
 from adapters.render.commands import DrawFrame
-from core.primitives import Color, Vec2
+from core.primitives import Color, ColorStack, Vec2
 from ui.bundles import PanelLayoutBundle, RectTransformBundle, SurfaceBundle, WidgetCoreBundle
 from ui.components.behavior import Enabled
 from ui.components.layout import RenderLayer, WorldTransform
@@ -9,11 +9,10 @@ from ui.components.rendering import Dirty
 from ui.components.style import Frame
 from ui.systems.layout_system import WorldTransformationSystem
 from ui.systems.renderer_system import FrameRendererSystem
-from ui.types import FrameDescription, InteractionColors
 from ui.widgets import PanelBundle
 
 
-frame = Frame(color=InteractionColors(normal=Color(200, 0, 0)), width=2)
+frame = Frame(colors=ColorStack(Color(200, 0, 0)), width=2)
 transform = WorldTransform(Vec2(100, 100), Vec2(50, 50))
 render_layer = RenderLayer(3)
 enabled = Enabled()
@@ -49,7 +48,7 @@ def test_render_panel_bundle():
     core = WidgetCoreBundle()
     transform = RectTransformBundle(Vec2(x=50, y=50))
     layout = PanelLayoutBundle()
-    surface = SurfaceBundle(frame=FrameDescription(2, colors=InteractionColors(normal=Color(0, 0, 200))))
+    surface = SurfaceBundle(Color(0, 0, 200), Color(200, 0, 0), 2)
 
     panel = PanelBundle(core, transform, layout, surface)
 

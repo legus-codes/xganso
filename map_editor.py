@@ -1,6 +1,6 @@
 import pygame
 
-from ecs_framework.ecs import ECS
+from omniecs.world import World
 from editor.map_editor_controller import MapEditorController
 
 
@@ -10,7 +10,7 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode(screen_size)
     clock = pygame.time.Clock()
 
-    world = ECS()
+    world = World()
     mouse = world.create_entity()
     keyboard = world.create_entity()
 

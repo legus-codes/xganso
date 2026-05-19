@@ -5,13 +5,13 @@ from ui.components.content import Text
 from ui.components.layout import Parent, RenderLayer, Spacing, TextAlignment, HorizontalAlignment, Transform, VerticalAlignment
 from ui.components.rendering import Dirty
 from ui.components.style import Background, Frame, TextStyle
-from ui.types import FrameDescription, InteractionColors, TextStyleDescription
+from ui.types import TextStyleDescription
 from ui.widgets import TextBundle
 
 
 def test_default_text():
     core = WidgetCoreBundle()
-    text = TextVisualBundle('text', TextStyleDescription('couriernew', 16, InteractionColors(normal=Color(20, 20, 20))))
+    text = TextVisualBundle('text', TextStyleDescription('couriernew', 16, Color(20, 20, 20)))
     transform = RectTransformBundle(Vec2(x=50, y=50))
     surface = SurfaceBundle()
 
@@ -27,9 +27,9 @@ def test_default_text():
 
 def test_full_text():
     core = WidgetCoreBundle()
-    text = TextVisualBundle('text', TextStyleDescription('couriernew', 16, InteractionColors(normal=Color(20, 20, 20))), HorizontalAlignment.center, VerticalAlignment.bottom, 5, 10)
+    text = TextVisualBundle('text', TextStyleDescription('couriernew', 16, Color(20, 20, 20)), HorizontalAlignment.center, VerticalAlignment.bottom, 5, 10)
     transform = RectTransformBundle(Vec2(x=50, y=50), Vec2(x=50, y=50), 1, 1)
-    surface = SurfaceBundle(InteractionColors(normal=Color(20, 20, 20)), FrameDescription(3, InteractionColors(normal=Color(20, 20, 200))))
+    surface = SurfaceBundle(Color(20, 20, 20), Color(20, 20, 200), 3)
 
     text = TextBundle(core, text, transform, surface)
     text_components = set([type(component) for component in text.components()])

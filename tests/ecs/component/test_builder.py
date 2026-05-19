@@ -2,17 +2,17 @@ from typing import Dict
 import pytest
 from ecs_architecture.component.builder import ComponentBuilder
 from ecs_architecture.component.registry import ComponentRegistryProtocol, GlobalComponentRegistry
-from ecs_framework.ecs import ComponentProtocol
+from omniecs.types import Component
 
 
-class MockComponentAttack(ComponentProtocol):
+class MockComponentAttack(Component):
     attack: float
     
 @GlobalComponentRegistry.register_component('stats', 'mock_attack')
 def build_mock_attack(attack: float) -> MockComponentAttack:
     return MockComponentAttack(attack=attack)
 
-class MockComponentHp(ComponentProtocol):
+class MockComponentHp(Component):
     hp: float
     
 @GlobalComponentRegistry.register_component('stats', 'mock_hp')

@@ -1,10 +1,10 @@
 from pydantic import Field
 
 from ecs_architecture.component.registry import GlobalComponentRegistry
-from ecs_framework.ecs import ComponentProtocol
+from omniecs.types import Component
 
 
-class HP(ComponentProtocol):
+class HP(Component):
     current: float = Field(ge=0)
     max_value: float = Field(ge=0)
     regeneration: float = Field(ge=0)

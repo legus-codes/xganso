@@ -3,7 +3,7 @@ import time
 import pygame
 from ecs_architecture.component.path import MoveCommand, MovementProgress, Path, PreviewPath, TargetGridPosition
 from ecs_architecture.component.position import GridPosition, GridPositionChanged, WorldPosition
-from ecs_framework.ecs import ECS, SystemProtocol
+from omniecs.world import World, SystemProtocol
 from editor.hex_camera import HexCamera
 from model.hex_geometry import HexLayout
 from model.hex_map import HexMap
@@ -12,7 +12,7 @@ from pathfinding.pathfinding import PathfindingHelper
 
 class PathCalculatorSystem(SystemProtocol):
 
-    def __init__(self, ecs: ECS, hex_map: HexMap):
+    def __init__(self, ecs: World, hex_map: HexMap):
         self.ecs = ecs
         self.hex_map = hex_map
 
@@ -32,7 +32,7 @@ class PathCalculatorSystem(SystemProtocol):
 
 class PathPreviewerSystem(SystemProtocol):
 
-    def __init__(self, ecs: ECS, screen: pygame.Surface, layout: HexLayout, camera: HexCamera):
+    def __init__(self, ecs: World, screen: pygame.Surface, layout: HexLayout, camera: HexCamera):
         self.ecs = ecs
         self.screen = screen
         self.layout = layout
@@ -51,7 +51,7 @@ class PathPreviewerSystem(SystemProtocol):
 
 class StartMovementSystem(SystemProtocol):
 
-    def __init__(self, ecs: ECS):
+    def __init__(self, ecs: World):
         self.ecs = ecs
 
     def execute(self, delta_time: float):
@@ -68,7 +68,7 @@ class StartMovementSystem(SystemProtocol):
 
 class PathStepperSystem(SystemProtocol):
 
-    def __init__(self, ecs: ECS, layout: HexLayout):
+    def __init__(self, ecs: World, layout: HexLayout):
         self.ecs = ecs
         self.layout = layout
 
@@ -91,7 +91,7 @@ class PathStepperSystem(SystemProtocol):
 
 class MovementSystem(SystemProtocol):
 
-    def __init__(self, ecs: ECS, layout: HexLayout, speed: int):
+    def __init__(self, ecs: World, layout: HexLayout, speed: int):
         self.ecs = ecs
         self.layout = layout
         self.speed = speed

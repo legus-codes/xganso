@@ -1,7 +1,7 @@
 from typing import Dict
 from ecs_architecture.component.builder import ComponentBuilder, ComponentBuilderProtocol
 from ecs_architecture.component.registry import ComponentRegistry
-from ecs_framework.ecs import ECS
+from omniecs.world import World
 from services.data.models import DataDescription
 from services.world.core import WorldServiceConfig
 
@@ -10,11 +10,11 @@ class WorldService:
     
     def __init__(self, builder: ComponentBuilderProtocol):
         self.builder = builder
-        self.worlds: Dict[str, ECS] = {}
+        self.worlds: Dict[str, World] = {}
 
     def build_world(self, name: str) -> None:
         if not self.has_world(name):
-            self.worlds[name] = ECS()
+            self.worlds[name] = World()
 
     def destroy_world(self, name: str) -> None:
         self.worlds.pop(name, None)
@@ -22,7 +22,7 @@ class WorldService:
     def has_world(self, name: str) -> bool:
         return name in self.worlds
 
-    def get_world(self, name: str) -> ECS | None:
+    def get_world(self, name: str) -> World | None:
         return self.worlds.get(name, None)
 
     def build_entity(self, world_name: str, data: DataDescription) -> int | None:

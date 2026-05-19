@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from pathlib import Path
 
-from ecs_framework.ecs import ECS, ComponentProtocol, SystemProtocol
+from omniecs.world import World, ComponentProtocol, SystemProtocol
 from editor.map_editor_feedback import Feedback
 from hexio.hex_map_io import HexMapIO
 
@@ -27,7 +27,7 @@ class LoadMapTrigger(ComponentProtocol):
 
 class MapLoader(SystemProtocol):
 
-    def __init__(self, world: ECS):
+    def __init__(self, world: World):
         self.world = world
         self.path = Path(r'C:\Users\matio\xganso')
 
@@ -42,7 +42,7 @@ class MapLoader(SystemProtocol):
 
 class CleanupLoadMap(SystemProtocol):
 
-    def __init__(self, world: ECS):
+    def __init__(self, world: World):
         self.world = world
 
     def execute(self, delta_time):
@@ -57,7 +57,7 @@ class SaveMapTrigger(ComponentProtocol):
 
 class MapSaver(SystemProtocol):
 
-    def __init__(self, world: ECS):
+    def __init__(self, world: World):
         self.world = world
         self.path = Path(r'C:\Users\matio\xganso')
 
@@ -73,7 +73,7 @@ class MapSaver(SystemProtocol):
 
 class CleanupSaveMap(SystemProtocol):
 
-    def __init__(self, world: ECS):
+    def __init__(self, world: World):
         self.world = world
 
     def execute(self, delta_time):

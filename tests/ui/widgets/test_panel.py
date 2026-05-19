@@ -4,7 +4,7 @@ from ui.components.behavior import Enabled
 from ui.components.layout import GridLayout, HorizontalLayout, Layout, Parent, RenderLayer, Transform, VerticalLayout
 from ui.components.rendering import Dirty
 from ui.components.style import Background, Frame
-from ui.types import FrameDescription, HorizontalLayoutDescription, InteractionColors
+from ui.types import HorizontalLayoutDescription
 from ui.widgets import PanelBundle
 
 
@@ -28,7 +28,7 @@ def test_full_panel():
     core = WidgetCoreBundle()
     transform = RectTransformBundle(Vec2(x=50, y=50), Vec2(x=50, y=50), 1, 1)
     layout = PanelLayoutBundle(HorizontalLayoutDescription(10))
-    surface = SurfaceBundle(InteractionColors(normal=Color(20, 20, 20)), FrameDescription(3, InteractionColors(normal=Color(20, 20, 200))))
+    surface = SurfaceBundle(Color(20, 20, 20), Color(20, 20, 200), 3)
 
     panel = PanelBundle(core, transform, layout, surface)
     panel_components = set([type(component) for component in panel.components()])

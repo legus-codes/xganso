@@ -1,12 +1,12 @@
 from pygame import Surface, Rect
-from ecs_framework.ecs import ECS
+from omniecs.world import World
 from editor.map_editor_creator import CleanupCreateMap, CreateMapTrigger, MapConfiguration, MapCreator, MapType, RadiusInputReference
 from editor.map_editor_io import CleanupLoadMap, CleanupSaveMap, FilenameInputReference, LoadMapTrigger, MapInputReference, MapLoader, MapSaver, SaveMapTrigger
 from editor.map_editor_feedback import FeedbackBroadcastSystem, FeedbackDisplayer
 from editor.map_editor_viewer import Map, MapDisplaySource, MapRendererSystem
-from ui.components.data import Variable
+from ui.components.content import Variable
 from ui.components.rendering import ForceRedraw
-from ui.systems.event import EventConverterSystem
+from adapters.input.pygame import EventConverterSystem
 from ui.systems.mouse_event import CleanupMouseClickedSystem, CleanupMouseReleasedSystem, MouseFocusSystem, MouseHoverSystem, MousePressedSystem, MouseReleasedSystem, MouseSelectSystem, MouseToggleSystem
 from ui.widgets import create_button, create_int_text_input, create_panel, create_radio_button, create_text, create_text_input, create_toggle
 from ui.systems.keyboard_event import CleanupKeyDownSystem, DeleteKeySystem, EnterKeySystem, TypingKeyDownSystem
@@ -15,7 +15,7 @@ from ui.systems.renderer import CleanupRendererSystem, RelativeToRectConverter, 
 
 class MapEditorController:
 
-    def __init__(self, world: ECS, screen: Surface, mouse: int, keyboard: int):
+    def __init__(self, world: World, screen: Surface, mouse: int, keyboard: int):
         self.world = world
         self.screen = screen
         self.mouse = mouse
@@ -93,33 +93,33 @@ class MapEditorController:
         self.world.add_component(notification_text, FeedbackDisplayer())
 
     def initialize_systems(self) -> None:
-        self.world.add_system(EventConverterSystem(self.world, self.mouse, self.keyboard))
-        self.world.add_system(MouseHoverSystem(self.world, self.mouse))
-        self.world.add_system(MouseFocusSystem(self.world, self.mouse))
-        self.world.add_system(MouseToggleSystem(self.world, self.mouse))
-        self.world.add_system(MouseSelectSystem(self.world, self.mouse))
-        self.world.add_system(MousePressedSystem(self.world, self.mouse))
-        self.world.add_system(MouseReleasedSystem(self.world, self.mouse))
+        self.world.register_system(EventConverterSystem(self.world, self.mouse, self.keyboard))
+        self.world.register_system(MouseHoverSystem(self.world, self.mouse))
+        self.world.register_system(MouseFocusSystem(self.world, self.mouse))
+        self.world.register_system(MouseToggleSystem(self.world, self.mouse))
+        self.world.register_system(MouseSelectSystem(self.world, self.mouse))
+        self.world.register_system(MousePressedSystem(self.world, self.mouse))
+        self.world.register_system(MouseReleasedSystem(self.world, self.mouse))
         
-        self.world.add_system(EnterKeySystem(self.world, self.keyboard))
-        self.world.add_system(DeleteKeySystem(self.world, self.keyboard))
-        self.world.add_system(TypingKeyDownSystem(self.world, self.keyboard))
+        self.world.register_system(EnterKeySystem(self.world, self.keyboard))
+        self.world.register_system(DeleteKeySystem(self.world, self.keyboard))
+        self.world.register_system(TypingKeyDownSystem(self.world, self.keyboard))
 
-        self.world.add_system(MapCreator(self.world))
-        self.world.add_system(MapLoader(self.world))
-        self.world.add_system(MapSaver(self.world))
-        self.world.add_system(FeedbackBroadcastSystem(self.world))
+        self.world.register_system(MapCreator(self.world))
+        self.world.register_system(MapLoader(self.world))
+        self.world.register_system(MapSaver(self.world))
+        self.world.register_system(FeedbackBroadcastSystem(self.world))
 
-        self.world.add_system(RelativeToRectConverter(self.world))
-        self.world.add_system(RendererSystem(self.world, self.screen))
-        self.world.add_system(MapRendererSystem(self.world, self.screen))
+        self.world.register_system(RelativeToRectConverter(self.world))
+        self.world.register_system(RendererSystem(self.world, self.screen))
+        self.world.register_system(MapRendererSystem(self.world, self.screen))
 
-        self.world.add_system(CleanupMouseClickedSystem(self.world, self.mouse))
-        self.world.add_system(CleanupMouseReleasedSystem(self.world, self.mouse))
-        self.world.add_system(CleanupKeyDownSystem(self.world, self.keyboard))
+        self.world.register_system(CleanupMouseClickedSystem(self.world, self.mouse))
+        self.world.register_system(CleanupMouseReleasedSystem(self.world, self.mouse))
+        self.world.register_system(CleanupKeyDownSystem(self.world, self.keyboard))
         
-        self.world.add_system(CleanupRendererSystem(self.world))
+        self.world.register_system(CleanupRendererSystem(self.world))
 
-        self.world.add_system(CleanupSaveMap(self.world))
-        self.world.add_system(CleanupLoadMap(self.world))
-        self.world.add_system(CleanupCreateMap(self.world))
+        self.world.register_system(CleanupSaveMap(self.world))
+        self.world.register_system(CleanupLoadMap(self.world))
+        self.world.register_system(CleanupCreateMap(self.world))

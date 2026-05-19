@@ -1,5 +1,6 @@
 import pytest
 
+from core.primitives import IVec2
 from ui.components.layout import GridLayout, HorizontalLayout, Layout, VerticalLayout
 from ui.types import GridLayoutDescription, HorizontalLayoutDescription, LayoutDescription, VerticalLayoutDescription
 from ui.widgets import PanelLayoutBundle
@@ -16,7 +17,7 @@ def test_default_panel_layout():
     assert non_existing_components.intersection(layout_components) == set()
 
 
-@pytest.mark.parametrize("layout_description", [HorizontalLayoutDescription(10), VerticalLayoutDescription(10), GridLayoutDescription(2, 2, 10, 10)])
+@pytest.mark.parametrize("layout_description", [HorizontalLayoutDescription(10, IVec2()), VerticalLayoutDescription(10, IVec2()), GridLayoutDescription(2, 2, IVec2(), IVec2())])
 def test_panel_layout_variants(layout_description: LayoutDescription):
     layout = PanelLayoutBundle(layout_description)
     layout_components = set([type(component) for component in layout.components()])

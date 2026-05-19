@@ -1,14 +1,15 @@
 from typing import Any, Dict, List
 from ecs_architecture.component.builder import ComponentBuilderProtocol
 from ecs_architecture.component.identity.identifier import Identifier
-from ecs_framework.ecs import ECS, ComponentProtocol
+from omniecs.types import Component
+from omniecs.world import World
 from services.data.models import DataDescription, IdentityDataDescription
 from services.world.service import WorldService
 
 
 class MockComponentBuilder(ComponentBuilderProtocol):
 
-    def build(self, data: Dict[str, Dict[str, Any]]) -> List[ComponentProtocol]:
+    def build(self, data: Dict[str, Dict[str, Any]]) -> List[Component]:
         return [Identifier(identity=data['identity']['id'])]
 
 def create_data_description(identifier: str) -> DataDescription:
@@ -41,7 +42,7 @@ def test_get_world():
     world_service = WorldService(MockComponentBuilder())
     world_service.build_world('test')
     world = world_service.get_world('test')
-    assert isinstance(world, ECS)
+    assert isinstance(world, World)
 
 def test_get_non_existing_world():
     world_service = WorldService(MockComponentBuilder())

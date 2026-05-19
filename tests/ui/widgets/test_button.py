@@ -5,13 +5,13 @@ from ui.components.content import Text
 from ui.components.layout import Parent, RenderLayer, Spacing, TextAlignment, HorizontalAlignment, Transform, VerticalAlignment
 from ui.components.rendering import Dirty
 from ui.components.style import Background, Frame, TextStyle
-from ui.types import FrameDescription, InteractionColors, TextStyleDescription
+from ui.types import TextStyleDescription
 from ui.widgets import ButtonBundle
 
 
 def test_default_button():
     core = WidgetCoreBundle()
-    text = TextVisualBundle('text', TextStyleDescription('couriernew', 16, InteractionColors(normal=Color(20, 20, 20))))
+    text = TextVisualBundle('text', TextStyleDescription('couriernew', 16, Color(20, 20, 20)))
     transform = RectTransformBundle(Vec2(x=50, y=50))
     surface = SurfaceBundle()
     pointer = PressableBundle()
@@ -30,9 +30,9 @@ def test_default_button():
 
 def test_full_button():
     core = WidgetCoreBundle()
-    text = TextVisualBundle('text', TextStyleDescription('couriernew', 16, InteractionColors(normal=Color(20, 20, 20))), HorizontalAlignment.center, VerticalAlignment.middle, 3, 5)
+    text = TextVisualBundle('text', TextStyleDescription('couriernew', 16, Color(20, 20, 20)), HorizontalAlignment.center, VerticalAlignment.middle, 3, 5)
     transform = RectTransformBundle(Vec2(x=50, y=50), Vec2(x=50, y=50), 1, 1)
-    surface = SurfaceBundle(InteractionColors(normal=Color(20, 20, 20)), FrameDescription(3, InteractionColors(normal=Color(20, 20, 200))))
+    surface = SurfaceBundle(Color(20, 20, 20), Color(20, 20, 200), 3)
     pointer = PressableBundle()
     pressable = PressableBundle()
     activatable = ActivatableBundle(None)

@@ -1,8 +1,8 @@
 from ecs_architecture.component.registry import GlobalComponentRegistry
-from ecs_framework.ecs import ComponentProtocol
+from omniecs.types import Component
 
 
-class PassiveSkill(ComponentProtocol):
+class PassiveSkill(Component):
     name: str
 
 @GlobalComponentRegistry.register_component('skills', 'passive')

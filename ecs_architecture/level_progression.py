@@ -2,7 +2,7 @@ from dataclasses import dataclass
 import math
 
 from ecs_architecture.component.stats import HP, Attack, Defense
-from ecs_framework.ecs import ECS, ComponentProtocol, SystemProtocol
+from omniecs.world import World, ComponentProtocol, SystemProtocol
 
 
 @dataclass
@@ -30,7 +30,7 @@ class LevelUp(ComponentProtocol):
 
 class GainXP(SystemProtocol):
     
-    def __init__(self, ecs: ECS):
+    def __init__(self, ecs: World):
         self.ecs = ecs
 
     def execute(self, delta_time: float):
@@ -56,7 +56,7 @@ class GainXP(SystemProtocol):
 
 class IncreaseLevel(SystemProtocol):
     
-    def __init__(self, ecs: ECS):
+    def __init__(self, ecs: World):
         self.ecs = ecs
 
     def execute(self, delta_time: float):

@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from datetime import datetime
-from ecs_framework.ecs import ECS, ComponentProtocol, SystemProtocol
-from ui.components.data import Label
+from omniecs.world import World, ComponentProtocol, SystemProtocol
+from ui.components.content import Label
 from ui.components.rendering import NeedRedraw
 
 
@@ -21,7 +21,7 @@ class FeedbackDisplayer(ComponentProtocol):
 
 class FeedbackBroadcastSystem(SystemProtocol):
 
-    def __init__(self, world: ECS):
+    def __init__(self, world: World):
         self.world = world
 
     def execute(self, delta_time):

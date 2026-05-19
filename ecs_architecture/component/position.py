@@ -1,19 +1,19 @@
-from ecs_framework.ecs import ComponentProtocol
+from omniecs.types import Component
 from model.hex_coordinate import HexCoordinate, VecF2
 
 
-class GridPosition(ComponentProtocol):
+class GridPosition(Component):
     cell: HexCoordinate
 
 
-class GridPositionChanged(ComponentProtocol):
+class GridPositionChanged(Component):
     pass
 
 
-class WorldPosition(ComponentProtocol):
+class WorldPosition(Component):
     point: VecF2
 
 
-class ScreenPosition(ComponentProtocol):
+class ScreenPosition(Component):
     point: VecF2
 

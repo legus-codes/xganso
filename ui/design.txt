@@ -1,0 +1,185 @@
+Phase 1 — Input ingestion (already handled)
+
+PygameInputAdapter → ECS events
+
+No ECS systems here.
+
+
+
+Phase 2 — Input state (global, not UI-specific)
+
+Needed
+
+PointerStateSystem
+KeyboardStateSystem
+
+These turn events into state:
+
+mouse position
+pressed buttons
+pressed keys
+
+
+Input / State
+
+PointerStateSystem
+KeyboardStateSystem
+
+
+No UI logic yet.
+
+
+
+
+Phase 3 — Hit testing & spatial resolution (UI boundary)
+
+Needed
+
+PointerHitTestSystem
+
+Responsibilities:
+
+Given pointer position
+Find topmost UI entity under cursor
+Emit entity-scoped facts
+
+Outputs:
+
+Hovered (component)
+PointerTarget (component or event)
+
+This replaces:
+
+MouseHoverSystem
+MouseFocusSystem (partially)
+
+
+UI Interaction
+
+PointerHitTestSystem
+
+
+Phase 4 — Interaction intent
+
+Needed
+
+PressIntentSystem
+ActivateIntentSystem
+
+Responsibilities:
+
+Convert pointer + state into intent
+
+Examples:
+
+Pointer down on hovered entity → Pressed
+Pointer up on same entity → Activated
+
+This replaces:
+
+MousePressedSystem
+MouseReleasedSystem
+MouseToggleSystem
+MouseSelectSystem
+
+Selection and toggling come later.
+
+PressIntentSystem
+ActivateIntentSystem
+
+
+
+Phase 5 — UI semantics (widget behavior)
+
+Needed
+
+SelectableSystem
+ToggleSystem
+RadioGroupSystem
+TextInputSystem
+
+These consume intent, not raw input.
+
+This replaces:
+
+MouseSelectSystem
+EnterKeySystem
+DeleteKeySystem
+TypingKeyDownSystem
+
+Keyboard logic belongs here, not near input.
+
+UI Semantics
+
+SelectableSystem
+TextInputSystem
+
+
+Phase 6 — Layout & transforms
+
+Needed
+
+RelativeToRectSystem
+
+(later) LayoutSystem
+
+This is fine and already correct.
+
+
+Phase 7 — Render extraction
+
+Needed
+
+UIRenderExtractionSystem
+
+Responsibilities:
+
+Read UI components
+Emit draw commands
+
+This replaces:
+
+RendererSystem
+
+No drawing happens here.
+
+Layout / Render
+
+RelativeToRectSystem
+UIRenderExtractionSystem
+
+
+
+Phase 8 — Cleanup (mostly disappears)
+
+Needed
+
+ClearFrameEventsSystem
+ClearTransientUIStateSystem
+
+This replaces all cleanup systems.
+
+If you have more than 2 cleanup systems, your design is leaking.
+
+Cleanup
+
+ClearFrameEventsSystem
+ClearTransientStateSystem
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

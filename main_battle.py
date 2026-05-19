@@ -12,7 +12,7 @@ from ecs_architecture.component.stats import HP, Attack, Defense
 from ecs_architecture.system.combat import AttackResolutionSystem, AttackTriggerSystem, CombatPreviewerSystem, CombatSimulatorSystem, DamageApplicationSystem, DeathSystem
 from ecs_architecture.system.movement import MovementSystem, PathCalculatorSystem, PathPreviewerSystem, PathStepperSystem, StartMovementSystem
 from ecs_architecture.system.renderer import RendererSystem, SpriteScalerSystem, SyncGridToWorldPositionSystem, WorldToScreenPositionSystem
-from ecs_framework.ecs import ECS
+from omniecs.world import World
 from hexio.hex_map_io import HexMapIO
 from model.hex_coordinate import HexCoordinate
 
@@ -22,7 +22,7 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode(screen_size)
     clock = pygame.time.Clock()
 
-    ecs = ECS()
+    ecs = World()
     archer = Unit('archer', 20, 3, 4, 6, pygame.Color('lightseagreen'))
     archer_entity = ecs.create_entity()
     ecs.add_component(archer_entity, Sprite(pygame.image.load('images\\archer_small.png')))
@@ -85,23 +85,23 @@ if __name__ == '__main__':
     ecs.add_component(rogue_entity, HP(10, 10, 0, 4))
     ecs.add_component(bard_entity, HP(10, 10, 5, 5))
 
-    ecs.add_system(SyncGridToWorldPositionSystem(ecs, battle_ui.layout))
-    ecs.add_system(WorldToScreenPositionSystem(ecs, battle_ui.camera))
-    ecs.add_system(SpriteScalerSystem(ecs, battle_ui.camera))
-    ecs.add_system(RendererSystem(ecs, screen))
+    ecs.register_system(SyncGridToWorldPositionSystem(ecs, battle_ui.layout))
+    ecs.register_system(WorldToScreenPositionSystem(ecs, battle_ui.camera))
+    ecs.register_system(SpriteScalerSystem(ecs, battle_ui.camera))
+    ecs.register_system(RendererSystem(ecs, screen))
 
-    ecs.add_system(PathCalculatorSystem(ecs, battle_map))
-    ecs.add_system(PathPreviewerSystem(ecs, screen, battle_ui.layout, battle_ui.camera))
-    ecs.add_system(StartMovementSystem(ecs))
-    ecs.add_system(PathStepperSystem(ecs, battle_ui.layout))
-    ecs.add_system(MovementSystem(ecs, battle_ui.layout, 100.0))
+    ecs.register_system(PathCalculatorSystem(ecs, battle_map))
+    ecs.register_system(PathPreviewerSystem(ecs, screen, battle_ui.layout, battle_ui.camera))
+    ecs.register_system(StartMovementSystem(ecs))
+    ecs.register_system(PathStepperSystem(ecs, battle_ui.layout))
+    ecs.register_system(MovementSystem(ecs, battle_ui.layout, 100.0))
 
-    ecs.add_system(CombatSimulatorSystem(ecs))
-    ecs.add_system(CombatPreviewerSystem(ecs))
-    ecs.add_system(AttackTriggerSystem(ecs))
-    ecs.add_system(AttackResolutionSystem(ecs))
-    ecs.add_system(DamageApplicationSystem(ecs))
-    ecs.add_system(DeathSystem(ecs))
+    ecs.register_system(CombatSimulatorSystem(ecs))
+    ecs.register_system(CombatPreviewerSystem(ecs))
+    ecs.register_system(AttackTriggerSystem(ecs))
+    ecs.register_system(AttackResolutionSystem(ecs))
+    ecs.register_system(DamageApplicationSystem(ecs))
+    ecs.register_system(DeathSystem(ecs))
 
     party_entities = [archer_entity, knight_entity, mage_entity, rogue_entity, bard_entity]
 

@@ -3,7 +3,7 @@ import pygame
 from ecs_architecture.component.position import GridPosition, GridPositionChanged, ScreenPosition, WorldPosition
 #from ecs_architecture.component.render_layer import RenderLayer
 from ecs_architecture.component.sprite import ScreenSprite, Sprite
-from ecs_framework.ecs import ECS, SystemProtocol
+from omniecs.world import World, SystemProtocol
 from editor.hex_camera import HexCamera
 from model.hex_coordinate import VecF2
 from model.hex_geometry import HexLayout
@@ -11,7 +11,7 @@ from model.hex_geometry import HexLayout
 
 class SyncGridToWorldPositionSystem(SystemProtocol):
 
-    def __init__(self, ecs: ECS, layout: HexLayout):
+    def __init__(self, ecs: World, layout: HexLayout):
         self.ecs = ecs
         self.layout = layout
 
@@ -26,7 +26,7 @@ class SyncGridToWorldPositionSystem(SystemProtocol):
 
 class WorldToScreenPositionSystem(SystemProtocol):
 
-    def __init__(self, ecs: ECS, camera: HexCamera):
+    def __init__(self, ecs: World, camera: HexCamera):
         self.ecs = ecs
         self.camera = camera
 
@@ -40,7 +40,7 @@ class WorldToScreenPositionSystem(SystemProtocol):
 
 class SpriteScalerSystem(SystemProtocol):
 
-    def __init__(self, ecs: ECS, camera: HexCamera):
+    def __init__(self, ecs: World, camera: HexCamera):
         self.ecs = ecs
         self.camera = camera
 
@@ -52,7 +52,7 @@ class SpriteScalerSystem(SystemProtocol):
 
 class RendererSystem(SystemProtocol):
 
-    def __init__(self, ecs: ECS, screen: pygame.Surface):
+    def __init__(self, ecs: World, screen: pygame.Surface):
         self.ecs = ecs
         self.screen = screen
 

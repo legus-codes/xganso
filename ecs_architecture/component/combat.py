@@ -1,19 +1,19 @@
-from ecs_framework.ecs import ComponentProtocol
+from omniecs.types import Component
 
 
-class AttackTarget(ComponentProtocol):
+class AttackTarget(Component):
     entity: int
 
 
-class AttackTargetDirty(ComponentProtocol):
+class AttackTargetDirty(Component):
     pass
 
 
-class AttackCommand(ComponentProtocol):
+class AttackCommand(Component):
     pass
 
 
-class CombatPreview(ComponentProtocol):
+class CombatPreview(Component):
     attacker: int
     attack: int
     defender: int
@@ -21,17 +21,17 @@ class CombatPreview(ComponentProtocol):
     damage: int
 
 
-class CombatPreviewDirty(ComponentProtocol):
+class CombatPreviewDirty(Component):
     pass
 
 
-class AttackInstance(ComponentProtocol):
+class AttackInstance(Component):
     attack: int
 
 
-class IncomingDamage(ComponentProtocol):
+class IncomingDamage(Component):
     damage: int
 
 
-class MarkedForDeath(ComponentProtocol):
+class MarkedForDeath(Component):
     pass

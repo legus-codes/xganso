@@ -1,13 +1,13 @@
-from ecs_framework.ecs import ECS, SystemProtocol
-from ui.components.data import Variable
-from ui.components.input import Key, KeyDown
-from ui.components.rendering import NeedRedraw
-from ui.components.state import Enabled, Focused, Typeable
+from omniecs.world import World, SystemProtocol
+from ui.components.content import Variable
+from adapters.input.events import Key, KeyDown
+from ui.components.rendering import Dirty
+from ui.components.behavior import Enabled, Focused, InputFilter
 
 
 class EnterKeySystem(SystemProtocol):
 
-    def __init__(self, world: ECS, keyboard: int):
+    def __init__(self, world: World, keyboard: int):
         self.world = world
         self.keyboard = keyboard
 
@@ -16,14 +16,14 @@ class EnterKeySystem(SystemProtocol):
         if key_down is None or key_down.key != Key.ENTER.value:
             return
 
-        for entity in self.world.get_entities_with(Enabled, Focused, Typeable):
+        for entity in self.world.get_entities_with(Enabled, Focused, InputFilter):
             self.world.remove_component(entity, Focused)
-            self.world.add_component(entity, NeedRedraw())
+            self.world.add_component(entity, Dirty())
 
 
 class DeleteKeySystem(SystemProtocol):
 
-    def __init__(self, world: ECS, keyboard: int):
+    def __init__(self, world: World, keyboard: int):
         self.world = world
         self.keyboard = keyboard
 
@@ -32,14 +32,14 @@ class DeleteKeySystem(SystemProtocol):
         if key_down is None or key_down.key != Key.DELETE.value:
             return
 
-        for entity, (variable, _, _, _) in self.world.get_entities_with_components(Variable, Typeable, Enabled, Focused):
+        for entity, (variable, _, _, _) in self.world.get_entities_with_components(Variable, InputFilter, Enabled, Focused):
             variable.value = variable.value[:-1]
-            self.world.add_component(entity, NeedRedraw())
+            self.world.add_component(entity, Dirty())
 
 
 class TypingKeyDownSystem(SystemProtocol):
 
-    def __init__(self, world: ECS, keyboard: int):
+    def __init__(self, world: World, keyboard: int):
         self.world = world
         self.keyboard = keyboard
 
@@ -48,15 +48,15 @@ class TypingKeyDownSystem(SystemProtocol):
         if key_down is None:
             return
         
-        for entity, (variable, typeable, _, _) in self.world.get_entities_with_components(Variable, Typeable, Enabled, Focused):
+        for entity, (variable, typeable, _, _) in self.world.get_entities_with_components(Variable, InputFilter, Enabled, Focused):
             if key_down.char in typeable.accepted_chars:
                 variable.value += key_down.char
-                self.world.add_component(entity, NeedRedraw())
+                self.world.add_component(entity, Dirty())
 
 
 class CleanupKeyDownSystem(SystemProtocol):
 
-    def __init__(self, world: ECS, keyboard: int):
+    def __init__(self, world: World, keyboard: int):
         self.world = world
         self.keyboard = keyboard
 

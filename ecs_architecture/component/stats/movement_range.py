@@ -1,10 +1,10 @@
 from pydantic import Field
 
 from ecs_architecture.component.registry import GlobalComponentRegistry
-from ecs_framework.ecs import ComponentProtocol
+from omniecs.types import Component
 
 
-class MovementRange(ComponentProtocol):
+class MovementRange(Component):
     base: float = Field(ge=0)
 
 @GlobalComponentRegistry.register_component('stats', 'movement_range')

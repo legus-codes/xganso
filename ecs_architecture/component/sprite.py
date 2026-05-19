@@ -1,11 +1,11 @@
 from pygame import Surface
 
-from ecs_framework.ecs import ComponentProtocol
+from omniecs.types import Component
 
 
-class Sprite(ComponentProtocol):
+class Sprite(Component):
     sprite: Surface
 
 
-class ScreenSprite(ComponentProtocol):
+class ScreenSprite(Component):
     sprite: Surface

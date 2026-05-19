@@ -1,5 +1,5 @@
-from ecs_framework.ecs import ComponentProtocol
+from omniecs.types import Component
 
 
-class RenderLayer(ComponentProtocol):
+class RenderLayer(Component):
     z: int

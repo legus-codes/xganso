@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 from random import randint
 
-from ecs_framework.ecs import ECS, ComponentProtocol, SystemProtocol
+from omniecs.world import World, ComponentProtocol, SystemProtocol
 from editor.map_editor_feedback import Feedback
 from editor.map_editor_io import MapInputReference
 from model.hex_map import HexMap
@@ -34,7 +34,7 @@ class RadiusInputReference(ComponentProtocol):
 
 class MapCreator(SystemProtocol):
 
-    def __init__(self, world: ECS):
+    def __init__(self, world: World):
         self.world = world
         self.hex_map_builder = HexMapBuilder()
 
@@ -67,7 +67,7 @@ class MapCreator(SystemProtocol):
 
 class CleanupCreateMap(SystemProtocol):
 
-    def __init__(self, world: ECS):
+    def __init__(self, world: World):
         self.world = world
 
     def execute(self, delta_time):

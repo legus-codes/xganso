@@ -1,27 +1,27 @@
 from typing import List
 
-from ecs_framework.ecs import ComponentProtocol
+from omniecs.types import Component
 from model.hex_coordinate import HexCoordinate, VecF2
 from model.hex_map import HexCell
 
 
-class TargetGridPosition(ComponentProtocol):
+class TargetGridPosition(Component):
     cell: HexCoordinate
 
 
-class PreviewPath(ComponentProtocol):
+class PreviewPath(Component):
     path: List[HexCoordinate]
 
 
-class Path(ComponentProtocol):
+class Path(Component):
     path: List[HexCell]
 
 
-class MoveCommand(ComponentProtocol):
+class MoveCommand(Component):
     pass
 
 
-class MovementProgress(ComponentProtocol):
+class MovementProgress(Component):
     origin: VecF2
     destination: VecF2
     cell: HexCoordinate

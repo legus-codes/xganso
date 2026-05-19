@@ -1,7 +1,6 @@
 from core.primitives import Color
 from ui.bundles import SurfaceBundle
 from ui.components.style import Background, Frame
-from ui.types import FrameDescription, InteractionColors
 
 
 def test_default_surface():
@@ -16,7 +15,7 @@ def test_default_surface():
 
 
 def test_full_surface():
-    surface = SurfaceBundle(InteractionColors(normal=Color(20, 20, 20)), FrameDescription(3, InteractionColors(normal=Color(20, 20, 200))))
+    surface = SurfaceBundle(Color(20, 20, 20), Color(20, 20, 200), 3)
     surface_components = set([type(component) for component in surface.components()])
 
     expected_components = set([Background, Frame])
@@ -24,7 +23,7 @@ def test_full_surface():
 
 
 def test_frame_zero_width():
-    surface = SurfaceBundle(frame=FrameDescription(0, InteractionColors(normal=Color(20, 20, 200))))
+    surface = SurfaceBundle(Color(20, 20, 20), Color(20, 20, 200), 0)
     surface_components = set([type(component) for component in surface.components()])
 
     assert Frame not in surface_components

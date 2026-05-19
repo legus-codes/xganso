@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from pygame import Surface
 
-from ecs_framework.ecs import ECS, ComponentProtocol, SystemProtocol
+from omniecs.world import World, ComponentProtocol, SystemProtocol
 from editor.hex_camera import HexCamera
 from editor.hex_map_view import HexMapView
 from model.hex_coordinate import VecF2
@@ -23,7 +23,7 @@ class MapDisplaySource(ComponentProtocol):
 
 class MapRendererSystem(SystemProtocol):
 
-    def __init__(self, world: ECS, screen: Surface):
+    def __init__(self, world: World, screen: Surface):
         self.world = world
         self.map_view = HexMapView(screen, HexLayout(POINTY, VecF2(20, 20)), HexCamera())
 

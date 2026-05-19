@@ -10,12 +10,12 @@ from ui.components.rendering import Dirty
 from ui.components.style import TextStyle
 from ui.systems.layout_system import WorldTransformationSystem
 from ui.systems.renderer_system import TextRendererSystem
-from ui.types import InteractionColors, TextStyleDescription
+from ui.types import TextStyleDescription
 from ui.widgets import TextBundle
 
 
 text = Text('text')
-text_style = TextStyle('arial', 16, InteractionColors(normal=Color(155, 0, 0)))
+text_style = TextStyle('arial', 16, Color(155, 0, 0))
 text_alignment = TextAlignment(HorizontalAlignment.center, VerticalAlignment.middle)
 spacing = Spacing(5, 10)
 transform = WorldTransform(Vec2(100, 100), Vec2(50, 50))
@@ -56,7 +56,7 @@ def test_render_text():
 
 def test_render_text_bundle():
     core = WidgetCoreBundle()
-    text = TextVisualBundle('text', TextStyleDescription('couriernew', 16, InteractionColors(normal=Color(20, 20, 20))))
+    text = TextVisualBundle('text', TextStyleDescription('couriernew', 16, Color(20, 20, 20)))
     transform = RectTransformBundle(Vec2(x=50, y=50))
     surface = SurfaceBundle()
 

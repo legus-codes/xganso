@@ -1,10 +1,10 @@
 import pygame
-from ecs_framework.ecs import ECS, SystemProtocol
-from ui.components.data import Label, RenderLayer, Variable
-from ui.components.formatting import Allignment, TextAllignment, Color, Font
+from omniecs.world import World, SystemProtocol
+from ui.components.content import Label, RenderLayer, Variable
+from ui.components.style import Allignment, TextAllignment, StateColor, Font
 from ui.components.layout import Widget, Parent, Rect, RelativeRect
-from ui.components.rendering import ForceRedraw, Frameable, Highlightable, Labelable, NeedRedraw, Renderable
-from ui.components.state import Enabled, Focused, Hovered, Pressed, Selected, Toggled
+from ui.components.rendering import AlwaysRedraw, Frameable, Highlightable, Textable, Dirty, Renderable
+from ui.components.behavior import Enabled, Focused, Hovered, Pressed, Selected, Toggled
 
 
 def _center_middle_position(rect: pygame.Rect, text_rect: pygame.Surface) -> pygame.Vector2:
@@ -21,7 +21,7 @@ def _left_middle_position(rect: pygame.Rect, text_rect: pygame.Surface) -> pygam
 
 class RelativeToRectConverter(SystemProtocol):
 
-    def __init__(self, world: ECS):
+    def __init__(self, world: World):
         self.world = world
 
     def execute(self, delta_time: float):
@@ -37,15 +37,16 @@ class RelativeToRectConverter(SystemProtocol):
             self.world.add_component(entity, rect)
 
 
+# TODO: extract to external system
 class RendererSystem(SystemProtocol):
 
-    def __init__(self, world: ECS, screen: pygame.Surface):
+    def __init__(self, world: World, screen: pygame.Surface):
         self.world = world
         self.screen = screen
 
     def execute(self, delta_time: float):
         all_entities = []
-        for entity in self.world.get_entities_with(Widget, Enabled, Renderable, Color, Rect):
+        for entity in self.world.get_entities_with(Widget, Enabled, Renderable, StateColor, Rect):
             render_layer: RenderLayer = self.world.get_entity_component(entity, RenderLayer)
             layer = render_layer.layer if render_layer is not None else 100
             all_entities.append((entity, layer))
@@ -53,22 +54,22 @@ class RendererSystem(SystemProtocol):
         all_entities.sort(key=lambda x: x[1])
 
         for entity, layer in all_entities:
-            if not (self.world.entity_has_component(entity, ForceRedraw) or self.world.entity_has_component(entity, NeedRedraw)):
+            if not (self.world.entity_has_component(entity, AlwaysRedraw) or self.world.entity_has_component(entity, Dirty)):
                 continue
 
             rect: Rect = self.world.get_entity_component(entity, Rect)
-            colors: Color = self.world.get_entity_component(entity, Color)
+            colors: StateColor = self.world.get_entity_component(entity, StateColor)
             self.screen.set_clip(rect.rectangle)
             
             self.draw_background(entity, rect, colors)
             if self.world.entity_has_component(entity, Highlightable):
                 self.draw_highlight(entity, rect, colors)
-            if self.world.entity_has_component(entity, Labelable):
+            if self.world.entity_has_component(entity, Textable):
                 self.draw_text(entity, rect, colors)
 
             self.screen.set_clip(None)
 
-    def draw_background(self, entity: int, rect: Rect, colors: Color) -> None:
+    def draw_background(self, entity: int, rect: Rect, colors: StateColor) -> None:
         background = colors.background
         if self.world.entity_has_component(entity, Toggled):
             background = colors.select
@@ -79,7 +80,7 @@ class RendererSystem(SystemProtocol):
 
         pygame.draw.rect(self.screen, background, rect.rectangle)
 
-    def draw_highlight(self, entity: int, rect: Rect, colors: Color) -> None:
+    def draw_highlight(self, entity: int, rect: Rect, colors: StateColor) -> None:
         if self.world.entity_has_component(entity, Frameable):
             pygame.draw.rect(self.screen, colors.frame, rect.rectangle, 2)
         if self.world.entity_has_component(entity, Hovered):
@@ -87,7 +88,7 @@ class RendererSystem(SystemProtocol):
         if self.world.entity_has_component(entity, Focused):
             pygame.draw.rect(self.screen, colors.focus, rect.rectangle, 2)
 
-    def draw_text(self, entity: int, rect: Rect, colors: Color) -> None:
+    def draw_text(self, entity: int, rect: Rect, colors: StateColor) -> None:
         if not self.world.entity_has_component(entity, Font):
             return
 
@@ -120,9 +121,9 @@ class RendererSystem(SystemProtocol):
 
 class CleanupRendererSystem(SystemProtocol):
 
-    def __init__(self, world: ECS):
+    def __init__(self, world: World):
         self.world = world
 
     def execute(self, delta_time: float):
-        for entity in self.world.get_entities_with(NeedRedraw):
-            self.world.remove_component(entity, NeedRedraw)
+        for entity in self.world.get_entities_with(Dirty):
+            self.world.remove_component(entity, Dirty)

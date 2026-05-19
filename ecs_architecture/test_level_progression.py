@@ -2,14 +2,14 @@ import unittest
 
 from ecs_architecture.component.stats import HP, Attack, Defense
 from ecs_architecture.level_progression import XP, GainXP, IncreaseLevel, Level, LevelUp, XPGained
-from ecs_framework.ecs import ECS
+from omniecs.world import World
 
 
 class TestECS(unittest.TestCase):
 
     def __init__(self, methodName = "runTest"):
         super().__init__(methodName)
-        self.world = ECS()
+        self.world = World()
         self.unit = None
 
     def setUp(self):
@@ -19,8 +19,8 @@ class TestECS(unittest.TestCase):
         self.world.add_component(self.unit, Attack(5, 4))
         self.world.add_component(self.unit, Defense(10, 3))
         self.world.add_component(self.unit, HP(20, 20, 2, 5))
-        self.world.add_system(GainXP(self.world))
-        self.world.add_system(IncreaseLevel(self.world))
+        self.world.register_system(GainXP(self.world))
+        self.world.register_system(IncreaseLevel(self.world))
 
     def tearDown(self):
         self.world.reset()
